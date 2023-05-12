@@ -1,0 +1,23 @@
+{
+  "LIMIT_HE": 48,
+  "SERVER_DB": "localhost",
+  "DATABASE": "HorasExtraSBv1",
+  "USER_DB": "sa",
+  "PASS_DB": "We12345678*",
+  "HOST_EMAIL": "smtp.office365.com",
+  "USERNAME_EMAIL": "soportesm@servimeters.net",
+  "PASS_EMAIL": "Sm-123456*",
+  "PORT_EMAIL": "587",
+  "FROM_EMAIL": "soportesm@servimeters.net",
+  "URL_SITE": "http://localhost/HorasExtra/",
+  "RECHAZO": 2,
+  "RECHAZO_GERENTE": 6,
+  "RECHAZO_RH": 8,
+  "RECHAZO_CONTABLE": 10,
+  "APROBADO": 1,
+  "APROBACION_JEFE": 3,
+  "APROBACION_GERENTE": 5,
+  "APROBACION_RH": 7,
+  "APROBACION_CONTABLE": 9,
+  "EDICION": 1002
+}

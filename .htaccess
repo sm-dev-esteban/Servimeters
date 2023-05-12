@@ -1,0 +1,7 @@
+ErrorDocument 404 http://localhost/Servimeters/view/home?error=404
+ErrorDocument 500 http://localhost/Servimeters/view/home?error=500
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
+RewriteRule ^([^\.]+)$ $1.html [NC,L]
