@@ -202,9 +202,10 @@ function getFechas() {
         let Año = MesR[0];
         let Mes = MesR[1];
         let MesA = Number(Mes - 1);
-        MesA = MesA <= 9 ? `0${MesA}` : `${MesA}`;
+        let AñoA = MesA == 0 ? Number(Año - 1) : Año;
+        MesA = MesA == 0 ? 12 : (MesA <= 9 ? `0${MesA}` : `${MesA}`);
         return [
-            `${Año}-${MesA}-01`,
+            `${AñoA}-${MesA}-01`,
             `${Año}-${Mes}-${ultimoDia(Año, Mes)}`
         ];
     }
