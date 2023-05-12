@@ -119,8 +119,8 @@ function cargarLista(data, ident, idvalue, content) {
 // imprime documentos en una ventana independiente
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 function wPrint(ident) {
-    let windowPrint = window.open('', 'PRINT', 'height=400, width=500');
-    
+    let windowPrint = window.open('', 'PRINT', 'fullscreen');
+
     windowPrint.document.write(`<!DOCTYPE html>`);
     windowPrint.document.write(`<html lang="${language}">`);
 
