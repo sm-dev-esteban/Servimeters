@@ -3,7 +3,7 @@
 if (!isset($_SESSION["isAdmin"]) || (strcasecmp($_SESSION["isAdmin"], 'Si') !== 0)) {
     require_once "../../config/LoadConfig.config.php";
     $config = LoadConfig::getConfig();
-    header('Location:'.$config['URL_SITE'].'index.php');
+    header('Location:' . $config['URL_SITE'] . 'index.php');
 }
 
 ?>
@@ -17,7 +17,7 @@ if (!isset($_SESSION["isAdmin"]) || (strcasecmp($_SESSION["isAdmin"], 'Si') !== 
             <div class="row">
                 <section class="col-6 col-md-6 col-sm-12">
                     <label for="title">Nombre</label>
-                    <input type="text" name="title" placeholder="Ingrese el titulo del centro de costo" style="color: black !important; width: 50%; margin: auto;" required/>
+                    <input type="text" name="title" placeholder="Ingrese el titulo del centro de costo" style="color: black !important; width: 50%; margin: auto;" required />
                 </section>
                 <section class="col-6 col-md-6 col-sm-12">
                     <label for="title">Clase</label>

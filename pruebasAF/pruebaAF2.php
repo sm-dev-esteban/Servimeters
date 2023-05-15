@@ -1,19 +1,20 @@
 <?php
-    if (isset($_POST) && !empty(count($_POST))) {
-        // ejemplo 1
-        // puedo enviar los datos especificando los datos del arreglo que son (data - file) 
-        $pruebaA2 = new AutomaticForm(["data" => $_POST, "file" => $_FILES], "prueba2"); // opcion 1
+include("../controller/automaticForm.php");
+if (isset($_POST) && !empty(count($_POST))) {
+    // ejemplo 1
+    // puedo enviar los datos especificando los datos del arreglo que son (data - file) 
+    $pruebaA2 = new AutomaticForm(["data" => $_POST, "file" => $_FILES], "prueba2"); // opcion 1
 
-        print "<h1>Execute</h1>";
-        print "<pre>";
-        print_r($pruebaA2->execute());
-        print "</pre>";
+    print "<h1>Execute</h1>";
+    print "<pre>";
+    print_r($pruebaA2->execute());
+    print "</pre>";
 
-        print "<h1>Show allData</h1>";
-        print "<pre>";
-        print_r($pruebaA2->getalldata());
-        print "</pre>";
-    }
+    print "<h1>Show allData</h1>";
+    print "<pre>";
+    print_r($pruebaA2->getalldata());
+    print "</pre>";
+}
 ?>
 <form action="#" method="POST" enctype="multipart/form-data">
     <div>

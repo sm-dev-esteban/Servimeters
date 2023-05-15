@@ -41,7 +41,7 @@ class AutomaticForm extends DB
      * @param Array $alldata Recibe dos arreglos, el primero [ "data" ] para información en general y el otro es para archivos [ "file" ] -- si algo pararle como parámetro $_FILES.
      * @param String $table Nombre de la tabla si no existe puede ser creada.
      * @param String $action La accion recive uno de dos parametros "INSERT" o "UPDATE"
-     * @param Array|String|Int $update Campo únicamente sirve para hacer updates puede recibir un arreglo con el nombre de su llave primaria o también puede recibir solo el valor y el código se encarga de buscar la llave de esa tabla.
+     * @param Mixed $update Campo únicamente sirve para hacer updates puede recibir un arreglo con el nombre de su llave primaria o también puede recibir solo el valor y el código se encarga de buscar la llave de esa tabla.
      */
     public function __construct(
         array $alldata = [
@@ -50,27 +50,30 @@ class AutomaticForm extends DB
         ],
         String $table,
         String $action = "INSERT",
-        array|String|Int $update = [
+        Mixed $update = [
             "@primary" => false
         ]
     ) {
         $this->table = $table;
         $this->action = strtoupper($action);
-        // $this->update = $update;
 
-        if (!is_array($update)) { // si no es un arreglo busco a la llave primaria de la tabla y que filtre por el valor que le estoy pasando
-            $this->update = [AutomaticForm::getNamePrimary($this->table) => $update];
-        } else { // si es un arreglo verguero el que me toco hacer :c
+        if ($this->action == "UPDATE") {
+            if (!is_array($update)) { // si no es un arreglo busco a la llave primaria de la tabla y que filtre por el valor que le estoy pasando
+                $this->update = [AutomaticForm::getNamePrimary($this->table) => $update];
+            } else { // si es un arreglo verguero el que me toco hacer :c
 
-            $check = key(array_filter($update, function ($x) { // busco que el arreglo contenga la palabra @primary para hacerle el cambio de la llave primaria de esa tabla
-                return str_contains($x, "@primary");
-            }, ARRAY_FILTER_USE_KEY));
+                $check = key(array_filter($update, function ($x) { // busco que el arreglo contenga la palabra @primary para hacerle el cambio de la llave primaria de esa tabla
+                    return str_contains($x, "@primary");
+                }, ARRAY_FILTER_USE_KEY));
 
-            if (!is_null($check)) {
-                $this->update = [AutomaticForm::getNamePrimary($this->table) => $update[$check]];
-            } else {
-                $this->update = $update;
+                if (!is_null($check)) {
+                    $this->update = [AutomaticForm::getNamePrimary($this->table) => $update[$check]];
+                } else {
+                    $this->update = $update;
+                }
             }
+        } else {
+            $this->update = ["ident" => false];
         }
 
         $this->db = new DB();
@@ -134,7 +137,7 @@ class AutomaticForm extends DB
     /**
      * @return Array Devuelve el arreglo para actualizar los datos
      */
-    public function getUpdate(): array
+    public function getUpdate(): Mixed
     {
         return $this->update;
     }
@@ -172,8 +175,8 @@ class AutomaticForm extends DB
             $checkAll = [];
 
             $checkAll = array_merge(
-                isset($this->data) && is_array($this->data) ? $this->data : [],
-                isset($this->file["name"]) && is_array($this->file["name"]) ? $this->file["name"] : []
+                $this->data <> false && isset($this->data) && is_array($this->data) ? $this->data : [],
+                $this->file <> false && isset($this->file["name"]) && is_array($this->file["name"]) ? $this->file["name"] : []
             );
 
             foreach ($checkAll as $key => $value) {
@@ -200,7 +203,7 @@ class AutomaticForm extends DB
         $update = "`` = ''";
 
         // data
-        if (isset($this->data) && is_array($this->data)) {
+        if ($this->data <> false && is_array($this->data) && !empty(count($this->data))) {
             foreach ($this->data as $key => $value) {
                 if ($checkEmptyValues ? !empty($value) : !empty($key)) {
                     if (is_array($value)) {
@@ -219,7 +222,7 @@ class AutomaticForm extends DB
         // data
 
         // files
-        if (isset($this->file["name"]) && is_array($this->file["name"])) {
+        if ($this->file <> false && is_array($this->file["name"]) && !empty(count($this->file["name"]))) {
 
             define("CARPETA", "{$this->config->FOLDER_SITE}files/{$this->table}/");
 
@@ -306,7 +309,7 @@ class AutomaticForm extends DB
      * @param Array  $config variable especial para cambiar algunos parametros 
      * @return String devuelve el valor enviado en $return si esta vacia o no se ejecuta la consulta devuelve false
      */
-    public static function getValue($filter, $column, $return, $table, $config = []): String|Int
+    public static function getValueSql($filter, $column, $return, $table, $config = []): String|Int
     {
 
         $defaultConfig = [
@@ -338,15 +341,24 @@ class AutomaticForm extends DB
             return $th->errorInfo;
         }
     }
-}
 
-// Pruebas y demostracion
-// por favor dejar comentado no >:c
-// INSERT
-// include("../pruebasAF/pruebaAF1.php"); // prueba con codigo
-// include("../pruebasAF/pruebaAF2.php"); // prueba con formulario
-// include("../pruebasAF/pruebaAF3.php"); // prueba con formulario y nombre de los arreglos
-// UPDATE
-// include("../pruebasAF/pruebaAF4.php"); // prueba con formulario para actualizar datos
-// INSERT
-// include("../pruebasAF/pruebaAF5.php"); // prueba de archivos
+    /**
+     * @param String $table nombre de la tabla
+     * @param String $where condición
+     */
+    public static function getDataSql(String $table, String $where = "1 = 1"): array
+    {
+        $db = new DB();
+        $conn = $db->Conectar();
+
+        $q = "SELECT * FROM {$table} WHERE {$where}";
+
+        try {
+            $query = $conn->prepare($q);
+            $query->execute();
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $th) {
+            return ["error" => $th->errorInfo];
+        }
+    }
+}

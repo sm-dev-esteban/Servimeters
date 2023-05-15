@@ -88,6 +88,11 @@ $(document).ready(async function () {
             .find("input, button").val("").removeAttr("disabled");
     });
 
+    if (sessionStorage.getItem("edit")) {
+        cargarDatos(sessionStorage.getItem("edit"));
+        sessionStorage.removeItem("edit");
+    }
+
 });
 
 function total() {
@@ -209,4 +214,47 @@ function getFechas() {
             `${Año}-${Mes}-${ultimoDia(Año, Mes)}`
         ];
     }
+}
+
+function cargarDatos(x) {
+    $.when(
+        $.ajax(`../controller/CRUD.controller.php?action=list&model=ReportesHE&crud=getHE`, { dataType: "JSON", type: "POST", data: { "object": x } }),
+        $.ajax(`../controller/CRUD.controller.php?action=list&model=ReportesHE&crud=get`, { dataType: "JSON", type: "POST", data: { "object": x } })
+    ).then(function (
+        response1,
+        response2
+    ) {
+        // let response = response1[0].concat(response2[0]);
+        // for (identN in response) {
+        //     for (identL in response[identN]) {
+        //         $(`[name*="[${identL}"]`).val(response[identN][identL]);
+        //     }
+        // }
+
+        for (let index = 0; index < Number(response1[0].length - 1); index++) {
+            $("#addHE").click();
+        }
+
+        for (identN in response1[0]) {
+            for (identL in response1[0][identN]) {
+                c = $($(`[name*="HorasExtra[${identL}"]`)[identN]);
+                c.val(response1[0][identN][identL]);
+            }
+        }
+
+        for (identN in response2[0]) {
+            for (identL in response2[0][identN]) {
+                c = $($(`[name*="data[${identL}"]`)[identN]);
+                if (c.hasClass("select2")) {
+                    c.select2("destroy");
+                    c.val(response2[0][identN][identL]);
+                    c.select2();
+                } else {
+                    c.val(response2[0][identN][identL]);
+                }
+            }
+        }
+        total();
+        fechas();
+    });
 }

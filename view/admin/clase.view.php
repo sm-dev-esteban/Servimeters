@@ -3,7 +3,7 @@
 if (!isset($_SESSION["isAdmin"]) || (strcasecmp($_SESSION["isAdmin"], 'Si') !== 0)) {
     require_once "../../config/LoadConfig.config.php";
     $config = LoadConfig::getConfig();
-    header('Location:'.$config['URL_SITE'].'index.php');
+    header('Location:' . $config['URL_SITE'] . 'index.php');
 }
 
 ?>
@@ -20,7 +20,7 @@ if (!isset($_SESSION["isAdmin"]) || (strcasecmp($_SESSION["isAdmin"], 'Si') !== 
                 </section>
                 <section class="col-4 col-md-6 col-sm-10">
                     <label for="title">Nombre</label>
-                    <input type="text" name="title" style="color: black !important;" required/>
+                    <input type="text" name="title" style="color: black !important;" required />
                 </section>
                 <section class="col-4 col-md-3 col-sm-1">
                     <p></p>
@@ -46,13 +46,13 @@ if (!isset($_SESSION["isAdmin"]) || (strcasecmp($_SESSION["isAdmin"], 'Si') !== 
         <section class="col-12 col-md-4 col-sm-12">
             <table class="tableAdmin">
                 <thead>
-                <tr>
-                    <th>Titulo</th>
-                    <th>Guardar</th>
-                </tr>
+                    <tr>
+                        <th>Titulo</th>
+                        <th>Guardar</th>
+                    </tr>
                 </thead>
                 <tbody id="clase">
-                <!-- Llenar datos con iteracion -->
+                    <!-- Llenar datos con iteracion -->
                 </tbody>
             </table>
         </section>

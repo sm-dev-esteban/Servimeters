@@ -22,6 +22,14 @@ switch ($_GET['action']) {
         echo json_encode($result);
         exit();
         break;
+    case 'list':
+        $model = $_GET['model'];
+        $action = $_GET['crud'];
+        $repository = new Repository($model);
+        $result = $repository->list($_POST['object'], $action);
+        echo json_encode($result);
+        exit();
+        break;
     case 'insertMany':
         if (!isset($_POST['data'])) {
             echo 'Faltan datos';

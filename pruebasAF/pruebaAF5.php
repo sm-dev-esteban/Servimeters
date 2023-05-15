@@ -1,4 +1,5 @@
 <?php
+include("../controller/automaticForm.php");
 define("IDENT", 20230504212636);
 if (isset($_GET["action"]) && $_GET["action"] == "INSERT") {
     $pruebaAF5 = new AutomaticForm($_FILES, "prueba5");

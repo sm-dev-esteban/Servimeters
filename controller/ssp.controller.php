@@ -17,13 +17,13 @@ switch ($_GET["ssp"]) {
             ],
             [
                 "db" => "id_ceco", "dt" => $i++, "formatter" => function ($d, $row) {
-                    return AutomaticForm::getValue($d, "id", "titulo", "CentrosCosto");
+                    return AutomaticForm::getValueSql($d, "id", "titulo", "CentrosCosto");
                 }
             ],
             [
                 "db" => "id_ceco", "dt" => $i++, "formatter" => function ($d, $row) {
-                    $id_clase = AutomaticForm::getValue($d, "id", "id_clase", "CentrosCosto");
-                    return AutomaticForm::getValue($id_clase, "id", "titulo", "Clase");
+                    $id_clase = AutomaticForm::getValueSql($d, "id", "id_clase", "CentrosCosto");
+                    return AutomaticForm::getValueSql($id_clase, "id", "titulo", "Clase");
                 }
             ],
             [
@@ -38,23 +38,26 @@ switch ($_GET["ssp"]) {
             ],
             [
                 "db" => "id_aprobador", "dt" => $i++, "formatter" => function ($d, $row) {
-                    return AutomaticForm::getValue($d, "id", "nombre", "Aprobadores", [
+                    return AutomaticForm::getValueSql($d, "id", "nombre", "Aprobadores", [
                         "notResult" => "NA"
                     ]);
                 }
             ],
             [
                 "db" => "id_estado", "dt" => $i++, "formatter" => function ($d, $row) {
-                    return AutomaticForm::getValue($d, "id", "nombre", "Estados");
+                    return AutomaticForm::getValueSql($d, "id", "nombre", "Estados");
                 }
             ],
             [
                 "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
-                    return '
-                    <button type="button" class="btn btn-primary m-1"><i class="fa fa-pen"></i></button>
-                    <button type="button" class="btn btn-danger m-1"><i class="fa fa-trash"></i></button>
-                    <button type="button" class="btn btn-info m-1" onclick="showinfo(' . $d . ')" data-toggle="modal" data-target="#viewDetail"><i class="fa fa-eye"></i></button>
-                    ';
+                    $r = "";
+                    $id_estado = AutomaticForm::getValueSql($d, "id", "id_estado", "ReportesHE");
+                    $edicion = [2, 6, 8, 10, 1002];
+                    // contentPage(page, title, scripts = undefined)
+                    $r .= in_array($id_estado, $edicion) ? '<button type="button" class="rounded btn-primary m-1" onclick="contentPage(' . "'reportar/index.view?edit={$d}', 'Editar Reporte #{$d}', 'reporteHE'" . ')"><i class="fa fa-pen"></i></button>' : '';
+                    $r .= '<button type="button" class="rounded btn-danger m-1"><i class="fa fa-trash"></i></button>';
+                    $r .= '<button type="button" class="rounded btn-info m-1" onclick="showinfo(' . $d . ')" data-toggle="modal" data-target="#viewDetail"><i class="fa fa-eye"></i></button>';
+                    return $r;
                 }
             ]
         ];
@@ -75,7 +78,7 @@ $sql_details = [
 
 // codigo de datatable 
 // Nota: lo modifique un poco para que funcionara con sql server y mysql
-require("{$config->FOLDER_SITE}ssp/ssp.class.php");
+require($config->FOLDER_SITE . "ssp/ssp.class.php");
 
 $primaryKey = AutomaticForm::getNamePrimary($table); // llave primaria de la tabla
 

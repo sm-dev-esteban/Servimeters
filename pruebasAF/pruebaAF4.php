@@ -1,16 +1,17 @@
 <?php
-    define("IDENT", 20230504212636);
-    if (isset($_GET["action"]) && $_GET["action"] == "UPDATE") {
-        // $pruebaAF4 = new AutomaticForm(["data" => $_POST["data"], "file" => $_FILES["file"]], "prueba4", "UPDATE", #); ejemplos
-        // $pruebaAF4 = new AutomaticForm(["data" => $_POST["data"], "file" => $_FILES["file"]], "prueba4", "UPDATE", ["@primary" => #]); ejemplos
-        // $pruebaAF4 = new AutomaticForm(["data" => $_POST["data"], "file" => $_FILES["file"]], "prueba4", "UPDATE", ["id" => #]); ejemplos
-        $pruebaAF4 = new AutomaticForm(["data" => $_POST["data"], "file" => $_FILES["file"]], "prueba4", "UPDATE", ["ident" => IDENT]);
-        echo json_encode($pruebaAF4->execute(), JSON_UNESCAPED_UNICODE);
-        exit;
-    } else {
-        $pruebaAF4 = new AutomaticForm(["data" => ["ident" => IDENT]], "prueba4", "INSERT");
-        $pruebaAF4->execute();
-    }
+include("../controller/automaticForm.php");
+define("IDENT", 20230504212636);
+if (isset($_GET["action"]) && $_GET["action"] == "UPDATE") {
+    // $pruebaAF4 = new AutomaticForm(["data" => $_POST["data"], "file" => $_FILES["file"]], "prueba4", "UPDATE", #); ejemplos
+    // $pruebaAF4 = new AutomaticForm(["data" => $_POST["data"], "file" => $_FILES["file"]], "prueba4", "UPDATE", ["@primary" => #]); ejemplos
+    // $pruebaAF4 = new AutomaticForm(["data" => $_POST["data"], "file" => $_FILES["file"]], "prueba4", "UPDATE", ["id" => #]); ejemplos
+    $pruebaAF4 = new AutomaticForm(["data" => $_POST["data"], "file" => $_FILES["file"]], "prueba4", "UPDATE", ["ident" => IDENT]);
+    echo json_encode($pruebaAF4->execute(), JSON_UNESCAPED_UNICODE);
+    exit;
+} else {
+    $pruebaAF4 = new AutomaticForm(["data" => ["ident" => IDENT]], "prueba4", "INSERT");
+    $pruebaAF4->execute();
+}
 ?>
 
 <form>
@@ -40,8 +41,8 @@
 <script src="../assets/js/master.js"></script>
 
 <script>
-    $(document).ready(function () {
-        $(`form`).on("submit", function (e) {
+    $(document).ready(function() {
+        $(`form`).on("submit", function(e) {
             e.preventDefault(); // prevengo el evento
             $.ajax(`?action=UPDATE`, {
                 type: "POST",
@@ -50,7 +51,7 @@
                 processData: false,
                 cache: false,
                 contentType: false,
-                success: function (response) {
+                success: function(response) {
                     console.log(response);
                 }
             })
