@@ -41,6 +41,22 @@
                         <div class="col-12">
                             <hr>
                         </div>
+                        <div class="col-12">
+                            <!-- <div class="form-group">
+                                <label for="adjuntos">Adjuntar archivos</label>
+                                <div class="input-group">
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" name="file[adjuntos][]" id="adjuntos" multiple>
+                                        <label class="custom-file-label" for="adjuntos">Elija los archivos</label>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">Subir</span>
+                                    </div>
+                                </div>
+                            </div> -->
+                            <label for="adjuntos" class="form-label">Adjuntar archivos</label>
+                            <input type="file" name="file[adjuntos][]" id="adjuntos" class="form-control" multiple>
+                        </div>
                         <div class="col-12 my-3">
                             <div class="d-flex justify-content-center align-items-center">
                                 <a href="#one" style="font-size: 25px"><i class="fas fa-chevron-down"></i></a>
@@ -54,14 +70,22 @@
                                             <th>Fecha <b class="text-danger">*</b></th>
                                             <th>Actividad <b class="text-danger">*</b></th>
                                             <th>Permisos Descuentos</th>
-                                            <th>Extras Diurn Ordinaria</th> <?php #11001 ?>
-                                            <th>Extras Noct Ordinaria</th>  <?php #11002 ?>
-                                            <th>Extras Diurn Fest Domin</th><?php #11003 ?>
-                                            <th>Extras Noct Fest Domin</th> <?php #11004 ?>
-                                            <th>Recargo Nocturno</th>       <?php #11501 ?>
-                                            <th>Recargo Festivo Diurno</th> <?php #11502 ?>
-                                            <th>Recargo Festivo Noctur</th> <?php #11503 ?>
-                                            <th>Recargo Ord Fest Noct</th>  <?php #11504 ?>
+                                            <th>Extras Diurn Ordinaria</th> <?php #11001 
+                                                                            ?>
+                                            <th>Extras Noct Ordinaria</th> <?php #11002 
+                                                                            ?>
+                                            <th>Extras Diurn Fest Domin</th><?php #11003 
+                                                                            ?>
+                                            <th>Extras Noct Fest Domin</th> <?php #11004 
+                                                                            ?>
+                                            <th>Recargo Nocturno</th> <?php #11501 
+                                                                        ?>
+                                            <th>Recargo Festivo Diurno</th> <?php #11502 
+                                                                            ?>
+                                            <th>Recargo Festivo Noctur</th> <?php #11503 
+                                                                            ?>
+                                            <th>Recargo Ord Fest Noct</th> <?php #11504 
+                                                                            ?>
                                             <th>Acción</th>
                                         </tr>
                                     </thead>

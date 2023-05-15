@@ -29,7 +29,7 @@ $config = AutomaticForm::getConfig();
 switch ($_GET["action"]) {
     case 'registroHE':
         // (["data" => [], "file" => ""])
-        $ReportesHE = new AutomaticForm($_POST, "ReportesHE");
+        $ReportesHE = new AutomaticForm(array_merge($_POST, $_FILES), "ReportesHE");
         $checkRHE = $ReportesHE->execute(true, true);
         if (isset($checkRHE["error"])) { // si ocurre un error (fijo puede pasar con sql server) sale y muestra el error
             echo json_encode(["query" => $checkRHE, "error" => $checkRHE["error"]], JSON_UNESCAPED_UNICODE);

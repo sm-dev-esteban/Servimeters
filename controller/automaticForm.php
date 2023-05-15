@@ -220,7 +220,9 @@ class AutomaticForm extends DB
 
         // files
         if (isset($this->file["name"]) && is_array($this->file["name"])) {
+
             define("CARPETA", "{$this->config->FOLDER_SITE}files/{$this->table}/");
+
             foreach ($this->file["name"] as $key => $value) {
                 if ($checkEmptyValues ? !empty($value) : !empty($key)) {
 
