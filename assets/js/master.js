@@ -119,8 +119,7 @@ function cargarLista(data, ident, idvalue, content) {
 // imprime documentos en una ventana independiente
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 function wPrint(ident) {
-    // let windowPrint = window.open('', 'PRINT', 'fullscreen');
-    let windowPrint = window.open('', 'PRINT', 'width=10,height=10,top=200,left=200,toolbars=no,scrollbars=no,status=no,resizable=no');
+    let windowPrint = window.open('', 'PRINT', 'fullscreen');
 
     windowPrint.document.write(`<!DOCTYPE html>`);
     windowPrint.document.write(`<html lang="${language}">`);
@@ -147,9 +146,11 @@ function wPrint(ident) {
     windowPrint.document.write(`
     <script>
     $(document).ready(function () {
-        this.focus();
-        this.print();
-        this.close();
+        window.focus();
+        window.print();
+        window.close();
+    }).on("click", function() {
+        window.print();
     });
     </script>
     `);

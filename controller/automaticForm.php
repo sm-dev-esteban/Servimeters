@@ -317,7 +317,7 @@ class AutomaticForm extends DB
             "notResult" => false
         ];
 
-        $c = array_merge($defaultConfig, $config);
+        $c = array_merge($defaultConfig, is_array($config) ? $config : []);
 
         $db = new DB();
         $conn = $db->Conectar();
@@ -359,6 +359,16 @@ class AutomaticForm extends DB
             return $query->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $th) {
             return ["error" => $th->errorInfo];
+        }
+    }
+
+    public static function getClassMethods($classname = "AutomaticForm", $is_static = true)
+    {
+        $reflection = new ReflectionClass($classname);
+        if ($is_static) {
+            return json_decode(json_encode($reflection->getMethods(ReflectionMethod::IS_STATIC), JSON_UNESCAPED_UNICODE), true);
+        } else {
+            return json_decode(json_encode($reflection->getMethods(ReflectionMethod::IS_PUBLIC), JSON_UNESCAPED_UNICODE), true);
         }
     }
 }
