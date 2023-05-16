@@ -157,3 +157,17 @@ function wPrint(ident) {
     windowPrint.document.write(`</html>`);
     windowPrint.document.close();
 }
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+// accede a las funciones static de automaticForm
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+function automaticForm(action, params) {
+
+    let resp = $.ajax(`../controller/af.controller.php?action=${action}`, {
+        type: "POST",
+        data: { "param": params },
+        dataType: "JSON",
+        async: false
+    });
+
+    return resp.responseJSON;
+}
