@@ -70,14 +70,22 @@
                                             <th>Fecha <b class="text-danger">*</b></th>
                                             <th>Actividad <b class="text-danger">*</b></th>
                                             <th>Permisos Descuentos</th>
-                                            <th>Extras Diurn Ordinaria</th>     <?php #11001 ?>
-                                            <th>Extras Noct Ordinaria</th>      <?php #11002 ?>
-                                            <th>Extras Diurn Fest Domin</th>    <?php #11003 ?>
-                                            <th>Extras Noct Fest Domin</th>     <?php #11004 ?>
-                                            <th>Recargo Nocturno</th>           <?php #11501 ?>
-                                            <th>Recargo Festivo Diurno</th>     <?php #11502 ?>
-                                            <th>Recargo Festivo Noctur</th>     <?php #11503 ?>
-                                            <th>Recargo Ord Fest Noct</th>      <?php #11504 ?>
+                                            <th>Extras Diurn Ordinaria</th> <?php #11001 
+                                                                            ?>
+                                            <th>Extras Noct Ordinaria</th> <?php #11002 
+                                                                            ?>
+                                            <th>Extras Diurn Fest Domin</th> <?php #11003 
+                                                                                ?>
+                                            <th>Extras Noct Fest Domin</th> <?php #11004 
+                                                                            ?>
+                                            <th>Recargo Nocturno</th> <?php #11501 
+                                                                        ?>
+                                            <th>Recargo Festivo Diurno</th> <?php #11502 
+                                                                            ?>
+                                            <th>Recargo Festivo Noctur</th> <?php #11503 
+                                                                            ?>
+                                            <th>Recargo Ord Fest Noct</th> <?php #11504 
+                                                                            ?>
                                             <th>Acción</th>
                                         </tr>
                                     </thead>
@@ -114,6 +122,13 @@
                                                 <b>Totales</b>
                                             </td>
                                             <td id="totales"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="11" align="right">
+                                                <input type="hidden" name="data[totalPermisos]">
+                                                Total Permisos descuentos
+                                            </td>
+                                            <td id="totalPermisos">0</td>
                                         </tr>
                                         <tr>
                                             <td colspan="11" align="right">

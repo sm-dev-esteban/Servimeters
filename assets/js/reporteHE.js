@@ -159,11 +159,15 @@ function total() {
     $(`[data-info-he="ROF"]`).html(ROFtotal);
     // -----------------------------------------------------
 
+    let P = Number(descuentototal);
     let E = Number(EDOtotal + ENOtotal + EDFtotal + ENFtotal);
     let R = Number(RNtotal + RFDtotal + RFNtotal + ROFtotal);
-    let Ctotal = Number(descuentototal + EDOtotal + ENOtotal + EDFtotal + ENFtotal + RNtotal + RFDtotal + RFNtotal + ROFtotal);
+    let Ctotal = Number(P + E + R);
 
     // cargamos la inforamción en un input hidden y en la tabla que es la parte visual
+    $(`#totalPermisos`).html(P);
+    $(`[name="data[totalPermisos]"]`).val(P); // suma de todos los valores
+
     $(`#totalHorasExtras`).html(E).attr("class",
         E <= 19 ? `text-success` : `text-danger`
     );

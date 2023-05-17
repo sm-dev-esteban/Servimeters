@@ -1,5 +1,5 @@
 <?php // footer con cada unos de los script de la pagina ?>
-    <foot>
+<foot>
         <script src="../AdminLTE/plugins/jquery/jquery.min.js"></script>
         <script src="../AdminLTE/plugins/jquery-ui/jquery-ui.min.js"></script>
         <script src="../AdminLTE/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -34,7 +34,8 @@
         <script src="../AdminLTE/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
         <script src="../AdminLTE/plugins/sweetalert2/sweetalert2.all.js"></script>
         <script src="../AdminLTE/dist/js/adminlte.min.js?v=3.2.0"></script>
-        <script src="../assets/js/master.js"></script> <!--  -->
+        <script src="../assets/js/master.js"></script>
         <script src="../controller/views/views.controller.js"></script>
+        <script src="../assets/js/server.js"></script>
     </foot>
 </html>

@@ -46,24 +46,44 @@ function showinfo(x) {
         for (data in resp1) {
             tbody += `
             <tr>
-                <th colspan="9" align="center"><b>Actividad</b></th>
+                <td colspan="9" align="center"><b>Actividad</b></td>
             </tr>
             <tr>
-                <th colspan="9" align="center">${resp1[data].novedad}</th>
+                <td colspan="9" align="center">${resp1[data].novedad}</td>
             </tr>
             <tr>
-                <td>${resp1[data].descuento}</td>
-                <td>${resp1[data].E_Diurna_Ord}</td>
-                <td>${resp1[data].E_Nocturno_Ord}</td>
-                <td>${resp1[data].E_Diurna_Fest}</td>
-                <td>${resp1[data].E_Nocturno_Fest}</td>
-                <td>${resp1[data].R_Nocturno}</td>
-                <td>${resp1[data].R_Fest_Diurno}</td>
-                <td>${resp1[data].R_Fest_Nocturno}</td>
-                <td>${resp1[data].R_Ord_Fest_Noct}</td>
+                <td>${Number(resp1[data].descuento)}</td>
+                <td>${Number(resp1[data].E_Diurna_Ord)}</td>
+                <td>${Number(resp1[data].E_Nocturno_Ord)}</td>
+                <td>${Number(resp1[data].E_Diurna_Fest)}</td>
+                <td>${Number(resp1[data].E_Nocturno_Fest)}</td>
+                <td>${Number(resp1[data].R_Nocturno)}</td>
+                <td>${Number(resp1[data].R_Fest_Diurno)}</td>
+                <td>${Number(resp1[data].R_Fest_Nocturno)}</td>
+                <td>${Number(resp1[data].R_Ord_Fest_Noct)}</td>
             </tr>
             `;
         }
+
+        tbody += `
+            <tr>
+                <td align="right" colspan="8"><b>Permisos y Descuentos</b></td>
+                <td>${Number(resp2.totalPermisos)}</td>
+            </tr>
+            <tr>
+                <td align="right" colspan="8"><b>Extras</b></td>
+                <td>${Number(resp2.totalHorasExtras)}</td>
+            </tr>
+            <tr>
+                <td align="right" colspan="8"><b>Recargos</b></td>
+                <td>${Number(resp2.totalRecargos)}</td>
+            </tr>
+            <tr>
+                <td align="right" colspan="8"><b>Total</b></td>
+                <td>${Number(resp2.total)}</td>
+            </tr>
+            `;
+
         $(`[data-report="detailContent"] tbody`).html(tbody);
     });
     $("#viewDetail .modal-content .overlay").remove();

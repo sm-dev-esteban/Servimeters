@@ -67,7 +67,7 @@
                             <p data-report="aprobador"><b>Aprobador: </b>##########</p>
                         </div>
                     </div>
-                    <table data-report="detailContent" class="table table-striped">
+                    <table data-report="detailContent" class="table">
                         <thead>
                             <tr>
                                 <th>Permisos Descuentos</th>
@@ -100,6 +100,11 @@
                                 <td>#</td>
                             </tr>
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="9">Nota: Se presenta las horas registradas en la plataforma, favor tener presente que estas deben ser aprobadas por el jefe de área</th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
