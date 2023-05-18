@@ -22,9 +22,15 @@ $(document).ready(async function () {
 
     $("#formReporte").on("submit", function (e) {
         e.preventDefault();
+
+        let $date = new Date().toLocaleString(locale, { timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit', weekday: "long", hour: '2-digit', hour12: false, minute: '2-digit', second: '2-digit' });
         let totalHorasExtras = Number($(`[name="data[totalHorasExtras]"]`).val());
+
+        $(`[name="data[fechaRegistro]"]`).val($date);
+        $(`[name="data[timezone]"]`).val(timezone);
+
         if (totalHorasExtras > config.LIMIT_HE) {
-            alerts({ title: `Límite de horas extras excedido - válido ${config.LIMIT_HE}`, icon: "error" });
+            alerts({ title: `Límite de horas extras excedido - válido hasta ${config.LIMIT_HE} horas`, icon: "error" });
         } else {
             $.ajax("../controller/submit.controller.php?action=registroHE", {
                 type: "POST",
