@@ -6,7 +6,8 @@ $config = LoadConfig::getConfig();
 
 $session = new Sesion();
 
-function validateRole(){
+function validateRole()
+{
     require_once('../model/Aprobador.model.php');
     // session_start(); // la session solo se inicia una vez en el documento y tiene que ser la primara linea de el documento (ojo con los includes y requires)
     $validate = new Aprobador();
@@ -30,12 +31,12 @@ switch ($_GET['action']) {
     case 'finish':
         // session_start(); // la session solo se inicia una vez en el documento y tiene que ser la primara linea de el documento (ojo con los includes y requires)
         session_destroy();
-        header('Location:'.$config->URL_SITE);
+        header('Location:' . $config->URL_SITE);
         break;
     case 'validateRole':
         validateRole();
         break;
     default:
-        echo ''; 
+        echo '';
         break;
 }

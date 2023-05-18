@@ -1,10 +1,10 @@
-$(document).ready(function(){
+$(document).ready(function () {
     send();
     close();
 });
 
 function send(algo) {
-    $('#send').click(function(e){
+    $('#send').click(function (e) {
         e.preventDefault();
 
         var data = {
@@ -16,8 +16,8 @@ function send(algo) {
             data: data,
             url: './controller/session.controller.php?action=init',
             type: 'post',
-            success: function(result){
-                
+            success: function (result) {
+
                 if (result !== '1') {
                     $.notify("Error al iniciar sesión!", 'error');
                     console.log('No se pudo conectar el servidor o credenciales incorrectas');
@@ -27,38 +27,38 @@ function send(algo) {
                 $.ajax({
                     url: './controller/session.controller.php?action=validateRole',
                     type: 'post',
-                    success: function(result){
-                        window.location.href='view/home';
+                    success: function (result) {
+                        window.location.href = 'view/home';
                     }
-                });     
+                });
             },
-            error: function(error) {
+            error: function (error) {
                 console.log('Error al iniciar sesión!', error);
-            } 
+            }
         });
     })
 }
 
-function close(){
+function close() {
 
-    $('#user').on("mouseover click", function(e) {
-        $('#close').css("display", "inherit"); 
-        $('#close').click(function(e){
+    $('#user').on("mouseover click", function (e) {
+        $('#close').css("display", "inherit");
+        $('#close').click(function (e) {
             console.log('Hola Mundo');
             $.ajax({
                 url: '../controller/session.controller.php?action=finish',
-                success: function(result){
+                success: function (result) {
                     localStorage.clear();
-                    window.location.href='../index.php';
+                    window.location.href = '../index.php';
                 }
             });
         })
     });
 
-    $('#user').mouseout(function(params) {
-        $('#close').css("display", "none"); 
+    $('#user').mouseout(function (params) {
+        $('#close').css("display", "none");
     });
-    
+
 }
 
 // function test(){

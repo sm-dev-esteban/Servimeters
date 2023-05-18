@@ -35,13 +35,13 @@ function showinfo(x) {
         let titulo = automaticForm("getValueSql", [id_clase, "id", "titulo", "Clase"]);
         let nombreA = automaticForm("getValueSql", [resp2.id_aprobador, "id", "nombre", "Aprobadores", { "notResult": "N/A" }]);
         let tbody = "";
-        $(`[data-report="document"]`).html(`<b>Documento</b> ${resp2.cc}`);
-        $(`[data-report="user"]`).html(`<b>Usuario</b> ${resp2.empleado}`);
-        $(`[data-report="mail"]`).html(`<b>Correo</b> ${resp2.correoEmpleado}`);
-        $(`[data-report="ceco"]`).html(`<b>Centro de costo</b> ${titulo}`);
-        $(`[data-report="proyect"]`).html(`<b>Proyecto asociado</b> ${resp2.proyecto}`);
-        $(`[data-report="code"]`).html(`<b>Código</b> ${resp2.codigo.split("|/|").join(", ")}`);
-        $(`[data-report="aprobador"]`).html(`<b>Aprobador</b> ${nombreA}`);
+        $(`[data-report="document"]`).html(`<b>Documento: </b>${resp2.cc}`);
+        $(`[data-report="user"]`).html(`<b>Usuario: </b>${resp2.empleado}`);
+        $(`[data-report="mail"]`).html(`<b>Correo: </b>${resp2.correoEmpleado}`);
+        $(`[data-report="ceco"]`).html(`<b>Centro de costo: </b>${titulo}`);
+        $(`[data-report="proyect"]`).html(`<b>Proyecto asociado: </b>${resp2.proyecto}`);
+        $(`[data-report="code"]`).html(`<b>Código: </b>${resp2.codigo.split("|/|").join(", ")}`);
+        $(`[data-report="aprobador"]`).html(`<b>Aprobador: </b>${nombreA}`);
 
         for (data in resp1) {
             tbody += `

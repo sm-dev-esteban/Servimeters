@@ -18,7 +18,9 @@ class Servimeters implements MessageComponentInterface
     public function onOpen(ConnectionInterface $conn)
     {
         $this->clients->attach($conn);
-        echo "Nueva conexión! ({$conn->resourceId}) \n Activas: " . count($this->clients);
+        echo "
+        Nueva conexión! ({$conn->resourceId}) \n
+        Conexiones activas: (" . count($this->clients) . ") \n";
     }
 
     public function onMessage(ConnectionInterface $from, $msg)
