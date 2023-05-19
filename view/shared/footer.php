@@ -36,6 +36,6 @@
         <script src="../AdminLTE/dist/js/adminlte.min.js?v=3.2.0"></script>
         <script src="../assets/js/master.js"></script>
         <script src="../controller/views/views.controller.js"></script>
-        <script src="../assets/js/server.js"></script>
+        <script src="../assets/js/server.min.js"></script>
     </foot>
 </html>

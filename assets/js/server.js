@@ -8,6 +8,7 @@ server.onopen = function (e) {
 
     localStorage.setItem("rol", session.rol);
     localStorage.setItem("usuario", session.usuario);
+    localStorage.setItem("email", session.email);
 
 }
 

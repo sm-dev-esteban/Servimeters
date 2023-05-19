@@ -1,12 +1,13 @@
 <?php
+session_start();
 require("automaticForm.php");
-$config = AutomaticForm::getConfig();
 
+$config = AutomaticForm::getConfig();
 define("MESES", ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]);
+$i = 0;
 
 switch ($_GET["ssp"]) {
     case "listEstadoHe":
-        $i = 0;
         $table = "ReportesHE";
         $columns = [
             [
@@ -59,6 +60,77 @@ switch ($_GET["ssp"]) {
                     $r .= '<button type="button" class="rounded btn-info m-1" onclick="showinfo(' . $d . ')" data-toggle="modal" data-target="#viewDetail"><i class="fa fa-eye"></i></button>';
                     return $r;
                 }
+            ]
+        ];
+        break;
+    case 'listAprobar':
+        $idAprobador = AutomaticForm::getValueSql($_SESSION["email"], "correo", "id", "Aprobadores");
+        $_GET["where"] = "id_aprobador = {$idAprobador} and (id_estado <> 1 and id_estado <> 2)";
+        $table = "ReportesHE";
+        $columns = [
+            [
+                "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
+                    $status = AutomaticForm::getValueSql($d, "id", "checkStatus", "ReportesHE", ["notResult" => 1]);
+                    return '<span data-ident="' . $d . '" data-status="' . $status . '">' . $d . '</span>';
+                }
+            ],
+            [
+                "db" => "cc", "dt" => $i++
+            ],
+            [
+                "db" => "mes", "dt" => $i++, "formatter" => function ($d, $row) {
+                    return date("Y", strtotime($d));
+                }
+            ],
+            [
+                "db" => "mes", "dt" => $i++, "formatter" => function ($d, $row) {
+                    return MESES[date("m", strtotime($d)) - 1];
+                }
+            ],
+            [
+                "db" => "id", "dt" => $i++
+            ],
+            [
+                "db" => "id", "dt" => $i++
+            ],
+            [
+                "db" => "id", "dt" => $i++
+            ],
+            [
+                "db" => "id", "dt" => $i++
+            ],
+            [
+                "db" => "id", "dt" => $i++
+            ],
+            [
+                "db" => "id", "dt" => $i++
+            ],
+            [
+                "db" => "id", "dt" => $i++
+            ],
+            [
+                "db" => "id", "dt" => $i++
+            ],
+            [
+                "db" => "id", "dt" => $i++
+            ],
+            [
+                "db" => "id", "dt" => $i++
+            ],
+            [
+                "db" => "id", "dt" => $i++
+            ],
+            [
+                "db" => "id", "dt" => $i++
+            ],
+            [
+                "db" => "id", "dt" => $i++
+            ],
+            [
+                "db" => "id", "dt" => $i++
+            ],
+            [
+                "db" => "id", "dt" => $i++
             ]
         ];
         break;

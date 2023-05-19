@@ -222,6 +222,7 @@ class AutomaticForm extends DB
         // data
 
         // files
+        // Nota: adjuntar comprimidos
         if ($this->file <> false && is_array($this->file["name"]) && !empty(count($this->file["name"]))) {
 
             define("CARPETA", "{$this->config->FOLDER_SITE}files/{$this->table}/");
@@ -362,7 +363,45 @@ class AutomaticForm extends DB
         }
     }
 
-    public static function getClassMethods($classname = "AutomaticForm", $is_static = true)
+    /**
+     * @param String|Int $value valor con el que va a filtrar
+     * @param String $column campo con el que va a filtrar
+     * @param String|Int|Array $primaryKey valor de la llave primaria ejemplo: id = $primaryKey para el array enviar una arreglo con campo y valor a filtrar ejemplo (["id_micosita" => 1] - id_micosita = 1) cada campo es separado por un AND
+     * @param String $table nombre de la tabla
+     * @return Array retorna un arreglo con el status y el error en el caso de que suceda
+     */
+    public static function updateValueSql($value, String $column, $primaryKey, String $table): array
+    {
+
+        $db = new DB();
+        $conn = $db->Conectar();
+        // $primaryKey
+        if (is_array($primaryKey)) {
+            foreach ($primaryKey as $key => $val) {
+                $x[] = "$key = '{$val}'";
+            }
+        }
+        $where = is_array($primaryKey)
+            ? implode(" AND ", $x)
+            : AutomaticForm::getNamePrimary($table) . " = '{$primaryKey}'";
+
+        $q = "UPDATE {$table} set {$column} = '{$value}' where $where";
+
+        try {
+            $query = $conn->prepare($q);
+            $query->execute();
+            return ["status" => true, "query" => $q];
+        } catch (PDOException $th) {
+            return ["status" => false, "query" => $q, "error" => $th->errorInfo];
+        }
+    }
+
+    /**
+     * @param String $classname nombre de la clase
+     * @param Bool $is_static boolean para obtener valores todos metodos (true - solo los static, false - public)
+     * @return Array retorna un arreglo con los nombres de cada metodo de la clase que selecionaron
+     */
+    public static function getClassMethods(String $classname = "AutomaticForm", Bool $is_static = true): array
     {
         $reflection = new ReflectionClass($classname);
         if ($is_static) {

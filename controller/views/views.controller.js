@@ -4,9 +4,9 @@
 $(document).ready(async function () {
     // por si depronto se necesita el config en algun lado, pero lo pongo unicamente para mantener actualizado el config cuando se carga la pagina
     config = await loadConfig();
-    let error = sessionStorage.getItem("errorContent");
+    let error = sessionStorage.getItem("Content");
     if (error) {
-        sessionStorage.removeItem("errorContent");
+        sessionStorage.removeItem("Content");
         contentPage(`error/error.view?filenotfound=errorUrlByUser&error=${error}`, "Erro Url");
     } else {
         contentPage("Principal/default.view", "Dashboard");
@@ -17,8 +17,9 @@ $(document).ready(async function () {
 // Nota: no se me ocurrio nada especial para esta parte si quieren poner alertas o algo para validar cuando valla a cerrar la session bien puedan
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 $(`nav .nav-item .nav-link[href="exit"]`).on(`click`, function (e) {
-    // console.log("Exit")
     e.preventDefault();
+    localStorage.clear();
+    sessionStorage.clear();
     window.location.replace("../controller/session.controller.php?action=finish");
 });
 //------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -71,9 +72,9 @@ function contentPage(page, title, scripts = undefined) {
 
                     let loadScripts = []; // arreglo que va a contener los scripts que se van a cargar en la pagina
 
-                    scripts.split(", ").forEach(q => { // hago un recorrido del atributo que agregue a la lista
+                    scripts.split(",").forEach(q => { // hago un recorrido del atributo que agregue a la lista
                         loadScripts.push(allScripts.filter( // lo carga al arreglo
-                            w => w.toLowerCase().includes(q.toLowerCase().replace(" ", "")) // filtro por los valores de los atributos
+                            w => w.toLowerCase().includes(strictReplace(q, " ", "").toLowerCase()) // filtro por los valores de los atributos
                         ));
                     });
 

@@ -196,8 +196,8 @@
                         <input type="hidden" name="data[fechaFin]">
                         <input type="hidden" name="action" value="<?= isset($_GET["edit"]) ? "UPDATE" : "INSERT" ?>">
                         <input type="hidden" name="edit" value="<?= isset($_GET["edit"]) ? $_GET["edit"] : "" ?>">
-                        <input type="text" name="data[fechaRegistro]">
-                        <input type="text" name="data[timezone]">
+                        <input type="hidden" name="data[fechaRegistro]">
+                        <input type="hidden" name="data[timezone]">
                         <div class="col-12">
                             <div class="center">
                                 <button type="submit" class="btn btn-outline-primary">

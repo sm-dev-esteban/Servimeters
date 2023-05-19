@@ -23,15 +23,15 @@ $config = [
     "FROM_EMAIL" => "soportesm@servimeters.net",
     "URL_SITE" => strtolower(explode("/", S_PROT)[0] . "://" . S_NAME . "/") . basename(dirname(__DIR__)) . "/",
     "FOLDER_SITE" => D_PROT . "/" . basename(dirname(__DIR__)) . "/",
-    "RECHAZO" => 2,
-    "RECHAZO_GERENTE" => 6,
-    "RECHAZO_RH" => 8,
-    "RECHAZO_CONTABLE" => 10,
     "APROBADO" => 1,
+    "RECHAZO" => 2,
     "APROBACION_JEFE" => 3,
     "APROBACION_GERENTE" => 5,
+    "RECHAZO_GERENTE" => 6,
     "APROBACION_RH" => 7,
+    "RECHAZO_RH" => 8,
     "APROBACION_CONTABLE" => 9,
+    "RECHAZO_CONTABLE" => 10,
     "EDICION" => 1002
 ];
 

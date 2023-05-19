@@ -1,4 +1,5 @@
 <?php
+session_start();
 // no creo que use este archivo, pero igual lo dejo para tenerlo en cuenta en algun punto 
 require_once('automaticForm.php');
 
@@ -8,7 +9,7 @@ require_once('automaticForm.php');
 $action = isset($_GET["action"]) ? $_GET["action"] : "";
 $params = isset($_POST["param"]) ? $_POST["param"] : "";
 
-define("ACTION", isset($_GET["action"]) ? $_GET["action"] : "");
+define("ACTION", $action);
 
 if (array_filter(AutomaticForm::getClassMethods(), function ($x) {
     return $x["name"] == ACTION;
@@ -17,7 +18,7 @@ if (array_filter(AutomaticForm::getClassMethods(), function ($x) {
     //     $r = random();
     //     $val[$r] = $x;
     //     return $val[$r];
-    // }, $paramss))), JSON_UNESCAPED_UNICODE);
+    // }, $params))), JSON_UNESCAPED_UNICODE);
     $i = -1;
     echo json_encode(AutomaticForm::$action(
         isset($params[$i += 1]) ? $params[$i] : "",

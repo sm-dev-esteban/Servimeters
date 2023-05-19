@@ -1,4 +1,9 @@
-<?php session_start() ?>
+<?php
+session_start();
+if (isset($_GET['error']) && !empty($_GET['error'])) {
+    $_GET['preview'] = $_GET['error'];
+}
+?>
 
 <?php include 'shared/header.php' ?>
 
@@ -10,9 +15,9 @@
 </body>
 <?php include 'shared/footer.php' ?>
 
-<?php if (isset($_GET['error']) || !empty($_GET['error'])) : ?>
+<?php if (isset($_GET['preview']) && !empty($_GET['preview'])) : ?>
     <script>
-        sessionStorage.setItem("errorContent", `<?= $_GET['error'] ?>`);
+        sessionStorage.setItem("Content", `<?= $_GET['preview'] ?>`);
     </script>
 <?php endif ?>
 

@@ -1,6 +1,8 @@
 <?php
 
-class LoadConfig
+require_once($_SERVER["DOCUMENT_ROOT"] . '/' . explode("/", $_SERVER['REQUEST_URI'])[1] . '/controller/views/session.controller.php');
+
+class LoadConfig extends sessionController
 {
     private static $path;
     public static function getConfig()

@@ -218,6 +218,10 @@ class SSP
 			}
 		}
 
+		if (isset($request["where"]) && !empty($request["where"])) {
+			$columnSearch[] = $request["where"];
+		}
+
 		// Combine the filters into a single string
 		$where = '';
 

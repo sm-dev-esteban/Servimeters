@@ -2,7 +2,8 @@
 
 // }
 const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-const language = Intl.DateTimeFormat().resolvedOptions().locale.split("-")[0];
+const locale = Intl.DateTimeFormat().resolvedOptions().locale;
+const language = locale.split("-")[0];
 const datatableParams = {
     "responsive": true, "lengthChange": true, "autoWidth": false, "dom": "Bfrtip",
     "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
@@ -38,7 +39,7 @@ const loadConfig = async function () {
 // Nota: función peligrosa ojo en como se usa
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 /**
- * @info  Este es un replace que borra en absoluto lo que le pasen
+ * @info Este es un replace que borra en absoluto lo que le pasen
 */
 function strictReplace(string, search, replace) {
     if (!string.includes(search) || search == replace) { // valido si esta lo que quieren reemplazar y que no sea igual lo que busca con lo que quiere reemplazar
@@ -195,5 +196,6 @@ function automaticForm(action, params) {
         async: false
     });
 
-    return resp.responseJSON; D
+    return resp.responseJSON;
+    
 }
