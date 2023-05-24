@@ -67,7 +67,8 @@ function contentPage(page, title, scripts = undefined) {
                         "../assets/js/generarReporte.js",
                         "../assets/js/admin/claseAdmin.js",
                         "../assets/js/admin/cecoAdmin.js",
-                        "../assets/js/admin/aprobadoresAdmin.js"
+                        "../assets/js/admin/aprobadoresAdmin.js",
+                        "../assets/js/solicitud.js"
                     ];
 
                     let loadScripts = []; // arreglo que va a contener los scripts que se van a cargar en la pagina

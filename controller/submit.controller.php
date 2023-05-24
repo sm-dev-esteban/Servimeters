@@ -41,6 +41,10 @@ switch ($_GET["action"]) {
         echo json_encode(["status" => $checkRHE["status"]], JSON_UNESCAPED_UNICODE);
         exit;
         break;
+    case 'permiso':
+        $permiso = new AutomaticForm($_POST, "Permisos");
+        echo json_encode($permiso->execute());
+        break;
     default:
         echo json_encode(["Error" => "action is undefined"], JSON_UNESCAPED_UNICODE);
         exit;

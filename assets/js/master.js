@@ -23,6 +23,16 @@ const datatableParams = {
             "next": "Siguiente",
             "previous": "Anterior"
         }
+    },
+    initComplete: function () {
+        this.api().columns().every(function () {
+            var $this = this;
+            $('input', this.footer()).on('keyup change clear', function () {
+                if ($this.search() !== this.value) {
+                    $this.search(this.value).draw();
+                }
+            });
+        });
     }
 };
 $("html").attr("lang", language);
@@ -34,6 +44,21 @@ const loadConfig = async function () {
     let jsonLoadConfig = await fetch(`${location.origin}/${location.pathname.split("/")[1]}/config/config.json`);
     return await jsonLoadConfig.json();
 }
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+// Plugins
+// esta zona es para cargar cualquier plugin que creen
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+$(document).ready(function () {
+    // sugerencia si el plugin esta listo pasenlo a .min
+    let plugins = [
+        "../assets/js/plugins/selectMaster.min.js"
+    ];
+    for (src in plugins) { // por ultimo hago que jquery me cargue esos scripts
+        if (plugins[src].length) {
+            $.getScript(plugins[src]);
+        }
+    }
+});
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 // Replace estricto que reemplaza en absoluto lo que quieran reemplazar ( jaja perdon por la redundancia, pero si e asi n: )
 // Nota: función peligrosa ojo en como se usa
@@ -72,8 +97,9 @@ function alerts(arrayAlert, typeAlert = "Sweetalert2") {
         duration: 3000,
         position: "top-end" // por si depronto quieren configurar una posicion diferente
     }, arrayAlert);
-
-    config.icon = config.icon.toLocaleLowerCase();
+    if (config.icon) {
+        config.icon = config.icon.toLocaleLowerCase();
+    }
 
     switch (typeAlert.toLocaleLowerCase()) { // por si quieren hacer configuracion diferentes de alertas yo de momento voy a utilizar esta con sweetalert
         case "sweetalert2":
@@ -197,5 +223,5 @@ function automaticForm(action, params) {
     });
 
     return resp.responseJSON;
-    
+
 }

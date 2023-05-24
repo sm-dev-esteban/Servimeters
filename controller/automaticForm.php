@@ -158,19 +158,21 @@ class AutomaticForm extends DB
         }
 
         if ($auto_craete == true) {
-            // creamos la tabla en el caso de que no exista
-            $this->conn->beginTransaction();
+            if (!AutomaticForm::checkTableExists($this->table)) {
+                // creamos la tabla en el caso de que no exista
+                $this->conn->beginTransaction();
 
-            // creamos los campos si no existen
-            $query = $this->conn->prepare("
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name = '{$this->table}' and xtype = 'U')
-                    CREATE TABLE {$this->table} (
-                        id INT IDENTITY(1,1) PRIMARY KEY,
-                        fechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP
-                    )
-                ");
-            $query->execute();
-            $this->conn->commit();
+                // creamos los campos si no existen
+                $query = $this->conn->prepare("
+                    IF NOT EXISTS (SELECT * FROM sysobjects WHERE name = '{$this->table}' and xtype = 'U')
+                        CREATE TABLE {$this->table} (
+                            id INT IDENTITY(1,1) PRIMARY KEY,
+                            fechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP
+                        )
+                    ");
+                $query->execute();
+                $this->conn->commit();
+            }
 
             $checkAll = [];
 
@@ -283,6 +285,9 @@ class AutomaticForm extends DB
      */
     public static function getNamePrimary(String $table): String
     { // no he probado esta madre, pero confio en cristo rey :)
+        if (!AutomaticForm::checkTableExists($table)) {
+            return "Tabla es obligatoria";
+        }
         $db = new DB();
         $conn = $db->Conectar();
 
@@ -312,6 +317,10 @@ class AutomaticForm extends DB
      */
     public static function getValueSql($filter, $column, $return, $table, $config = []): String|Int
     {
+
+        if (!AutomaticForm::checkTableExists($table)) {
+            return "Tabla es obligatoria";
+        }
 
         $defaultConfig = [
             "like" => false,
@@ -346,20 +355,28 @@ class AutomaticForm extends DB
     /**
      * @param String $table nombre de la tabla
      * @param String $where condición
+     * @param String $return valores a devolver por defecto todos
      */
-    public static function getDataSql(String $table, String $where = "1 = 1"): array
+    public static function getDataSql(String $table, String $where = "1 = 1", String $return = "*"): array
     {
+        if (!AutomaticForm::checkTableExists($table)) {
+            return ["error" => "Tabla es obligatoria"];
+        }
         $db = new DB();
         $conn = $db->Conectar();
 
-        $q = "SELECT * FROM {$table} WHERE {$where}";
+        $q = "SELECT {$return} FROM {$table} WHERE {$where}";
+
+        if (strpos($q, "@primary") !== false) {
+            $q = str_replace("@primary", AutomaticForm::getNamePrimary($table), $q);
+        }
 
         try {
             $query = $conn->prepare($q);
             $query->execute();
             return $query->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $th) {
-            return ["error" => $th->errorInfo];
+            return ["error" => $th->errorInfo, "query" => $q];
         }
     }
 
@@ -372,7 +389,9 @@ class AutomaticForm extends DB
      */
     public static function updateValueSql($value, String $column, $primaryKey, String $table): array
     {
-
+        if (!AutomaticForm::checkTableExists($table)) {
+            return ["error" => "Tabla es obligatoria"];
+        }
         $db = new DB();
         $conn = $db->Conectar();
         // $primaryKey
@@ -394,6 +413,17 @@ class AutomaticForm extends DB
         } catch (PDOException $th) {
             return ["status" => false, "query" => $q, "error" => $th->errorInfo];
         }
+    }
+    public static function checkTableExists(String $table): Bool
+    {
+        $db = new DB();
+        $conn = $db->Conectar();
+
+        $q = "SELECT * from INFORMATION_SCHEMA.TABLES where TABLE_NAME = '{$table}'";
+        $query = $conn->query($q);
+        $count = $query->fetchColumn();
+
+        return !empty($count) ? true : false;
     }
 
     /**

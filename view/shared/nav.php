@@ -153,6 +153,31 @@
                     </ul>
                 </li>
                 <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-calendar"></i>
+                        <p>
+                            Permisos
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="permisos/solicitud.view" class="nav-link" data-script="solicitud">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Solicitar permiso</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="permisos/listSolicitud.view" class="nav-link" data-script="solicitud">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Mis solicitudes</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
                     <a href="exit" class="nav-link text-danger">
                         <i class="nav-icon fas fa-times"></i>
                         <p>

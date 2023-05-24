@@ -5,8 +5,7 @@ $(document).ready(async function () {
         {
             "processing": true,
             "severSide": true,
-            "order": [[0, "desc"
-            ]],
+            "order": [[0, "desc"]],
             "ajax": "../controller/ssp.controller.php?ssp=listAprobar",
             "deferRender": true
         })).on("draw", function () {
@@ -20,28 +19,33 @@ $(document).ready(async function () {
         }).buttons().container().appendTo($('.col-sm-6:eq(0)'));
 
 
-    $("#listAprov tbody").on("mousemove", "tr", function () {
-        $("#listAprov tbody tr").removeClass("bg-primary");
-        $(this).addClass("bg-primary");
-    }).on("click", "tr", function () {
-        let ident = $(this).find("span").data("ident");
-        $(this).toggleClass("bg-info");
-        if ($(this).hasClass("bg-info")) {
-            automaticForm("updateValueSql", [
-                2,
-                "checkStatus",
-                ident,
-                "ReportesHE"
-            ]);
-        } else {
-            automaticForm("updateValueSql", [
-                1,
-                "checkStatus",
-                ident,
-                "ReportesHE"
-            ]);
-        }
-    });
+    $("#listAprov tbody")
+        .on("mouseover", "tr", function () {
+            $("#listAprov tbody tr").removeClass("bg-primary");
+            $(this).addClass("bg-primary");
+        })
+        .on("mouseout", "tr", function () {
+            $("#listAprov tbody tr").removeClass("bg-primary");
+        })
+        .on("click", "tr", function () {
+            let ident = $(this).find("span").data("ident");
+            $(this).toggleClass("bg-info");
+            if ($(this).hasClass("bg-info")) {
+                automaticForm("updateValueSql", [
+                    2,
+                    "checkStatus",
+                    ident,
+                    "ReportesHE"
+                ]);
+            } else {
+                automaticForm("updateValueSql", [
+                    1,
+                    "checkStatus",
+                    ident,
+                    "ReportesHE"
+                ]);
+            }
+        });
 
     $("#rechazar, #aprobar").on("click", function () {
         let change = $(this).attr("id") == "rechazar" ? 2 : 1;
