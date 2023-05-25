@@ -41,5 +41,5 @@ $(document).ready(async function () {
         option_value: "nombre",
         select2: true
     });
-    
+
 });

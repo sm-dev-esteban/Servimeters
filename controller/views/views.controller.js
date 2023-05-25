@@ -56,6 +56,13 @@ function contentPage(page, title, scripts = undefined) {
                 $(`.wrapper .preloader .animation__shake`).attr(`style`, `display: block;`);
             },
             success: function (response) {
+
+                $(`router`).html(`
+                    <div class="content-wrapper">
+                        ${response}
+                    </div>
+                `);
+
                 if (scripts !== undefined) {
                     // console.log(`page: ${page}`, `title: ${title}`, `scripts: ${scripts}`);
                     // todos los scripts
@@ -87,12 +94,6 @@ function contentPage(page, title, scripts = undefined) {
                 }
 
                 $.getScript("../controller/views/all.page.js");
-
-                $(`router`).html(`
-                    <div class="content-wrapper">
-                        ${response}
-                    </div>
-                `);
             },
             complete: function () { // despues de que se carga esperamos un rato y quitamos la animación
                 setTimeout(() => {

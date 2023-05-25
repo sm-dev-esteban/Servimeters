@@ -17,11 +17,7 @@
                         </div>
                         <div class="col-12 col-xl-6 mb-3">
                             <label for="tipo_permiso">Tipo de permiso</label>
-                            <select name="data[tipo_permiso]" id="tipo_permiso" class="form-control select2">
-                                <option value="">###</option>
-                                <option value="">###</option>
-                                <option value="">###</option>
-                            </select>
+                            <select name="data[tipo_permiso]" id="tipo_permiso" class="form-control select2"></select>
                         </div>
                         <div class="col-12 col-xl-6 mb-3">
                             <label for="fecha_inicio">Fecha inicio</label>

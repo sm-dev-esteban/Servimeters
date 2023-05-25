@@ -6,7 +6,7 @@ require_once $_SERVER["DOCUMENT_ROOT"] . '/' . explode("/", $_SERVER['REQUEST_UR
 
 /*
  * - CREATE
- * 27/05/2023
+ * 27/04/2023
  * Cree la estructura general de todo el codigo
  * - UPDATE
  * 03/05/2023

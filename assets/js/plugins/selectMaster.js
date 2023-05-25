@@ -1,3 +1,15 @@
+/*
+* - CREATE 
+* 24/05/2023
+* - TESTING
+* 25/05/2023
+*/
+
+/**
+ * @author Esteban Serna Palacios 😉😜
+ * @version 1.0.0
+*/
+
 (function ($) {
 
     // cargo el modal de one para no hacer validaciones
@@ -91,21 +103,29 @@
 
     jQuery.fn.smLoadContent = function (token, array, k, v) {
         if (token) {
-            this.html(``);
             checkSelect2 = this.hasClass(`select2`);
 
             if (checkSelect2) {
-                this.select2(`destroy`);
+                for (ident in array) {
+                    if (this.find(`[value="${array[ident][k]}"]`).length) {
+                        this.find(`[value="${array[ident][k]}"]`).text(array[ident][v]); // pendiente 
+                    } else {
+                        this.append(new Option(array[ident][v], array[ident][k])).trigger('change');
+                    }
+                }
+            } else {
+                for (ident in array) {
+                    if (this.find(`[value="${array[ident][k]}"]`).length) {
+                        this.find(`[value="${array[ident][k]}"]`).text(array[ident][v]);
+                    } else {
+                        this.append(smCreateElem(`option`, {
+                            value: array[ident][k],
+                            text: array[ident][v]
+                        }));
+                    }
+                }
             }
-            for (ident in array) {
-                this.append(smCreateElem(`option`, {
-                    value: array[ident][k],
-                    text: array[ident][v]
-                }));
-            }
-            if (checkSelect2) {
-                this.select2();
-            }
+
         }
 
     };
@@ -124,15 +144,13 @@
                     duration: 10000
                 });
             } else {
-                c = $selectMaster[0].selectMaster;
+                c = $selectMaster.get(0).selectMaster;
                 checkSelect2 = $selectMaster.hasClass(`select2`);
                 smUpdateDatatable();
+
+                $selectMaster.find(`[value="${p}"]`).text(v);
                 if (checkSelect2) {
-                    $selectMaster.select2(`destroy`);
-                }
-                $(`[data-selectMaster="${token}"]`).find(`[value="${p}"]`).text(v);
-                if (checkSelect2) {
-                    $selectMaster.select2();
+
                 }
             }
         }
@@ -145,12 +163,61 @@
         }
     };
 
+    jQuery.fn.smLoadPopper = function (t = "selectMaster", c = "selectMaster") {
+        this.attr(`data-toggle`, `popover`).popover({
+            html: true,
+            container: 'body',
+            trigger: 'focus click',
+            title: t,
+            content: c
+        });
+    };
+
+    const smDestroy = function ($elem, eventNamespace) {
+        var isInstantiated = !!$.data($elem.get(0));
+
+        if (isInstantiated) {
+            $.removeData($elem.get(0));
+            $elem.off(eventNamespace);
+            $elem.unbind(`.${eventNamespace}`);
+        }
+    };
+
+    $('#modal-selectMaster form').on("submit", function (e) {
+        e.preventDefault();
+        let c = $(this).get(0).selectMaster;
+        let $selectMaster = $(`[data-selectMaster="${c.ident}"]`);
+        $.ajax(`${urlForRequest}/assets/js/plugins/selectMaster.php?accion=submit&table=${c.table}`, {
+            type: "POST",
+            dataType: "JSON",
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData: false,
+            success: function (response) {
+                if (response.error) {
+                    alerts({
+                        text: `selectMaster->sql: ${response.error}`,
+                        duration: 10000
+                    });
+                } else {
+                    smUpdateDatatable();
+                    data = automaticForm(`getDataSql`, [c.table, `1 = 1`, `${c.option_id}, ${c.option_value}`]);
+                    jQuery($selectMaster).smLoadContent(c.ident, data, c.option_id, c.option_value);
+                }
+            }
+        });
+    });
 
     $.fn.selectMaster = function (config, createTableIfNotExist = false) {
 
         let $this = $(this);
+        let $form = $('#modal-selectMaster form');
         let ident = Date.now();
         let tagnm = jQuery($this).smTagName(ident);
+
+        $this.html($this.html());
+        smDestroy($this, "selectMaster");
 
         if (true === createTableIfNotExist && config.table && config.option_value) {
             $checkTableExists = automaticForm("checkTableExists", [config.table]);
@@ -183,7 +250,8 @@
                     title: undefined,
                     content: undefined
                 },
-                select2: false
+                select2: false,
+                ident: ident
             };
             let c = $.extend(defaultconfig, config);
 
@@ -194,7 +262,8 @@
                 c.popover.content = `Registros en total: @count`;
             }
 
-            $this[0].selectMaster = c;
+            $this.get(0).selectMaster = c;
+            $form.get(0).selectMaster = c;
             $this.attr(`data-selectMaster`, ident);
 
             let data = automaticForm(`getDataSql`, [c.table, `1 = 1`, `${c.option_id}, ${c.option_value}`]);
@@ -217,32 +286,24 @@
                 let pContent = c.popover.content.replaceAll("@count", data.length);
 
                 if (c.select2 && $this.hasClass("select2")) {
-                    $select2 = $this[0].nextElementSibling;
+                    $select2 = $this.get(0).nextElementSibling;
                     $poper = $($select2);
                 } else {
                     $poper = $this;
                 }
 
-                $poper
-                    .attr(`data-toggle`, `popover`)
-                    .popover({
-                        html: true,
-                        container: 'body',
-                        trigger: 'focus click',
-                        title: function () {
-                            return `
-                            <div class="d-flex justify-content-between">
-                                <div>${pTitle}</div>
-                                <div>
-                                    <a class="mt-1 p-1 rounded btn-info ${ident}">
-                                        <i class="fa fa-cog"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            `;
-                        },
-                        content: pContent
-                    });
+                jQuery($poper).smLoadPopper(function () {
+                    return `
+                    <div class="d-flex justify-content-between">
+                        <div>${pTitle}</div>
+                        <div>
+                            <a class="mt-1 p-1 rounded btn-info ${ident}">
+                                <i class="fa fa-cog"></i>
+                            </a>
+                        </div>
+                    </div>
+                    `;
+                }, pContent);
 
                 $(document).on(`click`, `.${ident}`, function () {
                     $('.popover').popover('hide');
@@ -250,6 +311,17 @@
                     $modal = $('#modal-selectMaster');
                     $modal.css('overflow-y', 'auto');
                     $modal.find('.overlay').removeClass("d-none");
+                    $form.html(``);
+                    $form.append(`
+                        <div class="mb-3">
+                            <label>Agregar Nueva Opción</label>
+                            <input type="text" name="data[${c.option_value}]" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-success"><i class="fa fa-plus"></i></button>
+                        </div>
+                    `);
+
                     $modal.modal('show');
 
                     $table = $('#modal-selectMaster table');
@@ -275,6 +347,7 @@
                     }, 1000);
 
                 });
+
             }
 
             return $this;

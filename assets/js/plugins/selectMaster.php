@@ -16,6 +16,7 @@ switch ($_GET["accion"]) {
             $_GET["table"]
         );
         $create->execute();
+        exit();
         break;
     case 'ssp':
         define("TABLE", $_GET["table"]);
@@ -68,7 +69,10 @@ switch ($_GET["accion"]) {
         );
         exit();
         break;
-
+    case 'submit':
+        $af = new AutomaticForm($_POST, $_GET["table"]);
+        echo json_encode($af->execute(), JSON_UNESCAPED_UNICODE);
+        break;
     default:
         echo json_encode(
             ["error" => "action is undefined"],
