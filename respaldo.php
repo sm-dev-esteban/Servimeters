@@ -115,9 +115,6 @@ if (isset($_GET["respaldo"])) {
         fwrite($open_dml, "GO\n\n");
     }
 
-
-    // INSERT INTO TiposHE (nombre) values ('prueba')
-
     fclose($open_dml);
     // dml
     exit();
