@@ -20,7 +20,7 @@ require_once $_SERVER["DOCUMENT_ROOT"] . '/' . explode("/", $_SERVER['REQUEST_UR
 
 /**
  * @author Esteban Serna Palacios 😉😜
- * @version 1.1.0
+ * @version 1.1.1
  */
 
 class AutomaticForm extends DB
@@ -227,7 +227,8 @@ class AutomaticForm extends DB
         // Nota: adjuntar comprimidos
         if ($this->file <> false && is_array($this->file["name"]) && !empty(count($this->file["name"]))) {
 
-            define("CARPETA", "{$this->config->FOLDER_SITE}files/{$this->table}/");
+            // define("CARPETA", "{$this->config->FOLDER_SITE}files/{$this->table}/");
+            define("CARPETA", "/files/{$this->table}/");
 
             foreach ($this->file["name"] as $key => $value) {
                 if ($checkEmptyValues ? !empty($value) : !empty($key)) {
