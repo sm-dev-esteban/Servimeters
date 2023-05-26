@@ -59,9 +59,10 @@
                             <p data-report="mail"><b>Correo: </b>##########</p>
                         </div>
                         <div class="col-6">
-                            <p data-report="ceco"><b>Centro de costo: </b>text</p>
-                            <p data-report="proyect"><b>Proyecto asociado: </b>text</p>
-                            <p data-report="code"><b>Codigo: </b>text</p>
+                            <p data-report="ceco"><b>Centro de costo: </b>##########</p>
+                            <p data-report="clase"><b>Clase: </b>##########</p>
+                            <p data-report="proyect"><b>Proyecto asociado: </b>##########</p>
+                            <p data-report="code"><b>Codigo: </b>##########</p>
                         </div>
                         <div class="col-12">
                             <p data-report="aprobador"><b>Aprobador: </b>##########</p>

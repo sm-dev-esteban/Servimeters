@@ -45,6 +45,10 @@ switch ($_GET["action"]) {
         $permiso = new AutomaticForm($_POST, "Permisos");
         echo json_encode($permiso->execute());
         break;
+    case 'rechazo':
+        $rechazo = new AutomaticForm($_POST, "Comentarios");
+        echo json_encode($rechazo->execute());
+        break;
     default:
         echo json_encode(["Error" => "action is undefined"], JSON_UNESCAPED_UNICODE);
         exit;

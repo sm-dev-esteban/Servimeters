@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("../../../controller/automaticForm.php");
+include("../../../../controller/automaticForm.php");
 
 
 $config = AutomaticForm::getConfig();

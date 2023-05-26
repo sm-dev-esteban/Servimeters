@@ -71,7 +71,7 @@
     `);
 
 
-    const urlForRequest = `${location.origin}/${location.pathname.split("/")[1]}`;
+    const smUrlForRequest = `${location.origin}/${location.pathname.split("/")[1]}/assets/js/plugins/selectMaster`;
 
     const smIsHTML = function (str) {
         return str instanceof Element || str instanceof HTMLDocument;
@@ -81,7 +81,7 @@
         let newElement = (!smIsHTML(tag) ? document.createElement(tag) : tag); // valido si es un elemento html, si no es creo lo que envie y si no solo se asigna a la variable
         if (null !== attrs) {
             for (data in attrs) {
-                if (["text"].includes(data)) {
+                if ([`text`].includes(data)) {
                     newElement.textContent = attrs[data]; // html
                 } else {
                     newElement.setAttribute(data, attrs[data]); // atributos
@@ -93,13 +93,13 @@
 
     const smUpdateDatatable = function () {
         $('#modal-selectMaster table').DataTable().ajax.reload(null, false);
-    };
+    }
 
     jQuery.fn.smTagName = function (token) {
         if (token) {
             return this.prop(`tagName`);
         }
-    };
+    }
 
     jQuery.fn.smLoadContent = function (token, array, k, v) {
         if (token) {
@@ -128,7 +128,7 @@
 
         }
 
-    };
+    }
 
     jQuery.fn.smModeEdit = function (token, p, c, t) {
         if (token) {
@@ -154,14 +154,14 @@
                 }
             }
         }
-    };
+    }
 
     jQuery.fn.smChangeMode = function (token, id) {
         if (token) {
             $(`[data-show="${id}"]`).toggleClass("d-none");
             $(`[data-edit="${id}"]`).toggleClass("d-none");
         }
-    };
+    }
 
     jQuery.fn.smLoadPopper = function (t = "selectMaster", c = "selectMaster") {
         this.attr(`data-toggle`, `popover`).popover({
@@ -171,23 +171,14 @@
             title: t,
             content: c
         });
-    };
+    }
 
-    const smDestroy = function ($elem, eventNamespace) {
-        var isInstantiated = !!$.data($elem.get(0));
-
-        if (isInstantiated) {
-            $.removeData($elem.get(0));
-            $elem.off(eventNamespace);
-            $elem.unbind(`.${eventNamespace}`);
-        }
-    };
 
     $('#modal-selectMaster form').on("submit", function (e) {
         e.preventDefault();
         let c = $(this).get(0).selectMaster;
         let $selectMaster = $(`[data-selectMaster="${c.ident}"]`);
-        $.ajax(`${urlForRequest}/assets/js/plugins/selectMaster.php?accion=submit&table=${c.table}`, {
+        $.ajax(`${smUrlForRequest}/selectMaster.php?accion=submit&table=${c.table}`, {
             type: "POST",
             dataType: "JSON",
             data: new FormData(this),
@@ -209,6 +200,16 @@
         });
     });
 
+    // const smDestroy = function ($elem, eventNamespace) {
+    //     var isInstantiated = !!$.data($elem.get(0));
+
+    //     if (isInstantiated) {
+    //         $.removeData($elem.get(0));
+    //         $elem.off(eventNamespace);
+    //         $elem.unbind(`.${eventNamespace}`);
+    //     }
+    // }
+
     $.fn.selectMaster = function (config, createTableIfNotExist = false) {
 
         let $this = $(this);
@@ -217,12 +218,12 @@
         let tagnm = jQuery($this).smTagName(ident);
 
         $this.html($this.html());
-        smDestroy($this, "selectMaster");
+        // smDestroy($this, "selectMaster");
 
         if (true === createTableIfNotExist && config.table && config.option_value) {
             $checkTableExists = automaticForm("checkTableExists", [config.table]);
             if (!$checkTableExists) {
-                $.ajax(`${urlForRequest}/assets/js/plugins/selectMaster.php?token=${ident}&accion=create&table=${config.table}&option_value=${config.option_value}`);
+                $.ajax(`${smUrlForRequest}/selectMaster.php?token=${ident}&accion=create&table=${config.table}&option_value=${config.option_value}`);
             }
         }
 
@@ -240,6 +241,7 @@
                 icon: `Error`,
                 duration: `10000`
             });
+            return $this;
         } else {
 
             let defaultconfig = {
@@ -252,7 +254,7 @@
                 },
                 select2: false,
                 ident: ident
-            };
+            }
             let c = $.extend(defaultconfig, config);
 
             if (!c.popover.title) {
@@ -335,7 +337,7 @@
                                 "processing": true,
                                 "severSide": true,
                                 "order": [[0, "desc"]],
-                                "ajax": `${urlForRequest}/assets/js/plugins/selectMaster.php?token=${ident}&accion=ssp&table=${c.table}&option_value=${c.option_value}`,
+                                "ajax": `${smUrlForRequest}/selectMaster.php?token=${ident}&accion=ssp&table=${c.table}&option_value=${c.option_value}`,
                                 "deferRender": true,
                                 "initComplete": "",
                             }
@@ -353,6 +355,6 @@
             return $this;
 
         }
-    };
+    }
 
 }(jQuery));

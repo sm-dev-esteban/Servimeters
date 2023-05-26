@@ -17,8 +17,18 @@ $(document).ready(async function () {
                 x => x.tipo.toLocaleUpperCase() == "GERENTE" ? true : false
             ), "#listGerente", "id", "nombre");
 
-
         });
+
+    $("#adjuntos").createDropzone({
+        table: "adjuntosHE",
+        preview: true,
+        processOnEvent: {
+            target: "#formReporte",
+            event: "submit",
+            preventDefault: true,
+            stopPropagation: true,
+        }
+    });
 
     $("#formReporte").on("submit", function (e) {
         e.preventDefault();

@@ -164,6 +164,7 @@ class AutomaticForm extends DB
 
                 // creamos los campos si no existen
                 $query = $this->conn->prepare("
+
                     IF NOT EXISTS (SELECT * FROM sysobjects WHERE name = '{$this->table}' and xtype = 'U')
                         CREATE TABLE {$this->table} (
                             id INT IDENTITY(1,1) PRIMARY KEY,
@@ -227,26 +228,28 @@ class AutomaticForm extends DB
         // Nota: adjuntar comprimidos
         if ($this->file <> false && is_array($this->file["name"]) && !empty(count($this->file["name"]))) {
 
-            // define("CARPETA", "{$this->config->FOLDER_SITE}files/{$this->table}/");
-            define("CARPETA", "/files/{$this->table}/");
+            define("FOLDER_SITE", "{$this->config->FOLDER_SITE}files/{$this->table}/");
+            define("URL_SITE", "{$this->config->URL_SITE}files/{$this->table}/");
 
             foreach ($this->file["name"] as $key => $value) {
                 if ($checkEmptyValues ? !empty($value) : !empty($key)) {
 
 
-                    if (!file_exists(CARPETA)) { // creamos la carpeta si no existe
-                        mkdir(CARPETA, 0777, true);
+                    if (!file_exists(FOLDER_SITE)) { // creamos la carpeta si no existeF
+                        mkdir(FOLDER_SITE, 0777, true);
                     }
 
                     if (is_array($value)) {
                         foreach ($this->file["name"][$key] as $keyM => $valueM) {
-                            $value[$keyM] = CARPETA . date("YmdHis") . "_{$this->file["name"][$key][$keyM]}";
+                            $value[$keyM] = FOLDER_SITE . date("YmdHis") . "_{$this->file["name"][$key][$keyM]}";
                             move_uploaded_file($this->file["tmp_name"][$key][$keyM], $value[$keyM]);
+                            $value[$keyM] = str_replace(FOLDER_SITE, URL_SITE, $value[$keyM]);
                         }
                         $value = implode("|/|", $value);
                     } else {
-                        $value = CARPETA . date("YmdHis") . "_{$value}"; // le cambiamos el nombre al archivo con toda la ruta donde se va a cargar 
+                        $value = FOLDER_SITE . date("YmdHis") . "_{$value}"; // le cambiamos el nombre al archivo con toda la ruta donde se va a cargar 
                         move_uploaded_file($this->file["tmp_name"][$key], "{$value}"); // subimos el archivo
+                        $value = str_replace(FOLDER_SITE, URL_SITE, $value);
                     }
 
                     if ($this->action == "INSERT") { // codigo repetio :c

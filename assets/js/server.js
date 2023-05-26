@@ -15,13 +15,13 @@ server.onopen = function (e) {
 server.onmessage = function (e) {
     resp = JSON.parse(e.data);
     // Enviar resp.type con la acción que quieran realizar y diviertanse :).
-    if (resp.type == "alert") {
+    if (resp.type == "alerts") {
         arrayAlert = resp.data.arrayAlert ? resp.data.arrayAlert : {};
         typeAlert = resp.data.typeAlert ? resp.data.typeAlert : "Sweetalert2";
 
         rol = String(localStorage.getItem("rol"));
         usuario = String(localStorage.getItem("usuario"));
-        
+
         if (resp.rol == rol) {
             alerts(arrayAlert, typeAlert);
         } else if (resp.usuario == usuario) {

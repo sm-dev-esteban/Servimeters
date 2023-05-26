@@ -51,7 +51,8 @@ const loadConfig = async function () {
 $(document).ready(function () {
     // sugerencia si el plugin esta listo pasenlo a .min
     let plugins = [
-        "../assets/js/plugins/selectMaster.min.js"
+        "../assets/js/plugins/selectMaster/selectMaster.min.js",
+        "../assets/js/plugins/createDropzone/createDropzone.js"
     ];
     for (src in plugins) { // por ultimo hago que jquery me cargue esos scripts
         if (plugins[src].length) {
