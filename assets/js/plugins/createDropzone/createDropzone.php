@@ -5,41 +5,37 @@ include("../../../../controller/automaticForm.php");
 
 $config = AutomaticForm::getConfig();
 
-
-switch ($_GET["action"]) {
-    case 'processData':
-        // $af = new AutomaticForm(
-        //     (isset($_FILES["file"]) ? $_FILES : ["file" => $_FILES]),
-        //     $_GET["table"]
-        // );
+switch (strtoupper($_GET["action"])) {
+    case 'INSERT':
+    case 'UPDATE':
 
         $_POST["data"]["usuario"] = $_SESSION["usuario"];
-        $af = new AutomaticForm(
-            (isset($_FILES["file"]) ? array_merge($_POST, $_FILES) : ["file" => $_FILES, "data" => $_POST["data"]]),
-            $_GET["table"]
-        );
+        $af = new AutomaticForm(array_merge($_POST, $_FILES), $_GET["table"], $_GET["action"]);
 
         echo json_encode($af->execute());
         exit();
         break;
-    case 'preview':
+    case 'PREVIEW':
+        $t = $_POST["table"];
+        $i = $_POST["ident"];
+        $p = $_POST["preview"];
+        $s = $_POST["separator"];
         $return = [];
-        $data = AutomaticForm::getDataSql($_GET["table"], "usuario = '{$_SESSION["usuario"]}'");
 
-        foreach (glob("{$config->FOLDER_SITE}files/adjuntosHE/*") as $key => $value) {
-            $return[] = [
-                "name" => basename($value),
-                "size" => filesize($value),
-                "dirname" => str_replace($config->FOLDER_SITE, $config->URL_SITE, dirname($value)) . "/" . basename($value)
-            ];
+        $data = AutomaticForm::getValueSql($i, "@primary", $p, $t);
+
+        if (!empty($data)) {
+            foreach (explode($s, $data) as $key => $value) {
+                $v1 = str_replace($config->URL_SITE, $config->FOLDER_SITE, $value);
+                $v2 = $value;
+                $return[] = [
+                    "name" => basename($v1),
+                    "size" => filesize($v1),
+                    "dirname" => dirname($v2) . "/" . basename($v1)
+                ];
+            }
         }
-        // foreach ($data as $key => $value) {
-        //     $return = [
-        //         "name" => basename($value["adjuntos"]),
-        //         // "size" => filesize($value["adjuntos"]),
-        //         "dirname" => dirname($value["adjuntos"])
-        //     ];
-        // }
+
         echo json_encode($return, JSON_UNESCAPED_UNICODE);
         break;
     default:

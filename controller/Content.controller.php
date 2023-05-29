@@ -22,4 +22,3 @@
         include("$folder/error/500.php"); // no recive nada
         exit();
     }
-?>

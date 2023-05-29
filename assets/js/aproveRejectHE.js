@@ -142,6 +142,7 @@ $(document).ready(async function () {
                                 });
                                 // ajax
                             });
+                            updateDatable();
                         }
 
                         // alerts({
@@ -162,7 +163,6 @@ $(document).ready(async function () {
             alerts({ "title": `Tu rol no permite realizar cambios: ${rol}`, "icon": "info" });
         }
 
-        updateDatable();
     });
 
     $("#STodo, #DTodo").on("click", function () { // marcar y desmarcar varios

@@ -1,7 +1,18 @@
 // No sé qué tanto se pueda agrandar un archivo como este, así que mejor lo manejo comprimido.
 // https://www.toptal.com/developers/javascript-minifier
+try {
+    server = new WebSocket('ws://localhost:8080/');
+}
+catch (err) { }
 
-const server = new WebSocket('ws://localhost:8080');
+server.onerror = function (error) {
+    resp = $.ajax(`${location.origin}/${location.pathname.split("/")[1]}/bin/start.php`, { async: false });
+    // if (resp.status == 200) {
+    //     setTimeout(() => {
+    //         server = new WebSocket('ws://localhost:8080/');
+    //     }, 1000);
+    // }
+};
 
 server.onopen = function (e) {
     session = automaticForm("readSession");

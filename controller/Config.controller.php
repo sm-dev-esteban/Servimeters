@@ -2,7 +2,8 @@
 
 require_once('../config/LoadConfig.config.php');
 
-function getConfig($keyClient, $ivClient){
+function getConfig($keyClient, $ivClient)
+{
     $config = LoadConfig::getConfig();
     $text_json = json_encode($config);
 

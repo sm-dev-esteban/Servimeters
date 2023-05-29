@@ -12,7 +12,7 @@
                 <h3 class="card-title">Registro de horas extras</h3>
             </div>
             <div class="card-body">
-                <form id="formReporte">
+                <form id="formReporte" data-mode="<?= isset($_GET["edit"]) ? "UPDATE" : "INSERT" ?>">
                     <div class="row">
                         <div class="col-12 col-xl-3">
                             <label for="cc">Cedula <b class="text-danger">*</b></label>
@@ -42,20 +42,8 @@
                             <hr>
                         </div>
                         <div class="col-12">
-                            <!-- <div class="form-group">
-                                <label for="adjuntos">Adjuntar archivos</label>
-                                <div class="input-group">
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input" name="file[adjuntos][]" id="adjuntos" multiple>
-                                        <label class="custom-file-label" for="adjuntos">Elija los archivos</label>
-                                    </div>
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">Subir</span>
-                                    </div>
-                                </div>
-                            </div> -->
                             <label for="adjuntos" class="form-label">Adjuntar archivos</label>
-                            <input type="file" name="file[adjuntos][]" id="adjuntos" class="form-control" multiple>
+                            <input type="file" name="file[adjuntos]" id="adjuntos" class="form-control" multiple>
                         </div>
                         <div class="col-12 my-3">
                             <div class="d-flex justify-content-center align-items-center">

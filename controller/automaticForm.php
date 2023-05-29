@@ -342,6 +342,8 @@ class AutomaticForm extends DB
             ORDER BY {$primaryKey}
             OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY";
 
+        $q = str_replace("@primary", $primaryKey, $q);
+
         try {
             $query = $conn->prepare($q);
 

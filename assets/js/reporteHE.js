@@ -18,53 +18,74 @@ $(document).ready(async function () {
             ), "#listGerente", "id", "nombre");
 
         });
+    let ident = Date.now();
+    let edit = sessionStorage.getItem("edit");
 
-    $("#adjuntos").createDropzone({
-        table: "adjuntosHE",
-        preview: true,
-        processOnEvent: {
-            target: "#formReporte",
-            event: "submit",
-            preventDefault: true,
-            stopPropagation: true,
-        }
-    });
+    sessionStorage.removeItem("edit");
 
-    $("#formReporte").on("submit", function (e) {
-        e.preventDefault();
+    if (edit) {
+        cargarDatos(edit);
+    }
 
-        let $date = new Date().toLocaleString(locale, { timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit', weekday: "long", hour: '2-digit', hour12: false, minute: '2-digit', second: '2-digit' });
-        let totalHorasExtras = Number($(`[name="data[totalHorasExtras]"]`).val());
+    $("#formReporte").createDropzone({
+        url: "../controller/submit.controller.php?action=registroHE",
+        table: "ReportesHE",
+        preview: edit ? "adjuntos" : false,
+        ident: edit ? edit : ident,
+        init: function () {
+            var myDropzone = this;
 
-        $(`[name="data[fechaRegistro]"]`).val($date);
-        $(`[name="data[timezone]"]`).val(timezone);
+            this.element.querySelector("button[type=submit]").addEventListener("click", function (e) {
+                e.preventDefault();
+                // e.stopPropagation();
 
-        if (totalHorasExtras > config.LIMIT_HE) {
-            alerts({ title: `Límite de horas extras excedido - válido hasta ${config.LIMIT_HE} horas`, icon: "error" });
-        } else {
-            $.ajax("../controller/submit.controller.php?action=registroHE", {
-                type: "POST",
-                dataType: "JSON",
-                data: new FormData(this),
-                contentType: false,
-                cache: false,
-                processData: false,
-                beforeSend: function () {
-                    $(`#formReporte button:submit`).html(`
-                        <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
-                    `).attr("disabled", true);
-                },
-                success: function (response) {
-                    if (response.error !== undefined) {
-                        alerts({ title: `Error SQL: ${response.error}`, icon: "error", duration: 10000 });
-                    } else if (response.status == true) {
-                        $(`[href*="estado/listEstado.view"]`).click();
-                        alerts({ title: "Horas extras registradas", icon: "success", duration: 5000 });
-                    } else {
-                        alerts({ title: "Error al registrar las horas extras registradas, inténtalo más tarde", icon: "error" });
-                    }
+                $(`#formReporte button:submit`).html(`
+                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                `).attr("disabled", true);
+
+                let $date = new Date().toLocaleString(locale, { timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit', weekday: "long", hour: '2-digit', hour12: false, minute: '2-digit', second: '2-digit' });
+                let totalHorasExtras = Number($(`[name="data[totalHorasExtras]"]`).val());
+
+                $(`[name="data[fechaRegistro]"]`).val($date);
+                $(`[name="data[timezone]"]`).val(timezone);
+
+                if (totalHorasExtras > config.LIMIT_HE) {
+                    console.log("no se envia");
+                    alerts({ title: `Límite de horas extras excedido - válido hasta ${config.LIMIT_HE} horas`, icon: "error" });
+                } else {
+                    console.log("se envia");
+                    myDropzone.processQueue();
                 }
-            })
+            });
+
+            // this.element.querySelector(`#actions${ident} .cancel`).onclick = function () {
+            //     myDropzone.removeAllFiles(true);
+            // }
+
+            // this.on("totaluploadprogress", function (progress) {
+            //     document.querySelector(`#total-progress${ident} .progress-bar`).style.width = `${progress}%`
+            // });
+
+            // this.on("queuecomplete", function (progress) {
+            //     document.querySelector(`#total-progress${ident}`).style.opacity = "0"
+            // });
+
+
+            // this.on("sendingmultiple", function () { });
+            this.on("successmultiple", function (files, response) {
+                response = JSON.parse(response);
+                if (response.error) {
+                    alerts({ title: `Error SQL: ${response.error}`, icon: "error", duration: 10000 });
+                } else if (response.status == true) {
+                    $(`[href*="estado/listEstado.view"]`).click();
+                    alerts({ title: "Horas extras registradas", icon: "success", duration: 5000 });
+                } else {
+                    alerts({ title: "Error al registrar las horas extras registradas, inténtalo más tarde", icon: "error" });
+                }
+            });
+            this.on("errormultiple", function (files, response) {
+                console.log(response);
+            });
         }
     });
 
@@ -103,11 +124,6 @@ $(document).ready(async function () {
             .appendTo("#bodyTableEdit")
             .find("input, button").val("").removeAttr("disabled");
     });
-
-    if (sessionStorage.getItem("edit")) {
-        cargarDatos(sessionStorage.getItem("edit"));
-        sessionStorage.removeItem("edit");
-    }
 
 });
 
