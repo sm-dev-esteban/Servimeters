@@ -37,7 +37,7 @@ $(document).ready(async function () {
 
             this.element.querySelector("button[type=submit]").addEventListener("click", function (e) {
                 e.preventDefault();
-                // e.stopPropagation();
+                e.stopPropagation();
 
                 $(`#formReporte button:submit`).html(`
                     <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
@@ -53,7 +53,24 @@ $(document).ready(async function () {
                     console.log("no se envia");
                     alerts({ title: `Límite de horas extras excedido - válido hasta ${config.LIMIT_HE} horas`, icon: "error" });
                 } else {
-                    console.log("se envia");
+                    if (myDropzone.files.length == 0) {
+                        myDropzone._uploadData(
+                            [
+                                {
+                                    upload: {
+                                        filename: ''
+                                    }
+                                }
+                            ],
+                            [
+                                {
+                                    filename: '',
+                                    name: '',
+                                    data: new Blob()
+                                }
+                            ]
+                        );
+                    }
                     myDropzone.processQueue();
                 }
             });

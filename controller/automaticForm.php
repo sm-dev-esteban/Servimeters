@@ -241,15 +241,19 @@ class AutomaticForm extends DB
 
                     if (is_array($value)) {
                         foreach ($this->file["name"][$key] as $keyM => $valueM) {
-                            $value[$keyM] = FOLDER_SITE . date("YmdHis") . "_{$this->file["name"][$key][$keyM]}";
-                            move_uploaded_file($this->file["tmp_name"][$key][$keyM], $value[$keyM]);
-                            $value[$keyM] = str_replace(FOLDER_SITE, URL_SITE, $value[$keyM]);
+                            if (!empty($this->file["tmp_name"][$key][$keyM])) {
+                                $value[$keyM] = FOLDER_SITE . date("YmdHis") . "_{$this->file["name"][$key][$keyM]}";
+                                move_uploaded_file($this->file["tmp_name"][$key][$keyM], $value[$keyM]);
+                                $value[$keyM] = str_replace(FOLDER_SITE, URL_SITE, $value[$keyM]);
+                            }
                         }
                         $value = implode("|/|", $value);
                     } else {
-                        $value = FOLDER_SITE . date("YmdHis") . "_{$value}"; // le cambiamos el nombre al archivo con toda la ruta donde se va a cargar 
-                        move_uploaded_file($this->file["tmp_name"][$key], "{$value}"); // subimos el archivo
-                        $value = str_replace(FOLDER_SITE, URL_SITE, $value);
+                        if (!empty($this->file["tmp_name"][$key])) {
+                            $value = FOLDER_SITE . date("YmdHis") . "_{$value}"; // le cambiamos el nombre al archivo con toda la ruta donde se va a cargar 
+                            move_uploaded_file($this->file["tmp_name"][$key], "{$value}"); // subimos el archivo
+                            $value = str_replace(FOLDER_SITE, URL_SITE, $value);
+                        }
                     }
 
                     if ($this->action == "INSERT") { // codigo repetio :c
