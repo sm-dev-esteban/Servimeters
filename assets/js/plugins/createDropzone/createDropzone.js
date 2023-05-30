@@ -203,8 +203,6 @@
                         });
                     }
                 });
-            } else {
-                console.log(c.preview);
             }
 
             return cdz;

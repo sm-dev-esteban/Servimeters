@@ -8,6 +8,7 @@ $i = 0;
 
 switch ($_GET["ssp"]) {
     case "listEstadoHe":
+        $_GET["where"] = "empleado = '{$_SESSION["usuario"]}'";
         $table = "ReportesHE";
         $columns = [
             [
@@ -65,7 +66,18 @@ switch ($_GET["ssp"]) {
         break;
     case 'listAprobar':
         $idAprobador = AutomaticForm::getValueSql($_SESSION["email"], "correo", "id", "Aprobadores");
-        $_GET["where"] = "id_aprobador = {$idAprobador} and (id_estado <> 1 and id_estado <> 2)";
+        $rol = strtolower(isset($_SESSION["rol"]) ? $_SESSION["rol"] : false);
+        // $rol = AutomaticForm::getSession("rol");
+        $estado = [
+            "jefe" => $config->APROBACION_JEFE,
+            "gerente" => $config->APROBACION_GERENTE,
+            "rh" => $config->APROBACION_RH,
+            "contable" => $config->APROBACION_CONTABLE
+        ];
+        $id_estado = $rol ? $estado[$rol] : $rol;
+        // $_GET["where"] = "id_aprobador = {$idAprobador} and (id_estado <> 1 and id_estado <> 2)";
+        // $_GET["where"] = "id_aprobador = {$idAprobador} and id_estado = {$id_estado}";
+        $_GET["where"] = "id_estado = {$id_estado}";
         $table = "ReportesHE";
         $columns = [
             [
@@ -91,7 +103,10 @@ switch ($_GET["ssp"]) {
                 "db" => "id", "dt" => $i++
             ],
             [
-                "db" => "id", "dt" => $i++
+                "db" => "id_estado", "dt" => $i++, "formatter" => function ($d, $row) {
+                    $estado = AutomaticForm::getValueSql($d, "@primary", "nombre", "Estados");
+                    return $estado;
+                }
             ],
             [
                 "db" => "id", "dt" => $i++

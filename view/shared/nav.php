@@ -143,13 +143,15 @@
                                 <p>Mis horas extras</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <!-- <a href="gestionHE/gestionar.view" class="nav-link" data-script="aproveRejectHE, detailsReporte"> -->
-                            <a href="gestionHE/gestionar.view" class="nav-link" data-script="aproveRejectHE">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Gestionar horas extras</p>
-                            </a>
-                        </li>
+                        <?php if (isset($_SESSION["rol"])) : ?>
+                            <li class="nav-item">
+                                <!-- <a href="gestionHE/gestionar.view" class="nav-link" data-script="aproveRejectHE, detailsReporte"> -->
+                                <a href="gestionHE/gestionar.view" class="nav-link" data-script="aproveRejectHE">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Gestionar horas extras</p>
+                                </a>
+                            </li>
+                        <?php endif ?>
                     </ul>
                 </li>
                 <li class="nav-item">

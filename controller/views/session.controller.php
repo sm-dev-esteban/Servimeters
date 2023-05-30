@@ -24,7 +24,28 @@ class sessionController
      */
     public static function readSession(): array
     {
-        return $_SESSION;
+        return array_merge(
+            array_map("self::utf8", $_SESSION),
+            ["count" => count($_SESSION)]
+        );
+    }
+
+    /**
+     * @return Mixed uft8_encode valido con arreglos
+     */
+    public static function utf8(mixed $utf8): mixed
+    {
+        return !is_array($utf8)
+            ? AutomaticForm::iso8859_1_to_utf8($utf8)
+            : array_map("self::utf8", $utf8);
+    }
+
+    /**
+     * @return String Devuelve una de las sessiones activas
+     */
+    public static function getSession($key): String
+    {
+        return $_SESSION[$key] ? $_SESSION[$key] : "";
     }
 
     /**

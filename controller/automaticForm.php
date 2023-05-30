@@ -20,7 +20,7 @@ require_once $_SERVER["DOCUMENT_ROOT"] . '/' . explode("/", $_SERVER['REQUEST_UR
 
 /**
  * @author Esteban Serna Palacios 😉😜
- * @version 1.1.1
+ * @version 1.2.1
  */
 
 class AutomaticForm extends DB
@@ -59,7 +59,7 @@ class AutomaticForm extends DB
 
         if ($this->action == "UPDATE") {
             if (!is_array($update)) { // si no es un arreglo busco a la llave primaria de la tabla y que filtre por el valor que le estoy pasando
-                $this->update = [AutomaticForm::getNamePrimary($this->table) => $update];
+                $this->update = [self::getNamePrimary($this->table) => $update];
             } else { // si es un arreglo verguero el que me toco hacer :c
 
                 $check = key(array_filter($update, function ($x) { // busco que el arreglo contenga la palabra @primary para hacerle el cambio de la llave primaria de esa tabla
@@ -67,7 +67,7 @@ class AutomaticForm extends DB
                 }, ARRAY_FILTER_USE_KEY));
 
                 if (!is_null($check)) {
-                    $this->update = [AutomaticForm::getNamePrimary($this->table) => $update[$check]];
+                    $this->update = [self::getNamePrimary($this->table) => $update[$check]];
                 } else {
                     $this->update = $update;
                 }
@@ -78,7 +78,7 @@ class AutomaticForm extends DB
 
         $this->db = new DB();
         $this->conn = $this->db->Conectar();
-        $this->config = AutomaticForm::getConfig();
+        $this->config = self::getConfig();
 
         $this->alldata = $alldata;
 
@@ -151,14 +151,14 @@ class AutomaticForm extends DB
     {
 
         if (empty($this->table | $this->action) || ($this->action == "INSERT" || $this->action == "UPDATE" ? false : true)) {
-            return ["Error" => "Error params"];
+            return ["error" => "Error params"];
         } else if ($this->action == "UPDATE") {
             $id_u = key($this->update);
             $va_u = $this->update[$id_u];
         }
 
         if ($auto_craete == true) {
-            if (!AutomaticForm::checkTableExists($this->table)) {
+            if (!self::checkTableExists($this->table)) {
                 // creamos la tabla en el caso de que no exista
                 $this->conn->beginTransaction();
 
@@ -293,7 +293,7 @@ class AutomaticForm extends DB
      */
     public static function getNamePrimary(String $table): String
     { // no he probado esta madre, pero confio en cristo rey :)
-        if (!AutomaticForm::checkTableExists($table)) {
+        if (!self::checkTableExists($table)) {
             return "Tabla es obligatoria";
         }
         $db = new DB();
@@ -326,7 +326,7 @@ class AutomaticForm extends DB
     public static function getValueSql($filter, $column, $return, $table, $config = []): String|Int
     {
 
-        if (!AutomaticForm::checkTableExists($table)) {
+        if (!self::checkTableExists($table)) {
             return "Tabla es obligatoria";
         }
 
@@ -339,7 +339,7 @@ class AutomaticForm extends DB
 
         $db = new DB();
         $conn = $db->Conectar();
-        $primaryKey = AutomaticForm::getNamePrimary($table);
+        $primaryKey = self::getNamePrimary($table);
 
         $q = "SELECT {$return} FROM {$table}
             WHERE {$column} " . ($c["like"] == true ? " like '%{$filter}%' " : " = '{$filter}' ") . "
@@ -369,7 +369,7 @@ class AutomaticForm extends DB
      */
     public static function getDataSql(String $table, String $where = "1 = 1", String $return = "*"): array
     {
-        if (!AutomaticForm::checkTableExists($table)) {
+        if (!self::checkTableExists($table)) {
             return ["error" => "Tabla es obligatoria"];
         }
         $db = new DB();
@@ -378,7 +378,7 @@ class AutomaticForm extends DB
         $q = "SELECT {$return} FROM {$table} WHERE {$where}";
 
         if (strpos($q, "@primary") !== false) {
-            $q = str_replace("@primary", AutomaticForm::getNamePrimary($table), $q);
+            $q = str_replace("@primary", self::getNamePrimary($table), $q);
         }
 
         try {
@@ -399,7 +399,7 @@ class AutomaticForm extends DB
      */
     public static function updateValueSql($value, String $column, $primaryKey, String $table): array
     {
-        if (!AutomaticForm::checkTableExists($table)) {
+        if (!self::checkTableExists($table)) {
             return ["error" => "Tabla es obligatoria"];
         }
         $db = new DB();
@@ -412,7 +412,7 @@ class AutomaticForm extends DB
         }
         $where = is_array($primaryKey)
             ? implode(" AND ", $x)
-            : AutomaticForm::getNamePrimary($table) . " = '{$primaryKey}'";
+            : self::getNamePrimary($table) . " = '{$primaryKey}'";
 
         $q = "UPDATE {$table} set {$column} = '{$value}' where $where";
 
@@ -449,5 +449,32 @@ class AutomaticForm extends DB
         } else {
             return json_decode(json_encode($reflection->getMethods(ReflectionMethod::IS_PUBLIC), JSON_UNESCAPED_UNICODE), true);
         }
+    }
+
+    /**
+     * https://php.watch/versions/8.2/utf8_encode-utf8_decode-deprecated#:~:text=Replacements%20for%20utf8_decode,intl%20extension%2C%20or%20iconv%20extension.
+     */
+    public static function iso8859_1_to_utf8(string $s): string
+    {
+        $s .= $s;
+        $len = \strlen($s);
+
+        for ($i = $len >> 1, $j = 0; $i < $len; ++$i, ++$j) {
+            switch (true) {
+                case $s[$i] < "\x80":
+                    $s[$j] = $s[$i];
+                    break;
+                case $s[$i] < "\xC0":
+                    $s[$j] = "\xC2";
+                    $s[++$j] = $s[$i];
+                    break;
+                default:
+                    $s[$j] = "\xC3";
+                    $s[++$j] = \chr(\ord($s[$i]) - 64);
+                    break;
+            }
+        }
+
+        return substr($s, 0, $j);
     }
 }

@@ -63,6 +63,9 @@ function contentPage(page, title, scripts = undefined) {
                     </div>
                 `);
 
+            },
+            complete: function () { // despues de que se carga esperamos un rato y quitamos la animación
+
                 if (scripts !== undefined) {
                     // console.log(`page: ${page}`, `title: ${title}`, `scripts: ${scripts}`);
                     // todos los scripts
@@ -94,8 +97,7 @@ function contentPage(page, title, scripts = undefined) {
                 }
 
                 $.getScript("../controller/views/all.page.js");
-            },
-            complete: function () { // despues de que se carga esperamos un rato y quitamos la animación
+
                 setTimeout(() => {
                     $(`.wrapper .preloader`).attr(`style`, `height: 0;`);
                     $(`.wrapper .preloader .animation__shake`).attr(`style`, `display: none;`);

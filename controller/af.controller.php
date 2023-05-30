@@ -19,6 +19,7 @@ if (array_filter(AutomaticForm::getClassMethods(), function ($x) {
     //     $val[$r] = $x;
     //     return $val[$r];
     // }, $params))), JSON_UNESCAPED_UNICODE);
+    // exit();
     $i = -1;
     echo json_encode(AutomaticForm::$action(
         isset($params[$i += 1]) ? $params[$i] : "",
@@ -28,8 +29,10 @@ if (array_filter(AutomaticForm::getClassMethods(), function ($x) {
         isset($params[$i += 1]) ? $params[$i] : "",
         isset($params[$i += 1]) ? $params[$i] : ""
     ), JSON_UNESCAPED_UNICODE);
+    exit();
 } else {
-    echo json_encode(["Error" => "action in undefined"], JSON_UNESCAPED_UNICODE);
+    echo json_encode(["error" => "action in undefined"], JSON_UNESCAPED_UNICODE);
+    exit();
 }
 
 // function ramdon()

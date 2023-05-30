@@ -1,11 +1,13 @@
 <?php
 // archivo independiente para validar la session
 session_start();
+require_once("../automaticForm.php");
 require_once("./session.controller.php");
 
 $session = new sessionController;
 
-$_count = count($session->readSession());
+// $_count = count($session->readSession());
+$_count = $session->readSession()["count"];
 
 $return = [
     "STATUS" => !empty($_count) && isset($_SESSION["usuario"]) ? true : false,

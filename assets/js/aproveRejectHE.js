@@ -5,7 +5,8 @@ $(document).ready(async function () {
         {
             "processing": true,
             "severSide": true,
-            "order": [[0, "desc"]],
+            "order": [[0,
+                "desc"]],
             "ajax": "../controller/ssp.controller.php?ssp=listAprobar",
             "deferRender": true
         }
@@ -46,37 +47,68 @@ $(document).ready(async function () {
     });
 
     $("#rechazar, #aprobar").on("click", function () { // aprobar y rechazar
-        let change = $(this).attr("id") == "rechazar" ? 2 : 1;
+        let type = $(this).attr("id") == "rechazar" ? 2 : 1;
         let email = localStorage.getItem("email");
-        let rol = localStorage.getItem("rol");
+        let rol = localStorage.getItem("rol").toLocaleLowerCase();
+        let change = "";
+        let aprobadores = [
+            "jefe",
+            "gerente",
+            "rh",
+            "contable"
+        ];
 
-        if (rol.toLocaleLowerCase() == "gerente" || rol.toLocaleLowerCase() == "jefe") {
+        if (type == 2) { // rechazo segun area
+            change = (
+                rol == "jefe" ? config.RECHAZO_GERENTE : (
+                    rol == "gerente" ? config.RECHAZO_RH : (
+                        rol == "rh" ? config.RECHAZO_CONTABLE : (
+                            rol == "contable" ? config.RECHAZO : "Error"
+                        )
+                    )
+                )
+            );
+        } else if (type == 1) { // aprobación segun area
+            change = (
+                rol == "jefe" ? config.APROBACION_GERENTE : (
+                    rol == "gerente" ? config.APROBACION_RH : (
+                        rol == "rh" ? config.APROBACION_CONTABLE : (
+                            rol == "contable" ? config.APROBADO : "Error"
+                        )
+                    )
+                )
+            );
+        }
+
+        console.log(change);
+
+        if (aprobadores.includes(rol)) {
             let id_aprobador = automaticForm("getValueSql", [
                 email,
                 "correo",
                 "id",
                 "Aprobadores"
             ]);
-            if (change == 2) {
+            if (type == 2) {
 
                 Swal.fire({
                     title: 'MOTIVO DE RECHAZO',
                     input: 'text',
                     showCancelButton: true,
-                    confirmButtonText: 'Confirmar',
-                    showLoaderOnConfirm: true
+                    confirmButtonText: 'Confirmar'
                 }).then((result) => {
                     if (result.isConfirmed == true) {
 
                         let $rechazados = automaticForm("getDataSql", [ // buscamos a los rechazados
                             "ReportesHE",
-                            `checkStatus = '2' and id_aprobador = '${id_aprobador}' and id_estado = '${rol.toLocaleLowerCase() == "jefe"
+                            `checkStatus = '2' and id_aprobador = '${id_aprobador}' and id_estado = '${rol == "jefe"
                                 ? config.APROBACION_JEFE
                                 : (
-                                    rol.toLocaleLowerCase() == "gerente"
+                                    rol == "gerente"
                                         ? config.APROBACION_GERENTE
                                         : false
-                                )}'`, "*"
+                                )}'`,
+                            "*"
                         ]);
 
                         let check = automaticForm("updateValueSql", [ // los rechazamos
@@ -85,10 +117,10 @@ $(document).ready(async function () {
                             {
                                 "checkStatus": "2",
                                 "id_aprobador": id_aprobador,
-                                "id_estado": rol.toLocaleLowerCase() == "jefe"
+                                "id_estado": rol == "jefe"
                                     ? config.APROBACION_JEFE
                                     : (
-                                        rol.toLocaleLowerCase() == "gerente"
+                                        rol == "gerente"
                                             ? config.APROBACION_GERENTE
                                             : false
                                     )
@@ -96,8 +128,12 @@ $(document).ready(async function () {
                             "ReportesHE"
                         ]);
 
-                        if (check.status == false) { // si ocurre un error lo mostramos en una alerta
-                            alerts({ title: check.error, icon: "Error", duration: 10000 });
+                        if (check.error) { // si ocurre un error lo mostramos en una alerta
+                            alerts({
+                                title: check.error,
+                                icon: "Error",
+                                duration: 10000
+                            });
                         } else { // si todo bien hacemos un rerrido de los rechazados
                             $rechazados.forEach(rechazo => {
                                 // ajax
@@ -112,9 +148,12 @@ $(document).ready(async function () {
                                         }
                                     },
                                     success: function (response) {
-                                        console.log(response);
                                         if (response.error) { // si ocurre un error en el registro lo mostramos
-                                            alerts({ title: response.error, icon: "Error", duration: 10000 });
+                                            alerts({
+                                                title: response.error,
+                                                icon: "Error",
+                                                duration: 10000
+                                            });
                                         } else { // caso contrario buscamos a ese usuario y le emitimos un mensaje
                                             if (server) {
                                                 let duration = Number(result.value.length * 100);
@@ -158,9 +197,43 @@ $(document).ready(async function () {
                     }
                 });
 
+            } else if (type == 1) {
+                let check = automaticForm("updateValueSql", [ // los aprobados
+                    change,
+                    "id_estado",
+                    {
+                        "checkStatus": "2",
+                        "id_aprobador": id_aprobador,
+                        "id_estado": rol == "jefe"
+                            ? config.APROBACION_JEFE
+                            : (
+                                rol == "gerente"
+                                    ? config.APROBACION_GERENTE
+                                    : false
+                            )
+                    },
+                    "ReportesHE"
+                ]);
+
+                if (check.error) {
+                    alerts({
+                        title: check.error,
+                        icon: "Error",
+                        duration: 10000
+                    });
+                } else {
+                    alerts({
+                        title: "Aprobación realizada",
+                        icon: "Success"
+                    });
+                    updateDatable();
+                }
             }
         } else {
-            alerts({ "title": `Tu rol no permite realizar cambios: ${rol}`, "icon": "info" });
+            alerts({
+                "title": `Tu rol no permite realizar cambios: ${rol}`,
+                "icon": "info"
+            });
         }
 
     });
@@ -168,7 +241,7 @@ $(document).ready(async function () {
     $("#STodo, #DTodo").on("click", function () { // marcar y desmarcar varios
         let change = $(this).attr("id") == "STodo" ? 2 : 1;
         let email = localStorage.getItem("email");
-        let rol = localStorage.getItem("rol");
+        let rol = localStorage.getItem("rol").toLocaleLowerCase();
         let id_aprobador = automaticForm("getValueSql", [
             email,
             "correo",
@@ -181,10 +254,10 @@ $(document).ready(async function () {
             "checkStatus",
             {
                 "id_aprobador": id_aprobador,
-                "id_estado": rol.toLocaleLowerCase() == "jefe"
+                "id_estado": rol == "jefe"
                     ? config.APROBACION_JEFE
                     : (
-                        rol.toLocaleLowerCase() == "gerente"
+                        rol == "gerente"
                             ? config.APROBACION_GERENTE
                             : false
                     )
@@ -192,8 +265,11 @@ $(document).ready(async function () {
             "ReportesHE"
         ]);
 
-        if (check.status == false) {
-            alerts({ "title": check.error, "icon": "Error" });
+        if (check.error) {
+            alerts({
+                "title": check.error,
+                "icon": "Error"
+            });
         }
 
         updateDatable();

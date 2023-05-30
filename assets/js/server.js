@@ -19,7 +19,7 @@ server.onerror = function (error) {
 server.onopen = function (e) {
     session = automaticForm("readSession");
 
-    localStorage.setItem("rol", session.rol);
+    localStorage.setItem("rol", session.rol ? session.rol : "empleado");
     localStorage.setItem("usuario", session.usuario);
     localStorage.setItem("email", session.email);
 
