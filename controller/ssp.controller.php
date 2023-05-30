@@ -77,6 +77,7 @@ switch ($_GET["ssp"]) {
         $id_estado = $rol ? $estado[$rol] : $rol;
         // $_GET["where"] = "id_aprobador = {$idAprobador} and (id_estado <> 1 and id_estado <> 2)";
         // $_GET["where"] = "id_aprobador = {$idAprobador} and id_estado = {$id_estado}";
+        // $_GET["where"] = "id_aprobador = {$idAprobador} or id_estado = {$id_estado}";
         $_GET["where"] = "id_estado = {$id_estado}";
         $table = "ReportesHE";
         $columns = [
