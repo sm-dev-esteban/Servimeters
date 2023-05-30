@@ -94,6 +94,7 @@ function alerts(arrayAlert, typeAlert = "Sweetalert2") {
     let config = $.extend({
         title: false, // titulo
         text: false, // texto
+        html: false, // html
         icon: false, // icon
         duration: 3000,
         position: "top-end" // por si depronto quieren configurar una posicion diferente
@@ -119,7 +120,8 @@ function alerts(arrayAlert, typeAlert = "Sweetalert2") {
             Sweetalert2.fire({
                 title: `${config.title ? config.title : ``}`,
                 text: `${config.text ? config.text : ``}`,
-                icon: `${config.icon ? config.icon : ``}`
+                icon: `${config.icon ? config.icon : ``}`,
+                html: `${config.html ? config.html : ``}`
             })
             break;
         default:
@@ -127,6 +129,7 @@ function alerts(arrayAlert, typeAlert = "Sweetalert2") {
                 ${config.status ? config.status : ``}
                 ${config.title ? config.title : ``}
                 ${config.text ? config.text : ``}
+                ${config.html ? config.html : ``}
             `);
             break;
     }

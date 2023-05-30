@@ -4,6 +4,10 @@ require("../controller/automaticForm.php");
 
 $config = AutomaticForm::getConfig();
 
+// comandos
+// 1. Entra a la carpeta del proyecto
+// 2. Actualiza composer
+// 3. Ejecuta el servidor
 $cmd = 'cd ' . $config->FOLDER_SITE . ' & composer update & php ' . __DIR__ . '\server.php';
 
 $check_bat = fopen("check.bat", "w");
@@ -32,10 +36,7 @@ endlocal
 ');
 fclose($check_bat);
 
-// comandos
-// 1. Entra a la carpeta del proyecto
-// 2. Actualiza composer
-// 3. Ejecuta el servidor
+executeCMD('start cmd.exe @cmd /k "curl parrot.live"');
 executeCMD('start cmd.exe @cmd /k "' . __DIR__ . '\check.bat"');
 
 function executeCMD($cmd)

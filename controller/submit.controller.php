@@ -43,14 +43,22 @@ switch ($_GET["action"]) {
         break;
     case 'permiso':
         $permiso = new AutomaticForm($_POST, "Permisos");
-        echo json_encode($permiso->execute());
+        echo json_encode($permiso->execute(), JSON_UNESCAPED_UNICODE);
         break;
     case 'rechazo':
         $rechazo = new AutomaticForm($_POST, "Comentarios");
-        echo json_encode($rechazo->execute());
+        echo json_encode($rechazo->execute(), JSON_UNESCAPED_UNICODE);
+        break;
+    case 'clase':
+        $clase = new AutomaticForm($_POST, "Clase");
+        echo json_encode($clase->execute(), JSON_UNESCAPED_UNICODE);
+        break;
+    case 'ceco':
+        $ceco = new AutomaticForm($_POST, "CentrosCosto");
+        echo json_encode($ceco->execute(), JSON_UNESCAPED_UNICODE);
         break;
     default:
-        echo json_encode(["Error" => "action is undefined"], JSON_UNESCAPED_UNICODE);
+        echo json_encode(["error" => "action is undefined"], JSON_UNESCAPED_UNICODE);
         exit;
         break;
 }

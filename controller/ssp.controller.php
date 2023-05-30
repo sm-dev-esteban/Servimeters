@@ -134,6 +134,87 @@ switch ($_GET["ssp"]) {
             ]
         ];
         break;
+    case 'clase':
+        $table = "Clase";
+        define("TABLE", $table);
+        $columns = [
+            [
+                "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
+                    $titulo = AutomaticForm::getValueSql($d, "@primary", "titulo", TABLE);
+                    return '
+                    <div data-show="' . $d . '">' . $titulo . '</div>
+                    <div data-edit="' . $d . '"class="d-none">
+                        <input data-column="titulo" data-update="' . $d . '" data-table="' . TABLE . '" type="text" value="' . $titulo . '" class="form-control" onchange="updateClass(this)">
+                    </div>
+                    ';
+                }
+            ],
+            [
+                "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
+                    return '
+                    <div class="form-group clearfix">
+                        <div class="icheck-primary d-inline">
+                            <input type="checkbox" id="' . base64_encode($d) . '" value="' . $d . '" onchange="ChangeMode(' . $d . ')">
+                            <label for="' . base64_encode($d) . '"></label>
+                        </div>
+                    </div>
+                    ';
+                }
+            ]
+        ];
+        break;
+    case 'ceco':
+        $table = "CentrosCosto";
+        define("TABLE", $table);
+        $columns = [
+            [
+                "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
+                    $titulo = AutomaticForm::getValueSql($d, "@primary", "titulo", TABLE);
+                    return '
+                    <div data-show="' . $d . '">' . $titulo . '</div>
+                    <div class="d-none" data-edit="' . $d . '">
+                        <input data-column="titulo" data-update="' . $d . '" data-table="' . TABLE . '" type="text" value="' . $titulo . '" class="form-control" onchange="updateClass(this)">
+                    </div>
+                    ';
+                }
+            ],
+            [
+                "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
+                    $id_clase = AutomaticForm::getValueSql($d, "@primary", "id_clase", TABLE);
+                    $clases = AutomaticForm::getDataSql("Clase");
+                    $clase = AutomaticForm::getValueSql($id_clase, "@primary", "titulo", "Clase");
+                    $option = "";
+                    foreach ($clases as $key => $value) {
+                        $option .= '
+                        <option value="' . $value["id"] . '" ' . ($id_clase == $value["id"] ? 'selected' : '') . '>
+                            ' . $value["titulo"] . '
+                        </option>
+                        ';
+                    }
+                    return '
+                    <div data-show="' . $d . '">' . $clase . '</div>
+                    <div class="d-none" data-edit="' . $d . '">
+                        <select data-column="id_clase" data-update="' . $d . '" data-table="' . TABLE . '" class="form-control" onchange="updateClass(this)">
+                            ' . $option . '
+                        </select>
+                    </div>
+                    ';
+                }
+            ],
+            [
+                "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
+                    return '
+                    <div class="form-group clearfix">
+                        <div class="icheck-primary d-inline">
+                            <input type="checkbox" id="' . base64_encode($d) . '" value="' . $d . '" onchange="ChangeMode(' . $d . ')">
+                            <label for="' . base64_encode($d) . '"></label>
+                        </div>
+                    </div>
+                    ';
+                }
+            ]
+        ];
+        break;
     default: // respuesta negativa del datatable -- muestra algun error
         $table = "";
         $columns = [];

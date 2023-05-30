@@ -4,3 +4,5 @@ prueba.php
 files
 # carpeta prueba de respaldo
 respaldo
+# .bat que valida le puerto y corre el socket
+bin/check.bat

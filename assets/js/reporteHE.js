@@ -50,7 +50,6 @@ $(document).ready(async function () {
                 $(`[name="data[timezone]"]`).val(timezone);
 
                 if (totalHorasExtras > config.LIMIT_HE) {
-                    console.log("no se envia");
                     alerts({ title: `Límite de horas extras excedido - válido hasta ${config.LIMIT_HE} horas`, icon: "error" });
                 } else {
                     if (myDropzone.files.length == 0) {
@@ -100,9 +99,7 @@ $(document).ready(async function () {
                     alerts({ title: "Error al registrar las horas extras registradas, inténtalo más tarde", icon: "error" });
                 }
             });
-            this.on("errormultiple", function (files, response) {
-                console.log(response);
-            });
+            // this.on("errormultiple", function (files, response) { });
         }
     });
 

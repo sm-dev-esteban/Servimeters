@@ -2,10 +2,12 @@
 // https://www.toptal.com/developers/javascript-minifier
 try {
     server = new WebSocket('ws://localhost:8080/');
+    alerts({ icon: "success", title: "Servidor activo.", position: "bottom-start" });
 }
 catch (err) { }
 
 server.onerror = function (error) {
+    alerts({ icon: "error", title: "Servidor inactivo.", position: "bottom-start" });
     resp = $.ajax(`${location.origin}/${location.pathname.split("/")[1]}/bin/start.php`, { async: false });
     // if (resp.status == 200) {
     //     setTimeout(() => {
