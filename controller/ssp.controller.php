@@ -245,7 +245,6 @@ $sql_details = [
     "gestor" => "sqlsrv"
 ];
 
-// codigo de datatable 
 // Nota: lo modifique un poco para que funcionara con sql server y mysql
 require($config->FOLDER_SITE . "ssp/ssp.class.php");
 

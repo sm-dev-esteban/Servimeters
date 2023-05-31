@@ -1,5 +1,5 @@
 <?php
-// session_start();
+
 if (!isset($_SESSION["isAdmin"]) || (strcasecmp($_SESSION["isAdmin"], 'Si') !== 0)) {
     require_once "../../config/LoadConfig.config.php";
     $config = LoadConfig::getConfig();

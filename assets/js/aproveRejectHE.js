@@ -80,7 +80,7 @@ $(document).ready(async function () {
             );
         }
 
-        console.log(change);
+        
 
         if (aprobadores.includes(rol)) {
             let id_aprobador = automaticForm("getValueSql", [

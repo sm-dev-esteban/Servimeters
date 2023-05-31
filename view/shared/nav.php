@@ -1,5 +1,5 @@
 <div class="preloader flex-column justify-content-center align-items-center">
-    <img class="animation__shake" src="../images/Logo Prueba SM.png" alt="ServimetersLogo" height="180" width="180">
+    <img class="animation__shake" src="../images/SM CIRCULAR.png" alt="ServimetersLogo" height="180" width="180">
 </div>
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <ul class="navbar-nav">
@@ -46,13 +46,13 @@
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <a href="Principal/default.view" class="brand-link">
-        <img src="../images/Logo Prueba SM.png" alt="Servimeters Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <img src="../images/SM CIRCULAR.png" alt="Servimeters Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">Servimeters</span>
     </a>
     <div class="sidebar">
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <!-- <div class="image">
-                <img src="../images/Logo Prueba SM.png" class="img-circle elevation-2" alt="User Image">
+                <img src="../images/SM CIRCULAR.png" class="img-circle elevation-2" alt="User Image">
             </div> -->
             <div class="info">
                 <a href="prueba.view" class="d-block"><?= $_SESSION['usuario'] ?></a>

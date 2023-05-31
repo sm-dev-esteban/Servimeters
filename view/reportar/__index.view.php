@@ -1,7 +1,7 @@
 <?php
 // fracase en el intento esto es muy complicado para cambiar las clases
 
-// session_start();
+
 if (!isset($_SESSION["estadoAutentica"])) {
     require_once "../../config/LoadConfig.config.php";
     $config = LoadConfig::getConfig();

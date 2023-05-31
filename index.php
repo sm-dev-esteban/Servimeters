@@ -1,17 +1,3 @@
-<?php
-// session_start();
-// $_SESSION["usuario"] = getenv("USERNAME");
-// $_SESSION["BuscarArea"] = getenv("USERNAME");
-// $_SESSION["email"] = getenv("USERNAME") . "@" . str_replace("sa.", ".", strtolower(getenv("USERDNSDOMAIN")));
-// $_SESSION["usuarioRegistro"] = getenv("USERNAME");
-// $_SESSION["infoUsuario"] = getenv("USERNAME");
-// $_SESSION["estadoAutentica"] = getenv("USERNAME");
-// $_SESSION["isAdmin"] = "Si";
-// $_SESSION['idAprobador'] = "Si";
-// $_SESSION["rol"] = 'Gerente';
-// $_SESSION["gestion"] = 'RH';
-?>
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -21,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reporte Horas Extra</title>
     <link rel="stylesheet" href="./assets/css/main.css" />
-    <link rel="icon" href="./images/Logo Prueba SM.png" type="image/*" sizes="16x16">
+    <link rel="icon" href="./images/SM CIRCULAR.png" type="image/*" sizes="16x16">
 
     <noscript>
         <link rel="stylesheet" href="./assets/css/noscript.css" />

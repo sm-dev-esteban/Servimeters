@@ -1,5 +1,5 @@
 <?php
-// session_start();
+
 if (!isset($_SESSION["estadoAutentica"])) {
     require_once "../../config/LoadConfig.config.php";
     $config = LoadConfig::getConfig();

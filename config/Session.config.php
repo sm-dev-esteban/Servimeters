@@ -23,7 +23,7 @@ class Sesion
             return;
         }
 
-        // session_start(); // la session solo se inicia una vez en el documento y tiene que ser la primara linea de el documento (ojo con los includes y requires)
+         
         $this->inSession = true;
         $_SESSION["usuario"] = $this->ldapResult[0]['cn'][0];
         $_SESSION["BuscarArea"] = $this->ldapResult[0]['distinguishedname'][0];
