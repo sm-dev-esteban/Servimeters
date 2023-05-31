@@ -22,27 +22,36 @@ $(document).ready(async function () {
 
 
     $("#listAprov tbody").on("mouseover", "tr", function () {
-        $("#listAprov tbody tr").removeClass("bg-primary");
-        $(this).addClass("bg-primary");
+        $trS = $("#listAprov tbody tr");
+        if (!$trS.hasClass("child")) {
+            $trS.removeClass("bg-primary");
+            $(this).addClass("bg-primary");
+        }
     }).on("mouseout", "tr", function () {
-        $("#listAprov tbody tr").removeClass("bg-primary");
+        $trS = $("#listAprov tbody tr");
+        if (!$trS.hasClass("child")) {
+            $trS.removeClass("bg-primary");
+        }
     }).on("click", "tr", function () { // marcar y desmarcar
-        let ident = $(this).find("span").data("ident");
-        $(this).toggleClass("bg-info");
-        if ($(this).hasClass("bg-info")) {
-            automaticForm("updateValueSql", [
-                2,
-                "checkStatus",
-                ident,
-                "ReportesHE"
-            ]);
-        } else {
-            automaticForm("updateValueSql", [
-                1,
-                "checkStatus",
-                ident,
-                "ReportesHE"
-            ]);
+        $trS = $(this);
+        if (!$trS.hasClass("child")) {
+            let ident = $trS.find("span").data("ident");
+            $trS.toggleClass("bg-info");
+            if ($trS.hasClass("bg-info")) {
+                automaticForm("updateValueSql", [
+                    2,
+                    "checkStatus",
+                    ident,
+                    "ReportesHE"
+                ]);
+            } else {
+                automaticForm("updateValueSql", [
+                    1,
+                    "checkStatus",
+                    ident,
+                    "ReportesHE"
+                ]);
+            }
         }
     });
 
@@ -60,10 +69,10 @@ $(document).ready(async function () {
 
         if (type == 2) { // rechazo segun area
             change = (
-                rol == "jefe" ? config.RECHAZO_GERENTE : (
-                    rol == "gerente" ? config.RECHAZO_RH : (
-                        rol == "rh" ? config.RECHAZO_CONTABLE : (
-                            rol == "contable" ? config.RECHAZO : "Error"
+                rol == "jefe" ? config.RECHAZO : (
+                    rol == "gerente" ? config.RECHAZO_GERENTE : (
+                        rol == "rh" ? config.RECHAZO_RH : (
+                            rol == "contable" ? config.RECHAZO_CONTABLE : "Error"
                         )
                     )
                 )
@@ -80,7 +89,7 @@ $(document).ready(async function () {
             );
         }
 
-        
+
 
         if (aprobadores.includes(rol)) {
             let id_aprobador = automaticForm("getValueSql", [
@@ -93,9 +102,24 @@ $(document).ready(async function () {
 
                 Swal.fire({
                     title: 'MOTIVO DE RECHAZO',
-                    input: 'text',
+                    // input: 'text',
+                    html: `
+                    <div class="mb-3">
+                        <input id="swal2-input-titulo" class="form-control form-control-lg" placeholder="Titulo" type="text" value="Rechazo ${rol}">
+                    </div>
+                    <div class="mb-3">
+                        <textarea id="swal2-input-cuerpo" class="form-control form-control-lg" placeholder="Cuerpo"></textarea>
+                    </div>
+                    `,
                     showCancelButton: true,
-                    confirmButtonText: 'Confirmar'
+                    confirmButtonText: 'Confirmar',
+                    focusConfirm: false,
+                    preConfirm: () => {
+                        return {
+                            "titulo": $('#swal2-input-titulo').val(),
+                            "cuerpo": $('#swal2-input-cuerpo').val()
+                        }
+                    }
                 }).then((result) => {
                     if (result.isConfirmed == true) {
 
@@ -141,11 +165,10 @@ $(document).ready(async function () {
                                     type: "POST",
                                     dataType: "JSON",
                                     data: {
-                                        data: {
-                                            cuerpo: result.value,
+                                        data: $.extend(result.value, {
                                             id_reporte: rechazo.id,
                                             creadoPor: localStorage.getItem("usuario")
-                                        }
+                                        })
                                     },
                                     success: function (response) {
                                         if (response.error) { // si ocurre un error en el registro lo mostramos
@@ -167,7 +190,7 @@ $(document).ready(async function () {
                                                         data: {
                                                             arrayAlert: {
                                                                 title: "Un aprobador ha rechazado tu solicitud.",
-                                                                text: `Motivo: ${result.value}`,
+                                                                text: `Motivo: ${result.value.cuerpo}`,
                                                                 icon: "info",
                                                                 duration: duration
                                                             }

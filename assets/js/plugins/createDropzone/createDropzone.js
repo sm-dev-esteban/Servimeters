@@ -157,9 +157,28 @@
                 init: function () {
                     var myDropzone = this;
 
-                    this.element.querySelector("button[type=submit]").addEventListener("click", function (e) {
+                    $(this.element).on("submit", function (e) {
                         e.preventDefault();
-                        e.stopPropagation();
+
+                        if (myDropzone.files.length == 0) {
+                            myDropzone._uploadData(
+                                [
+                                    {
+                                        upload: {
+                                            filename: ''
+                                        }
+                                    }
+                                ],
+                                [
+                                    {
+                                        filename: '',
+                                        name: '',
+                                        data: new Blob()
+                                    }
+                                ]
+                            );
+                        }
+
                         myDropzone.processQueue();
                     });
 

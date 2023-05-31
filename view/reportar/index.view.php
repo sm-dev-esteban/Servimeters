@@ -4,6 +4,12 @@
         justify-content: center;
         align-items: center;
     }
+
+    #btn-fixed {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+    }
 </style>
 <section class="content">
     <div class="container-fluid">
@@ -32,7 +38,7 @@
                         </div>
                         <div class="col-12 col-xl-6">
                             <label for="ceco">Centro de Costo </label>
-                            <select name="data[id_ceco]" id="ceco" class="form-control select2"></select>
+                            <select name="data[id_ceco]" id="ceco" class="form-control select2" style="width: 100%"></select>
                         </div>
                         <div class="col-12 col-xl-6">
                             <label for="proyecto">Proyecto Asociado </label>
@@ -196,6 +202,28 @@
                         </div>
                     </div>
                 </form>
+                <!-- comentarios -->
+                <div id="btn-fixed" class="m-1">
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-comentarios">
+                        Comentarios
+                    </button>
+                </div>
+                <div class="modal fade" id="modal-comentarios" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Comentarios</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="timeline"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- comentarios -->
             </div>
         </div>
     </div>

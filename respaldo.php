@@ -1,7 +1,7 @@
 <?php
 if (isset($_GET["respaldo"])) {
-     de prueba para ver que tan viable es realizar una copia de seguridad de la base de datos
     // teoricamente esto lo ejecutaria un crom cada no se cuanto
+
 
     if (isset($_POST["timezone"]) && !empty($_POST["timezone"])) {
         $timezone = $_POST["timezone"];

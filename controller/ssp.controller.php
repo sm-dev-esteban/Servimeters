@@ -10,6 +10,8 @@ switch ($_GET["ssp"]) {
     case "listEstadoHe":
         $_GET["where"] = "empleado = '{$_SESSION["usuario"]}'";
         $table = "ReportesHE";
+        define("TABLE", $table);
+
         $columns = [
             [
                 "db" => "id", "dt" => $i++
@@ -19,13 +21,13 @@ switch ($_GET["ssp"]) {
             ],
             [
                 "db" => "id_ceco", "dt" => $i++, "formatter" => function ($d, $row) {
-                    return AutomaticForm::getValueSql($d, "id", "titulo", "CentrosCosto");
+                    return AutomaticForm::getValueSql($d, "@primary", "titulo", "CentrosCosto");
                 }
             ],
             [
                 "db" => "id_ceco", "dt" => $i++, "formatter" => function ($d, $row) {
-                    $id_clase = AutomaticForm::getValueSql($d, "id", "id_clase", "CentrosCosto");
-                    return AutomaticForm::getValueSql($id_clase, "id", "titulo", "Clase");
+                    $id_clase = AutomaticForm::getValueSql($d, "@primary", "id_clase", "CentrosCosto");
+                    return AutomaticForm::getValueSql($id_clase, "@primary", "titulo", "Clase");
                 }
             ],
             [
@@ -40,20 +42,20 @@ switch ($_GET["ssp"]) {
             ],
             [
                 "db" => "id_aprobador", "dt" => $i++, "formatter" => function ($d, $row) {
-                    return AutomaticForm::getValueSql($d, "id", "nombre", "Aprobadores", [
+                    return AutomaticForm::getValueSql($d, "@primary", "nombre", "Aprobadores", [
                         "notResult" => "NA"
                     ]);
                 }
             ],
             [
                 "db" => "id_estado", "dt" => $i++, "formatter" => function ($d, $row) {
-                    return AutomaticForm::getValueSql($d, "id", "nombre", "Estados");
+                    return AutomaticForm::getValueSql($d, "@primary", "nombre", "Estados");
                 }
             ],
             [
                 "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
                     $r = "";
-                    $id_estado = AutomaticForm::getValueSql($d, "id", "id_estado", "ReportesHE");
+                    $id_estado = AutomaticForm::getValueSql($d, "@primary", "id_estado", "ReportesHE");
                     $edicion = [2, 6, 8, 10, 1002];
                     // contentPage(page, title, scripts = undefined)
                     $r .= in_array($id_estado, $edicion) ? '<button type="button" class="rounded btn-primary m-1" onclick="contentPage(' . "'reportar/index.view?edit={$d}', 'Editar Reporte #{$d}', 'reporteHE'" . ')"><i class="fa fa-pen"></i></button>' : '';
@@ -80,10 +82,14 @@ switch ($_GET["ssp"]) {
         // $_GET["where"] = "id_aprobador = {$idAprobador} or id_estado = {$id_estado}";
         $_GET["where"] = "id_estado = {$id_estado}";
         $table = "ReportesHE";
+        define("TABLE", $table);
+
         $columns = [
             [
                 "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
-                    $status = AutomaticForm::getValueSql($d, "id", "checkStatus", "ReportesHE", ["notResult" => 1]);
+                    $status = AutomaticForm::getValueSql($d, "@primary", "checkStatus", "ReportesHE", [
+                        "notResult" => 1
+                    ]);
                     return '<span data-ident="' . $d . '" data-status="' . $status . '">' . $d . '</span>';
                 }
             ],
@@ -101,7 +107,9 @@ switch ($_GET["ssp"]) {
                 }
             ],
             [
-                "db" => "id", "dt" => $i++
+                "db" => "empleado", "dt" => $i++, "formatter" => function ($d, $row) {
+                    return $d;
+                }
             ],
             [
                 "db" => "id_estado", "dt" => $i++, "formatter" => function ($d, $row) {
@@ -110,49 +118,89 @@ switch ($_GET["ssp"]) {
                 }
             ],
             [
-                "db" => "id", "dt" => $i++
+                "db" => "id_ceco", "dt" => $i++, "formatter" => function ($d, $row) {
+                    $id_clase = AutomaticForm::getValueSql($d, "@primary", "id_clase", "CentrosCosto");
+                    $clase = AutomaticForm::getValueSql($id_clase, "@primary", "titulo", "Clase");
+                    return $clase;
+                }
             ],
             [
-                "db" => "id", "dt" => $i++
+                "db" => "id_ceco", "dt" => $i++, "formatter" => function ($d, $row) {
+                    $ceco = AutomaticForm::getValueSql($d, "@primary", "titulo", "CentrosCosto");
+                    return $ceco;
+                }
             ],
             [
-                "db" => "id", "dt" => $i++
+                "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
+                    $descuento = AutomaticForm::getValueSql($d, "id_reporteHE", "descuento", "HorasExtra");
+                    return $descuento + 0;
+                }
             ],
             [
-                "db" => "id", "dt" => $i++
+                "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
+                    $E_Diurna_Ord = AutomaticForm::getValueSql($d, "id_reporteHE", "E_Diurna_Ord", "HorasExtra");
+                    return $E_Diurna_Ord + 0;
+                }
             ],
             [
-                "db" => "id", "dt" => $i++
+                "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
+                    $E_Nocturno_Ord = AutomaticForm::getValueSql($d, "id_reporteHE", "E_Nocturno_Ord", "HorasExtra");
+                    return $E_Nocturno_Ord + 0;
+                }
             ],
             [
-                "db" => "id", "dt" => $i++
+                "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
+                    $E_Diurna_Fest = AutomaticForm::getValueSql($d, "id_reporteHE", "E_Diurna_Fest", "HorasExtra");
+                    return $E_Diurna_Fest + 0;
+                }
             ],
             [
-                "db" => "id", "dt" => $i++
+                "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
+                    $E_Nocturno_Fest = AutomaticForm::getValueSql($d, "id_reporteHE", "E_Nocturno_Fest", "HorasExtra");
+                    return $E_Nocturno_Fest + 0;
+                }
             ],
             [
-                "db" => "id", "dt" => $i++
+                "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
+                    $R_Nocturno = AutomaticForm::getValueSql($d, "id_reporteHE", "R_Nocturno", "HorasExtra");
+                    return $R_Nocturno + 0;
+                }
             ],
             [
-                "db" => "id", "dt" => $i++
+                "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
+                    $R_Fest_Diurno = AutomaticForm::getValueSql($d, "id_reporteHE", "R_Fest_Diurno", "HorasExtra");
+                    return $R_Fest_Diurno + 0;
+                }
             ],
             [
-                "db" => "id", "dt" => $i++
+                "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
+                    $R_Fest_Nocturno = AutomaticForm::getValueSql($d, "id_reporteHE", "R_Fest_Nocturno", "HorasExtra");
+                    return $R_Fest_Nocturno + 0;
+                }
             ],
             [
-                "db" => "id", "dt" => $i++
+                "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
+                    $R_Ord_Fest_Noct = AutomaticForm::getValueSql($d, "id_reporteHE", "R_Ord_Fest_Noct", "HorasExtra");
+                    return $R_Ord_Fest_Noct + 0;
+                }
             ],
             [
-                "db" => "id", "dt" => $i++
+                "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
+                    $total = AutomaticForm::getValueSql($d, "id_reporteHE", "total", "HorasExtra");
+                    return $total + 0;
+                }
             ],
             [
-                "db" => "id", "dt" => $i++
+                "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
+                    return '<button class="btn btn-info"><i class="fa fa-print"></i></button>';
+                }
             ]
         ];
         break;
     case 'clase':
         $table = "Clase";
         define("TABLE", $table);
+
         $columns = [
             [
                 "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
@@ -182,6 +230,7 @@ switch ($_GET["ssp"]) {
     case 'ceco':
         $table = "CentrosCosto";
         define("TABLE", $table);
+
         $columns = [
             [
                 "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {

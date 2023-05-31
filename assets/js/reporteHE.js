@@ -34,11 +34,8 @@ $(document).ready(async function () {
         ident: edit ? edit : ident,
         init: function () {
             var myDropzone = this;
-
-            this.element.querySelector("button[type=submit]").addEventListener("click", function (e) {
+            $(this.element).on("submit", function (e) {
                 e.preventDefault();
-                e.stopPropagation();
-
                 $(`#formReporte button:submit`).html(`
                     <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
                 `).attr("disabled", true);
@@ -72,7 +69,7 @@ $(document).ready(async function () {
                     }
                     myDropzone.processQueue();
                 }
-            });
+            })
 
             // this.element.querySelector(`#actions${ident} .cancel`).onclick = function () {
             //     myDropzone.removeAllFiles(true);

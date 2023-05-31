@@ -10,7 +10,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="id_clase">Clase</label>
-                            <select name="data[id_clase]" id="id_clase" class="form-control select2"></select>
+                            <select name="data[id_clase]" id="id_clase" class="form-control select2" style="width: 100%"></select>
                         </div>
                         <div class="mb-3">
                             <button type="submit" class="btn btn-success">Guardar</button>

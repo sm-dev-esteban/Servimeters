@@ -214,7 +214,7 @@ class AutomaticForm extends DB
                             return !empty($x);
                         })); // hago que cada registro quede separado con este valo |/|
                     }
-                    if ($this->action == "INSERT") {  
+                    if ($this->action == "INSERT") {
                         $insert = str_replace("``", "`?=>{$key}`, ``", str_replace("''", "'?=>{$value}', ''", $insert));
                     } else if ($this->action == "UPDATE") {
                         $update = str_replace("`` = ''", "`?=>{$key}` = '?=>{$value}', `` = ''", $update);
@@ -256,7 +256,7 @@ class AutomaticForm extends DB
                         }
                     }
 
-                    if ($this->action == "INSERT") {  
+                    if ($this->action == "INSERT") {
                         $insert = str_replace("``", "`?=>{$key}`, ``", str_replace("''", "'?=>{$value}', ''", $insert));
                     } else if ($this->action == "UPDATE") {
                         $update = str_replace("`` = ''", "`?=>{$key}` = '?=>{$value}', `` = ''", $update);

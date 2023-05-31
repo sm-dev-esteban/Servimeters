@@ -52,7 +52,7 @@ $(document).ready(function () {
     // sugerencia si el plugin esta listo pasenlo a .min
     let plugins = [
         "../assets/js/plugins/selectMaster/selectMaster.min.js",
-        "../assets/js/plugins/createDropzone/createDropzone.js"
+        "../assets/js/plugins/createDropzone/createDropzone.min.js"
     ];
     for (src in plugins) { // por ultimo hago que jquery me cargue esos scripts
         if (plugins[src].length) {
@@ -228,4 +228,24 @@ function automaticForm(action, params) {
 
     return resp.responseJSON;
 
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+// crea o edita elementos
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+function isHTML(str) {
+    return str instanceof Element || str instanceof HTMLDocument;
+}
+
+function createElem(tag, attrs = null) {
+    let newElement = (!isHTML(tag) ? document.createElement(tag) : tag); // valido si es un elemento html, si no es creo lo que envie y si no solo se asigna a la variable
+    if (null !== attrs) {
+        for (data in attrs) {
+            if ([`text`].includes(data)) {
+                newElement.textContent = attrs[data]; // html
+            } else {
+                newElement.setAttribute(data, attrs[data]); // atributos
+            }
+        }
+    }
+    return newElement;
 }
