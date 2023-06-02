@@ -24,7 +24,9 @@ $(document).ready(async function () {
     sessionStorage.removeItem("edit");
 
     if (edit) {
+        $(`#btn-fixed`).removeClass("d-none");
         cargarDatos(edit);
+        timeline(edit);
     }
 
     $("#formReporte").createDropzone({
@@ -40,10 +42,10 @@ $(document).ready(async function () {
                     <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
                 `).attr("disabled", true);
 
-                let $date = new Date().toLocaleString(locale, { timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit', weekday: "long", hour: '2-digit', hour12: false, minute: '2-digit', second: '2-digit' });
+                let $fecha = new Date().toLocaleString(locale, { timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit', weekday: "long", hour: '2-digit', hour12: false, minute: '2-digit', second: '2-digit' });
                 let totalHorasExtras = Number($(`[name="data[totalHorasExtras]"]`).val());
 
-                $(`[name="data[fechaRegistro]"]`).val($date);
+                $(`[name="data[fechaRegistro]"]`).val($fecha);
                 $(`[name="data[timezone]"]`).val(timezone);
 
                 if (totalHorasExtras > config.LIMIT_HE) {
@@ -304,4 +306,48 @@ function cargarDatos(x) {
         total();
         fechas();
     });
+}
+
+function timeline(x) {
+
+    $data = automaticForm("getDataSql", ["Comentarios", `id_reporte = ${x}`, "fechaRegistro, titulo, cuerpo"]);
+
+    if ($data.length == 0) {
+        $(`#btn-fixed`).addClass("d-none");
+    } else {
+
+        $timeline = $("#modal-comentarios .timeline");
+        $timeline.html(``);
+
+        for (ident in $data) {
+
+            $fecha = new Date($data[ident]["fechaRegistro"]).toLocaleString(locale, { timeZone: timezone, year: 'numeric', month: 'short', day: '2-digit' });
+            $hora = new Date($data[ident]["fechaRegistro"]).toLocaleString(locale, { timeZone: timezone, hour: '2-digit', hour12: false, minute: '2-digit' });
+
+            $timeline.append(`
+            <div class="time-label">
+                <span class="bg-info">${$fecha}</span>
+            </div>
+    
+            <div>
+                <i class="fas fa-times bg-red"></i>
+                <div class="timeline-item">
+                    <span class="time"><i class="fas fa-clock"></i> ${$hora}</span>
+                    <h3 class="timeline-header">${$data[ident]["titulo"]}</h3>
+    
+                    <div class="timeline-body">
+                        ${$data[ident]["cuerpo"]}
+                    </div>
+                </div>
+            </div>
+            `);
+        }
+
+        $timeline.append(`
+        <div>
+            <i class="fas fa-clock bg-gray"></i>
+        </div>
+        `);
+
+    }
 }

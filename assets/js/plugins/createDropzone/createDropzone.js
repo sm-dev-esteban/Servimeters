@@ -10,7 +10,7 @@
     // }
 
     const cdzIsHTML = function (str) {
-        return str instanceof Element || str instanceof HTMLDocument;
+        return str instanceof Element || str instanceof Document;
     }
 
     const cdzCreateElem = function (tag, attrs = null) {
@@ -34,6 +34,8 @@
     }
 
     $.fn.createDropzone = function (config) {
+        $(".dz-hidden-input").remove();
+
         let $form = $(this);
         let ident = config.ident ? config.ident : Date.now();
         // let $idDr = formatIdDropzone($form.attr(`id`) ? $form.attr(`id`) : `form${ident}`);

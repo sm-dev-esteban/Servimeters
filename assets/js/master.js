@@ -40,7 +40,7 @@ $("html").attr("lang", language);
 // config con async await
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 const loadConfig = async function () {
-    let phpLoadConfig = await fetch(`${location.origin}/${location.pathname.split("/")[1]}/config/config.php`);
+    let phpLoadConfig = await fetch(`${location.origin}/${location.pathname.split("/")[1]}/config.php`);
     let jsonLoadConfig = await fetch(`${location.origin}/${location.pathname.split("/")[1]}/config/config.json`);
     return await jsonLoadConfig.json();
 }
@@ -233,7 +233,7 @@ function automaticForm(action, params) {
 // crea o edita elementos
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 function isHTML(str) {
-    return str instanceof Element || str instanceof HTMLDocument;
+    return str instanceof Element || str instanceof Document;
 }
 
 function createElem(tag, attrs = null) {

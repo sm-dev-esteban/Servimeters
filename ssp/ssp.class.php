@@ -560,12 +560,13 @@ class SSP
 		$out = array();
 
 		for ($i = 0, $len = count($a); $i < $len; $i++) {
-			if (empty($a[$i][$prop])) {
-				continue;
+			//me la pela
+			if (!empty($a[$i][$prop]) && !in_array($a[$i][$prop], $out)) {
+				// continue;
+				$out[] = $a[$i][$prop];
 			}
 			//removing the $out array index confuses the filter method in doing proper binding,
 			//adding it ensures that the array data are mapped correctly
-			$out[$i] = $a[$i][$prop];
 		}
 
 		return $out;

@@ -2,7 +2,6 @@
 // https://www.toptal.com/developers/javascript-minifier
 try {
     server = new WebSocket('ws://localhost:8080/');
-    alerts({ icon: "success", title: "Servidor activo.", position: "bottom-start" });
 }
 catch (err) { }
 

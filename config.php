@@ -21,8 +21,8 @@ $config = [
     "PASS_EMAIL" => "Sm-123456*",
     "PORT_EMAIL" => "587",
     "FROM_EMAIL" => "soportesm@servimeters.net",
-    "URL_SITE" => strtolower(explode("/", S_PROT)[0] . "://" . S_NAME . "/") . basename(dirname(__DIR__)) . "/",
-    "FOLDER_SITE" => D_PROT . "/" . basename(dirname(__DIR__)) . "/",
+    "URL_SITE" => getenv("REQUEST_SCHEME") . "://" . getenv("HTTP_HOST") . dirname(getenv("REQUEST_URI")) . "/",
+    "FOLDER_SITE" => __DIR__ . "/",
     "APROBADO" => 1,
     "RECHAZO" => 2,
     "APROBACION_JEFE" => 3,
@@ -35,6 +35,8 @@ $config = [
     "EDICION" => 1002
 ];
 
-$configJSON = fopen("config.JSON", "w");
+$configJSON = fopen("./config/config.JSON", "w");
 fwrite($configJSON, json_encode($config, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
 fclose($configJSON);
+
+phpinfo();

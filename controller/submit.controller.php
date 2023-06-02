@@ -57,6 +57,10 @@ switch ($_GET["action"]) {
         $ceco = new AutomaticForm($_POST, "CentrosCosto");
         echo json_encode($ceco->execute(), JSON_UNESCAPED_UNICODE);
         break;
+    case 'aprobador':
+        $aprobador = new AutomaticForm($_POST, "Aprobadores");
+        echo json_encode($aprobador->execute(), JSON_UNESCAPED_UNICODE);
+        break;
     default:
         echo json_encode(["error" => "action is undefined"], JSON_UNESCAPED_UNICODE);
         exit;

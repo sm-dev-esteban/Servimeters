@@ -74,7 +74,7 @@
     const smUrlForRequest = `${location.origin}/${location.pathname.split("/")[1]}/assets/js/plugins/selectMaster`;
 
     const smIsHTML = function (str) {
-        return str instanceof Element || str instanceof HTMLDocument;
+        return str instanceof Element || str instanceof Document;
     }
 
     const smCreateElem = function (tag, attrs = null) {
@@ -335,7 +335,7 @@
                             datatableParams,
                             {
                                 "processing": true,
-                                "severSide": true,
+                                "serverSide": true,
                                 "order": [[0, "desc"]],
                                 "ajax": `${smUrlForRequest}/selectMaster.php?token=${ident}&accion=ssp&table=${c.table}&option_value=${c.option_value}`,
                                 "deferRender": true,

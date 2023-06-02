@@ -203,8 +203,8 @@
                     </div>
                 </form>
                 <!-- comentarios -->
-                <div id="btn-fixed" class="m-1">
-                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-comentarios">
+                <div id="btn-fixed" class="d-none m-1">
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modal-comentarios">
                         Comentarios
                     </button>
                 </div>

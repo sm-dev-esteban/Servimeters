@@ -4,9 +4,8 @@ $(document).ready(async function () {
     $datatable = $("#listAprov").DataTable($.extend(datatableParams,
         {
             "processing": true,
-            "severSide": true,
-            "order": [[0,
-                "desc"]],
+            "serverSide": true,
+            "order": [[0, "desc"]],
             "ajax": "../controller/ssp.controller.php?ssp=listAprobar",
             "deferRender": true
         }
@@ -70,7 +69,7 @@ $(document).ready(async function () {
         if (type == 2) { // rechazo segun area
             change = (
                 rol == "jefe" ? config.RECHAZO : (
-                    rol == "gerente" ? config.RECHAZO_GERENTE : (
+                    rol == "gerente" ? config.RECHAZO : (
                         rol == "rh" ? config.RECHAZO_RH : (
                             rol == "contable" ? config.RECHAZO_CONTABLE : "Error"
                         )
@@ -100,125 +99,68 @@ $(document).ready(async function () {
             ]);
             if (type == 2) {
 
-                Swal.fire({
-                    title: 'MOTIVO DE RECHAZO',
-                    // input: 'text',
-                    html: `
-                    <div class="mb-3">
-                        <input id="swal2-input-titulo" class="form-control form-control-lg" placeholder="Titulo" type="text" value="Rechazo ${rol}">
-                    </div>
-                    <div class="mb-3">
-                        <textarea id="swal2-input-cuerpo" class="form-control form-control-lg" placeholder="Cuerpo"></textarea>
-                    </div>
-                    `,
-                    showCancelButton: true,
-                    confirmButtonText: 'Confirmar',
-                    focusConfirm: false,
-                    preConfirm: () => {
-                        return {
-                            "titulo": $('#swal2-input-titulo').val(),
-                            "cuerpo": $('#swal2-input-cuerpo').val()
-                        }
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed == true) {
+                if (rol == "gerente") {
+                    Swal.fire({
+                        title: `Realizar rechazo a un jefe`,
+                        showDenyButton: true,
+                        confirmButtonText: `Si`,
+                        denyButtonText: `No`,
+                    }).then((confirm) => {
+                        $jefes = automaticForm("getDataSql", ["Aprobadores", "tipo = 'Jefe'", "id, nombre"])
+                        options = {};
+                        // options = ``;
 
-                        let $rechazados = automaticForm("getDataSql", [ // buscamos a los rechazados
-                            "ReportesHE",
-                            `checkStatus = '2' and id_aprobador = '${id_aprobador}' and id_estado = '${rol == "jefe"
-                                ? config.APROBACION_JEFE
-                                : (
-                                    rol == "gerente"
-                                        ? config.APROBACION_GERENTE
-                                        : false
-                                )}'`,
-                            "*"
-                        ]);
-
-                        let check = automaticForm("updateValueSql", [ // los rechazamos
-                            change,
-                            "id_estado",
-                            {
-                                "checkStatus": "2",
-                                "id_aprobador": id_aprobador,
-                                "id_estado": rol == "jefe"
-                                    ? config.APROBACION_JEFE
-                                    : (
-                                        rol == "gerente"
-                                            ? config.APROBACION_GERENTE
-                                            : false
-                                    )
-                            },
-                            "ReportesHE"
-                        ]);
-
-                        if (check.error) { // si ocurre un error lo mostramos en una alerta
-                            alerts({
-                                title: check.error,
-                                icon: "Error",
-                                duration: 10000
-                            });
-                        } else { // si todo bien hacemos un rerrido de los rechazados
-                            $rechazados.forEach(rechazo => {
-                                // ajax
-                                $.ajax(`../controller/submit.controller.php?action=rechazo`, { // lo enviamos a el ajax para registrar el comentario de cada uno
-                                    type: "POST",
-                                    dataType: "JSON",
-                                    data: {
-                                        data: $.extend(result.value, {
-                                            id_reporte: rechazo.id,
-                                            creadoPor: localStorage.getItem("usuario")
-                                        })
-                                    },
-                                    success: function (response) {
-                                        if (response.error) { // si ocurre un error en el registro lo mostramos
-                                            alerts({
-                                                title: response.error,
-                                                icon: "Error",
-                                                duration: 10000
-                                            });
-                                        } else { // caso contrario buscamos a ese usuario y le emitimos un mensaje
-                                            if (server) {
-                                                let duration = Number(result.value.length * 100);
-                                                duration = duration <= 2000 ? 3000 : duration;
-                                                // send server
-                                                server.send(
-                                                    JSON.stringify({
-                                                        general: true,
-                                                        usuario: rechazo.empleado,
-                                                        type: "alerts",
-                                                        data: {
-                                                            arrayAlert: {
-                                                                title: "Un aprobador ha rechazado tu solicitud.",
-                                                                text: `Motivo: ${result.value.cuerpo}`,
-                                                                icon: "info",
-                                                                duration: duration
-                                                            }
-                                                        }
-                                                    })
-                                                );
-                                                // send server
-                                            }
-                                        }
-                                    }
-                                });
-                                // ajax
-                            });
-                            updateDatable();
+                        for (data in $jefes) {
+                            options[$jefes[data]["id"]] = $jefes[data]["nombre"];
+                            // options += `<option value="${[$jefes[data]["id"]]}">${$jefes[data]["nombre"]}</option>`;
                         }
 
-                        // alerts({
-                        //     title: "Motivo de rechazo confirmado",
-                        //     text: "Todos los usuarios activos recibiran una notificación con el motivo de rechazo",
-                        //     icon: "info"
-                        // });
-                    } else {
-                        alerts({
-                            title: "Rechazo no confirmado",
-                            icon: "info"
-                        })
-                    }
-                });
+                        // intent ponerle select 2 pero el estilo de la alerta de no deja :c
+                        if (confirm.isConfirmed) {
+                            Swal.fire({
+                                title: "Seleccione al jefe",
+                                input: `select`,
+                                inputAttributes: {
+                                    id: `swal2-input-jefe`
+                                },
+                                inputOptions: options,
+                                customClass: {
+                                    // input: "form-control form-control-lg"
+                                    input: "form-control-lg"
+                                },
+                                // html: `
+                                // <div class="mb-3">
+                                //     <select id="swal2-input-jefe" class="form-control form-control-lg" style="width: 100%">${options}</select>
+                                // </div>
+                                // <script>
+                                // $(document).ready(function () {
+                                //     $("#swal2-input-jefe").select2();
+                                // })
+                                // </script>
+                                // `,
+                                confirmButtonText: `Confirmar`,
+                                cancelButtonText: 'Cancelar',
+                                didOpen: () => {
+                                    $select = $("select#swal2-input-jefe");
+                                    // $select.select2();
+                                },
+                                preConfirm: () => {
+                                    return $(`#swal2-input-jefe`).val()
+                                }
+                            }).then((confirmJefe) => {
+                                if (confirmJefe.isConfirmed) {
+                                    // change = config.RECHAZO_GERENTE;
+                                    rechazo(config, rol, change, [{ "id_aprobador": confirmJefe.value, "checkStatus": 1 }]);
+                                }
+                            })
+                        } else if (confirm.isDenied) {
+                            change = config.RECHAZO_GERENTE;
+                            rechazo(config, rol, change, [{ "checkStatus": 1 }]);
+                        }
+                    })
+                } else {
+                    rechazo(config, rol, change, [{ "checkStatus": 1 }]);
+                }
 
             } else if (type == 1) {
                 let check = automaticForm("updateValueSql", [ // los aprobados
@@ -306,3 +248,133 @@ function updateDatable() {
 }
 
 
+function rechazo(config, rol, change, modifyHE) {
+
+    let $where = [];
+
+    if (modifyHE && modifyHE.length > 0) {
+        modifyHE.forEach(element => {
+            for (data in element) {
+                $where.push(`${data} = '${element[data]}'`);
+            }
+        });
+    }
+
+    $where = $where.join(" AND ");
+
+    Swal.fire({
+        title: 'MOTIVO DE RECHAZO',
+        // input: 'text',
+        html: `
+        <div class="mb-3">
+            <input id="swal2-input-titulo" class="form-control form-control-lg" placeholder="Titulo" type="text" value="Rechazo ${rol}">
+        </div>
+        <div class="mb-3">
+            <textarea id="swal2-input-cuerpo" class="form-control form-control-lg" placeholder="Cuerpo"></textarea>
+        </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        focusConfirm: false,
+        preConfirm: () => {
+            return {
+                "titulo": $('#swal2-input-titulo').val(),
+                "cuerpo": $('#swal2-input-cuerpo').val()
+            }
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+
+            let $rechazados = automaticForm("getDataSql", [ // buscamos a los rechazados
+                "ReportesHE",
+                `checkStatus = '2' and id_aprobador = '${id_aprobador}' and id_estado = '${rol == "jefe"
+                    ? config.APROBACION_JEFE
+                    : (
+                        rol == "gerente"
+                            ? config.APROBACION_GERENTE
+                            : false
+                    )}'`,
+                "*"
+            ]);
+
+            let check = automaticForm("updateValueSql", [ // los rechazamos
+                change,
+                `${$where} id_estado`,
+                {
+                    "checkStatus": "2",
+                    "id_aprobador": id_aprobador,
+                    "id_estado": rol == "jefe"
+                        ? config.APROBACION_JEFE
+                        : (
+                            rol == "gerente"
+                                ? config.APROBACION_GERENTE
+                                : false
+                        )
+                },
+                "ReportesHE"
+            ]);
+
+            if (check.error) { // si ocurre un error lo mostramos en una alerta
+                alerts({
+                    title: check.error,
+                    icon: "Error",
+                    duration: 10000
+                });
+            } else { // si todo bien hacemos un rerrido de los rechazados
+                $rechazados.forEach(rechazo => {
+                    // ajax
+                    $.ajax(`../controller/submit.controller.php?action=rechazo`, { // lo enviamos a el ajax para registrar el comentario de cada uno
+                        type: "POST",
+                        dataType: "JSON",
+                        data: {
+                            data: $.extend(result.value, {
+                                id_reporte: rechazo.id,
+                                creadoPor: localStorage.getItem("usuario")
+                            })
+                        },
+                        success: function (response) {
+                            if (response.error) { // si ocurre un error en el registro lo mostramos
+                                alerts({
+                                    title: response.error,
+                                    icon: "Error",
+                                    duration: 10000
+                                });
+                            } else { // caso contrario buscamos a ese usuario y le emitimos un mensaje
+                                if (server) {
+                                    let duration = Number(result.value.length * 100);
+                                    duration = duration <= 2000 ? 3000 : duration;
+                                    // send server
+                                    server.send(
+                                        JSON.stringify({
+                                            general: true,
+                                            usuario: rechazo.empleado,
+                                            type: "alerts",
+                                            data: {
+                                                arrayAlert: {
+                                                    title: "Un aprobador ha rechazado tu solicitud.",
+                                                    text: `Motivo: ${result.value.cuerpo}`,
+                                                    icon: "info",
+                                                    duration: duration
+                                                }
+                                            }
+                                        })
+                                    );
+                                    // send server
+                                }
+                            }
+                        }
+                    });
+                    // ajax
+                });
+                updateDatable();
+            }
+
+        } else {
+            alerts({
+                title: "Rechazo no confirmado",
+                icon: "info"
+            })
+        }
+    });
+}

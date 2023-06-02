@@ -3,7 +3,7 @@ $(document).ready(async function () {
 
     $(`#listCL`).DataTable($.extend(datatableParams, {
         "processing": true,
-        "severSide": true,
+        "serverSide": true,
         "order": [[0, `desc`]],
         "ajax": `../controller/ssp.controller.php?ssp=clase`
     })).buttons().container().appendTo($('.col-sm-6:eq(0)'));

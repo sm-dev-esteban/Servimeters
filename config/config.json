@@ -12,7 +12,7 @@
     "PORT_EMAIL": "587",
     "FROM_EMAIL": "soportesm@servimeters.net",
     "URL_SITE": "http:\/\/localhost\/Servimeters\/",
-    "FOLDER_SITE": "C:\/xampp\/htdocs\/Servimeters\/",
+    "FOLDER_SITE": "C:\\xampp\\htdocs\\Servimeters\/",
     "APROBADO": 1,
     "RECHAZO": 2,
     "APROBACION_JEFE": 3,
