@@ -232,7 +232,7 @@ switch ($_GET["ssp"]) {
                     return '
                     <div data-show="' . $id_table . '">' . $d . '</div>
                     <div data-edit="' . $id_table . '"class="d-none">
-                        <input data-column="titulo" data-update="' . $id_table . '" data-table="' . TABLE . '" type="text" value="' . $d . '" class="form-control" onchange="updateClass(this)">
+                        <input data-column="titulo" data-update="' . $id_table . '" data-table="' . TABLE . '" type="text" value="' . $d . '" class="form-control" onchange="update(this)">
                     </div>
                     ';
                 }
@@ -252,6 +252,7 @@ switch ($_GET["ssp"]) {
         ];
         break;
     case 'ceco':
+        $table = "CentrosCosto CC inner join Clase C on CC.id_clase = C.id";
         $table = "CentrosCosto";
         define("TABLE", $table);
 
@@ -262,7 +263,7 @@ switch ($_GET["ssp"]) {
                     return '
                     <div data-show="' . $id_table . '">' . $d . '</div>
                     <div class="d-none" data-edit="' . $id_table . '">
-                        <input data-column="titulo" data-update="' . $id_table . '" data-table="' . TABLE . '" type="text" value="' . $d . '" class="form-control" onchange="updateClass(this)">
+                        <input data-column="titulo" data-update="' . $id_table . '" data-table="' . TABLE . '" type="text" value="' . $d . '" class="form-control" onchange="update(this)">
                     </div>
                     ';
                 }
@@ -283,7 +284,7 @@ switch ($_GET["ssp"]) {
                     return '
                     <div data-show="' . $id_table . '">' . $clase . '</div>
                     <div class="d-none" data-edit="' . $id_table . '">
-                        <select data-column="id_clase" data-update="' . $id_table . '" data-table="' . TABLE . '" class="form-control" onchange="updateClass(this)">
+                        <select data-column="id_clase" data-update="' . $id_table . '" data-table="' . TABLE . '" class="form-control" onchange="update(this)">
                             ' . $option . '
                         </select>
                     </div>
@@ -315,7 +316,7 @@ switch ($_GET["ssp"]) {
                     return '
                     <div data-show="' . $id_table . '">' . $d . '</div>
                     <div data-edit="' . $id_table . '" class="d-none">
-                        <input type="text" class="form-control" value="' . $d . '">
+                        <input type="text" class="form-control" value="' . $d . '" onchange="update(this)" data-column="nombre" data-update="' . $id_table . '" data-table="' . TABLE . '">
                     </div>
                     ';
                 }
@@ -327,7 +328,7 @@ switch ($_GET["ssp"]) {
                     return '
                     <div data-show="' . $id_table . '">' . $d . '</div>
                     <div data-edit="' . $id_table . '" class="d-none">
-                        <input type="text" class="form-control" value="' . $d . '">
+                        <input type="text" class="form-control" value="' . $d . '" onchange="update(this)" data-column="correo" data-update="' . $id_table . '" data-table="' . TABLE . '">
                     </div>
                     ';
                 }
@@ -342,7 +343,7 @@ switch ($_GET["ssp"]) {
                     return '
                     <div data-show="' . $id_table . '">' . $d . '</div>
                     <div data-edit="' . $id_table . '" class="d-none">
-                        <select class="form-control">' . $option . '</select>
+                        <select class="form-control" onchange="update(this)" data-column="tipo" data-update="' . $id_table . '" data-table="' . TABLE . '">' . $option . '</select>
                     </div>
                     ';
                 }
@@ -357,7 +358,7 @@ switch ($_GET["ssp"]) {
                     return '
                     <div data-show="' . $id_table . '">' . $d . '</div>
                     <div data-edit="' . $id_table . '" class="d-none">
-                        <select class="form-control">' . $option . '</select>
+                        <select class="form-control" onchange="update(this)" data-column="gestiona" data-update="' . $id_table . '" data-table="' . TABLE . '">' . $option . '</select>
                     </div>
                     ';
                 }
@@ -372,7 +373,7 @@ switch ($_GET["ssp"]) {
                     return '
                     <div data-show="' . $id_table . '">' . $d . '</div>
                     <div data-edit="' . $id_table . '" class="d-none">
-                        <select class="form-control">' . $option . '</select>
+                        <select class="form-control" onchange="update(this)" data-column="esAdmin" data-update="' . $id_table . '" data-table="' . TABLE . '">' . $option . '</select>
                     </div>
                     ';
                 }

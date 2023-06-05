@@ -28,12 +28,12 @@ switch ($_GET["accion"]) {
 
         $columns = [
             [
-                "db" => PRIMARYKEY, "dt" => $i++, "formatter" => function ($d, $row) {
-                    $val = AutomaticForm::getValueSql($d, PRIMARYKEY, OPTIONVAL, TABLE);
+                "db" => OPTIONVAL, "dt" => $i++, "formatter" => function ($d, $row) {
+                    $id_table = $row["id"];
                     return '
-                        <div data-show="' . $d . '">' . $val . '</div>
-                        <div data-edit="' . $d . '" class="d-none">
-                            <input class="form-control" value="' . $val . '" onchange="jQuery(this).smModeEdit(`' . TOKEN . '`, ' . $d . ', `' . OPTIONVAL . '`, `' . TABLE . '`)">
+                        <div data-show="' . $id_table . '">' . $d . '</div>
+                        <div data-edit="' . $id_table . '" class="d-none">
+                            <input class="form-control" value="' . $d . '" onchange="jQuery(this).smModeEdit(`' . TOKEN . '`, ' . $id_table . ', `' . OPTIONVAL . '`, `' . TABLE . '`)">
                         </div>
                     ';
                 }

@@ -42,7 +42,7 @@ function ChangeMode(x) {
     $(`[data-edit=${x}]`).toggleClass("d-none");
 }
 
-function updateClass(x) {
+function update(x) {
     let $this, v, c, u, t, $check;
     $this = $(x);
     v = $this.val();
