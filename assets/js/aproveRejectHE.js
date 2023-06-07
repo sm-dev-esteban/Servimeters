@@ -143,23 +143,20 @@ $(document).ready(async function () {
                                 didOpen: () => {
                                     $select = $("select#swal2-input-jefe");
                                     // $select.select2();
-                                },
-                                preConfirm: () => {
-                                    return $(`#swal2-input-jefe`).val()
                                 }
                             }).then((confirmJefe) => {
                                 if (confirmJefe.isConfirmed) {
                                     // change = config.RECHAZO_GERENTE;
-                                    rechazo(config, rol, change, [{ "id_aprobador": confirmJefe.value, "checkStatus": 1 }]);
+                                    rechazo(config, rol, change, id_aprobador, [{ "id_aprobador": confirmJefe.value, "checkStatus": 1 }]);
                                 }
                             })
                         } else if (confirm.isDenied) {
                             change = config.RECHAZO_GERENTE;
-                            rechazo(config, rol, change, [{ "checkStatus": 1 }]);
+                            rechazo(config, rol, change, id_aprobador, [{ "id_aprobador": id_aprobador, "checkStatus": 1 }]);
                         }
                     })
                 } else {
-                    rechazo(config, rol, change, [{ "checkStatus": 1 }]);
+                    rechazo(config, rol, change, id_aprobador, [{ "id_aprobador": id_aprobador, "checkStatus": 1 }]);
                 }
 
             } else if (type == 1) {
@@ -248,7 +245,17 @@ function updateDatable() {
 }
 
 
-function rechazo(config, rol, change, modifyHE) {
+function rechazo(config, rol, change, id_aprobador, modifyHE) {
+    email = localStorage.getItem("email");
+    let user_id_aprobador = automaticForm("getValueSql", [
+        email,
+        "correo",
+        "id",
+        "Aprobadores"
+    ]);
+
+    console.log(rol, id_aprobador, user_id_aprobador);
+
 
     let $where = [];
 
@@ -260,7 +267,7 @@ function rechazo(config, rol, change, modifyHE) {
         });
     }
 
-    $where = $where.join(" AND ");
+    $where = $where.join(", ");
 
     Swal.fire({
         title: 'MOTIVO DE RECHAZO',
@@ -300,7 +307,7 @@ function rechazo(config, rol, change, modifyHE) {
 
             let check = automaticForm("updateValueSql", [ // los rechazamos
                 change,
-                `${$where} id_estado`,
+                `${$where}, id_estado`,
                 {
                     "checkStatus": "2",
                     "id_aprobador": id_aprobador,

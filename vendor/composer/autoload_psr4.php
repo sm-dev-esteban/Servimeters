@@ -13,7 +13,6 @@ return array(
     'Symfony\\Component\\HttpFoundation\\' => array($vendorDir . '/symfony/http-foundation'),
     'React\\Stream\\' => array($vendorDir . '/react/stream/src'),
     'React\\Socket\\' => array($vendorDir . '/react/socket/src'),
-    'React\\Promise\\Timer\\' => array($vendorDir . '/react/promise-timer/src'),
     'React\\Promise\\' => array($vendorDir . '/react/promise/src'),
     'React\\EventLoop\\' => array($vendorDir . '/react/event-loop/src'),
     'React\\Dns\\' => array($vendorDir . '/react/dns/src'),

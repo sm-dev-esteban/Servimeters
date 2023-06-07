@@ -10,7 +10,6 @@ class ComposerStaticInitddc700470b6810dc90859bc182dbdada
         'ad155f8f1cf0d418fe49e248db8c661b' => __DIR__ . '/..' . '/react/promise/src/functions_include.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
-        '972fda704d680a3a53c68e34e193cb22' => __DIR__ . '/..' . '/react/promise-timer/src/functions_include.php',
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '662a729f963d39afe703c9d9b7ab4a8c' => __DIR__ . '/..' . '/symfony/polyfill-php83/bootstrap.php',
@@ -29,7 +28,6 @@ class ComposerStaticInitddc700470b6810dc90859bc182dbdada
         array (
             'React\\Stream\\' => 13,
             'React\\Socket\\' => 13,
-            'React\\Promise\\Timer\\' => 20,
             'React\\Promise\\' => 14,
             'React\\EventLoop\\' => 16,
             'React\\Dns\\' => 10,
@@ -79,10 +77,6 @@ class ComposerStaticInitddc700470b6810dc90859bc182dbdada
         'React\\Socket\\' => 
         array (
             0 => __DIR__ . '/..' . '/react/socket/src',
-        ),
-        'React\\Promise\\Timer\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/react/promise-timer/src',
         ),
         'React\\Promise\\' => 
         array (
