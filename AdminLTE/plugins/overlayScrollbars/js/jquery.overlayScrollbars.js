@@ -325,8 +325,7 @@
                         return obj + '';
                     return Object[LEXICON.p].toString.call(obj).replace(/^\[object (.+)\]$/, '$1').toLowerCase();
                 },
-
-
+    
                 bind: bind
 
                 /**
@@ -852,8 +851,7 @@
                 var _loopInterval = _loopIntervalDefault;
                 var _loopTimeOld = _getNow();
                 var _loopID;
-
-
+    
                 /**
                  * The auto update loop which will run every 50 milliseconds or less if the update interval of a instance is lower than 50 milliseconds.
                  */
@@ -1233,8 +1231,7 @@
                 var _resizeBoth;
                 var _resizeHorizontal;
                 var _resizeVertical;
-
-
+    
                 //==== Event Listener ====//	
 
                 /**	
@@ -1275,8 +1272,7 @@
                         }
                     }
                 }
-
-
+    
                 function addDestroyEventListener(element, eventNames, listener, passive) {
                     setupResponsiveEventListener(element, eventNames, listener, false, passive);
                     _destroyEvents.push(COMPATIBILITY.bind(setupResponsiveEventListener, 0, element, eventNames, listener, true, passive));
@@ -1341,8 +1337,7 @@
                                          expandChildCSS[_strWidth] = sizeResetWidth;
                                          expandChildCSS[_strHeight] = sizeResetHeight;
                                          expandElementChild.css(expandChildCSS);
-
-
+    
                                          expandElement[_strScrollLeft](sizeResetWidth)[_strScrollTop](sizeResetHeight);
                                          shrinkElement[_strScrollLeft](sizeResetWidth)[_strScrollTop](sizeResetHeight);
                                          */
@@ -1516,8 +1511,7 @@
                     }
                 }
                 */
-
-
+    
                 //==== Mutation Observers ====//
 
                 /**
@@ -1662,8 +1656,7 @@
                         _mutationObserversConnected = false;
                     }
                 }
-
-
+    
                 //==== Events of elements ====//
 
                 /**
@@ -1759,8 +1752,7 @@
                     if (!_initialized && !destroy)
                         _hostElement.one('mouseover', hostOnMouseEnter);
                 }
-
-
+    
                 //==== Update Detection ====//
 
                 /**
@@ -1998,8 +1990,7 @@
                     }
                     return sizeIsAffected;
                 }
-
-
+    
                 //==== Update ====//
 
                 /**
@@ -3059,8 +3050,7 @@
 
                     return validatedOpts._prepared;
                 }
-
-
+    
                 //==== Structure ====//
 
                 /**
@@ -3342,8 +3332,7 @@
                             }, scrollStopDelay);
                         }
                     }
-
-
+    
                     if (_isTextarea) {
                         if (_msieVersion > 9 || !_autoUpdateRecommended) {
                             addDestroyEventListener(_targetElement, 'input', updateTextarea);
@@ -3363,8 +3352,7 @@
                     }
                     addDestroyEventListener(_viewportElement, _strScroll, viewportOnScroll, true);
                 }
-
-
+    
                 //==== Scrollbars ====//
 
                 /**
@@ -3854,8 +3842,7 @@
                     }
                     else
                         handleCSS[scrollbarVars._left_top] = handleOffset;
-
-
+    
                     //only apply css if offset has changed and overflow exists.
                     if (!nativeOverlayScrollbarsAreActive()) {
                         scrollbarVars._handle.css(handleCSS);
@@ -3910,8 +3897,7 @@
                         _info: isHorizontal ? _scrollHorizontalInfo : _scrollVerticalInfo
                     };
                 }
-
-
+    
                 //==== Scrollbar Corner ====//
 
                 /**
@@ -4015,8 +4001,7 @@
                         }
                     });
                 }
-
-
+    
                 //==== Utils ====//
 
                 /**
@@ -4359,8 +4344,7 @@
                         each(updateOnLoad, action);
                     }
                 }
-
-
+    
                 //==== Utils Cache ====//
 
                 /**
@@ -4391,8 +4375,7 @@
                     }
                     return false;
                 }
-
-
+    
                 //==== Shortcuts ====//
 
                 /**
@@ -4439,8 +4422,7 @@
                 function findFirst(el, selector) {
                     return _frameworkProto.find.call(el, selector).eq(0);
                 }
-
-
+    
                 //==== API ====//
 
                 /**

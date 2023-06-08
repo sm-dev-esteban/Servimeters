@@ -64,3 +64,21 @@ $(`[data-toggle="popover"]`).each(function () {
         container: 'body'
     });
 });
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+// bootstrap switch
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+$(":checkbox[data-bootstrap-switch]").each(function () {
+    $this = $(this);
+
+    off = $this.data("off-color");
+    on = $this.data("on-color");
+
+    if (!off) {
+        $this.data("off-color", "danger");
+    }
+    if (!on) {
+        $this.data("on-color", "success");
+    }
+
+    $this.bootstrapSwitch('state', $this.prop('checked'));
+})

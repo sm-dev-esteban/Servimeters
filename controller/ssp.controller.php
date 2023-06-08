@@ -62,11 +62,11 @@ switch ($_GET["ssp"]) {
             [
                 "db" => "id_estado", "dt" => $i++, "formatter" => function ($d, $row) {
                     $id_table = $row["id"];
-                    $r = "";
                     $edicion = [CONFIG->RECHAZO, CONFIG->EDICION];
-                    $r .= in_array($d, $edicion) ? '<button type="button" class="rounded btn-primary m-1" onclick="contentPage(' . "'reportar/index.view?edit={$d}', 'Editar Reporte #{$d}', 'reporteHE'" . ')"><i class="fa fa-pen"></i></button>' : '';
+                    $r = "";
+                    $r .= in_array($d, $edicion) ? '<button type="button" class="rounded btn-primary m-1" onclick="contentPage(' . "'reportar/index.view?edit={$id_table}', 'Editar Reporte #{$id_table}', 'reporteHE'" . ')"><i class="fa fa-pen"></i></button>' : '';
                     $r .= '<button type="button" class="rounded btn-danger m-1"><i class="fa fa-trash"></i></button>';
-                    $r .= '<button type="button" class="rounded btn-info m-1" onclick="showinfo(' . $d . ')" data-toggle="modal" data-target="#viewDetail"><i class="fa fa-eye"></i></button>';
+                    $r .= '<button type="button" class="rounded btn-info m-1" onclick="showinfo(' . $id_table . ')" data-toggle="modal" data-target="#viewDetail"><i class="fa fa-eye"></i></button>';
                     return $r;
                 }
             ]

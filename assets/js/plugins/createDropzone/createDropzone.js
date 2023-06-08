@@ -135,8 +135,7 @@
                 </div>
             </div>
             `);
-
-
+    
             let previewNode = document.querySelector(`#template${ident}`);
             previewNode.id = "";
 

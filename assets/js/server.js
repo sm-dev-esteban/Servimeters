@@ -6,7 +6,7 @@ try {
 catch (err) { }
 
 server.onerror = function (error) {
-    alerts({ icon: "error", title: "Servidor inactivo.", position: "bottom-start" });
+    alerts({ icon: "error", title: "WebSocket inactivo.", position: "bottom-start" });
     resp = $.ajax(`${location.origin}/${location.pathname.split("/")[1]}/bin/start.php`, { async: false });
     // if (resp.status == 200) {
     //     setTimeout(() => {

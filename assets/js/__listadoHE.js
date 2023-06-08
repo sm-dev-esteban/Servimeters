@@ -187,8 +187,7 @@ function editar() {
                             localStorage.setItem('correoAprobador', correoAprobador);
                             localStorage.setItem('aprobador', aprobador);
                             localStorage.setItem('TipoAprobador', 'Jefe');
-
-
+    
                         } else if (data.aprobadorTipo == 'Gerente') {
                             $("#gerente").prop("checked", true);
                             $('#listGerente').attr('disabled', false);
@@ -233,8 +232,7 @@ function editar() {
                     } catch (e) {
                         console.log(e);
                     }
-
-
+    
                 }, 5000);
 
             });

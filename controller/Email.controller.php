@@ -118,6 +118,14 @@ switch ($_GET['email']) {
         echo $result;
         exit();
         break;
+    case 'default':
+        $to = (isset($_POST["to"]) ? $_POST["to"] : "");
+        $cc = (isset($_POST["cc"]) ? $_POST["cc"] : "");
+        $subject = (isset($_POST["subject"]) ? $_POST["subject"] : "");
+        $body = (isset($_POST["body"]) ? $_POST["body"] : "");
+        echo json_encode($email->sendEmail($to, $cc, $subject, $body), JSON_UNESCAPED_UNICODE);
+        exit;
+        break;
     default:
         echo '';
         break;

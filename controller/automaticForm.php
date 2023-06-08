@@ -234,7 +234,6 @@ class AutomaticForm extends DB
             foreach ($this->file["name"] as $key => $value) {
                 if ($checkEmptyValues ? !empty($value) : !empty($key)) {
 
-
                     if (!file_exists(FOLDER_SITE)) { // creamos la carpeta si no existeF
                         mkdir(FOLDER_SITE, 0777, true);
                     }

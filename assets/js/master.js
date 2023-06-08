@@ -65,7 +65,10 @@ $(document).ready(function () {
 // Nota: función peligrosa ojo en como se usa
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 /**
- * @info Este es un replace que borra en absoluto lo que le pasen
+ * @param {string} string cadena de texto
+ * @param {string} search valor que van a buscar
+ * @param {string} replace valor con el que lo van a reemplazar
+ * @return retorna una nueva cadena
 */
 function strictReplace(string, search, replace) {
     if (!string.includes(search) || search == replace) { // valido si esta lo que quieren reemplazar y que no sea igual lo que busca con lo que quiere reemplazar
@@ -83,10 +86,10 @@ function strictReplace(string, search, replace) {
 // Nota: Por lo menos esa es mi idea :c
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 /**
- * @param Array arrayAlert arreglo con valores para la alerta ninguno es oblitagorio ejemplo alerts([title: "prueba", text: "test", icon: "success", position: "top-end"])
- * @param String arrayAlert[position] valores que acepta (top, top-start, top-end, center, center-start, center-end, bottom, bottom-start, bottom-end) default top-end
- * @param String arrayAlert[icon] valores que acepta (success, error, warning, info, question) default false
- * @param String typeAlert tipo de alerta segun la que quieran usar por defecto Sweetalert2
+ * @param {Array} arrayAlert arreglo con valores para la alerta ninguno es oblitagorio ejemplo alerts([title: "prueba", text: "test", icon: "success", position: "top-end"])
+ * @param {String} arrayAlert[position] valores que acepta (top, top-start, top-end, center, center-start, center-end, bottom, bottom-start, bottom-end) default top-end
+ * @param {String} arrayAlert[icon] valores que acepta (success, error, warning, info, question) default false
+ * @param {String} typeAlert tipo de alerta segun la que quieran usar por defecto Sweetalert2
 */
 function alerts(arrayAlert, typeAlert = "Sweetalert2") {
 
@@ -248,4 +251,78 @@ function createElem(tag, attrs = null) {
         }
     }
     return newElement;
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+// Envia Correos
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+/**
+ * @param {string|string[]} to Correo al que se le va a enviar
+ * @param {string} cc Relacionados
+ * @param {string} subject Titulo
+ * @param {string} body Contenido
+ * @return {string[]} Retorna un arreglo con un estado o un error dado el caso
+ * @description Envía correos a uno o múltiples correos a la vez. Mientras se envía, muestra una pequeña animación para que no lo molesten.
+*/
+function sendMail(to, cc, subject, body) {
+    $div = $(`.wrapper .preloader`);
+    $img = $(`.wrapper .preloader img`);
+
+    $img_src = $img.attr("src");
+    $img_class = $img.attr("class");
+
+    $div_class = $div.attr("class");
+
+    $justifyContent = ["start", "end", "center", "between", "around"];
+    $alignItems = ["start", "end", "center", "baseline", "stretch"];
+
+    $.ajax(`../controller/Email.controller.php?email=default`, {
+        dataType: "JSON",
+        type: "POST",
+        data: {
+            to: to, /* Array|String */
+            cc: cc, /* String */
+            subject: subject, /* String */
+            body: body /* String */
+        },
+        beforeSend: function () { // Los correos son pesados para enviar así que cargo una animación pa que no se aburra
+            $div.css({
+                "height": `100%`
+            });
+
+            $interval = setInterval(() => {
+                $rJC = Math.floor(Math.random() * $justifyContent.length);
+                $rAI = Math.floor(Math.random() * $alignItems.length);
+                $div.attr("class", `preloader flex-column justify-content-${$justifyContent[$rJC]} align-items-${$alignItems[$rAI]}`);
+            }, 2500);
+
+            $img.removeAttr("class").attr("src", "../images/email.png").css({
+                "display": `block`,
+                "animation": `wobble 2500ms infinite`
+            });
+        },
+        success: function (response) {
+            // console.log(response);
+            if (!response["status"]) {
+                alerts({
+                    title: `Error al enviar el correo`,
+                    icon: `error`,
+                    duration: 10000
+                })
+            } else {
+                alerts({
+                    title: `Correo Enviado`,
+                    icon: `success`
+                })
+            }
+        },
+        complete: function () { // Los correos son pesados para enviar así que cargo una animación pa que no se aburra
+            window.clearInterval($interval);
+            $div.attr("class", $div_class).css({
+                "height": `0`
+            });
+            $img.attr("class", $img_class).attr("src", $img_src).css({
+                "display": `none`
+            });
+        }
+    });
 }

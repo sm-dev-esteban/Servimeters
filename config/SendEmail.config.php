@@ -2,12 +2,14 @@
 
 use PHPMailer\PHPMailer\PHPMailer;
 
-class Email{
+class Email
+{
 
     private $correo;
     private $config;
 
-    function __construct(){
+    function __construct()
+    {
         include_once('../config/PhpMailer/Exception.php');
         include_once('../config/PhpMailer/PHPMailer.php');
         include_once('../config/PhpMailer/SMTP.php');
@@ -17,10 +19,23 @@ class Email{
     }
 
 
-    public function sendEmail($to, $cc, $subject, $body){
+    public function sendEmail($to, $cc, $subject, $body)
+    {
+        $address = [
+            "noreaply" => [
+                "name" => "no reaply",
+                "mail" => $this->config->FROM_EMAIL
+            ]
+        ];
 
-        try{
-            $this->correo->SMTPDebug=0;
+        $address = array_merge($address, is_array($to) ? $to : [
+            [
+                "mail" => $to
+            ]
+        ]);
+
+        try {
+            $this->correo->SMTPDebug = 0;
             $this->correo->isSMTP();
             $this->correo->Host = $this->config->HOST_EMAIL;
             $this->correo->SMTPAuth = true;
@@ -28,10 +43,15 @@ class Email{
             $this->correo->Password = $this->config->PASS_EMAIL;
             $this->correo->SMTPSecure = "tls";
             $this->correo->Port = $this->config->PORT_EMAIL;
-        
-            $this->correo->setFrom($this->config->FROM_EMAIL,"Solicitud de Horas Extra");
-            $this->correo->addAddress($to);
-            $this->correo->addAddress($this->config->FROM_EMAIL);
+
+            $this->correo->setFrom($this->config->FROM_EMAIL, "Solicitud de Horas Extra");
+            // $this->correo->addAddress($to);
+            // $this->correo->addAddress($this->config->FROM_EMAIL);
+            foreach ($address as $key => $value) {
+                if (isset($value["mail"])) {
+                    $this->correo->addAddress($value["mail"], (isset($value["name"]) ? $value["name"] : "Empleado"));
+                }
+            }
             $this->correo->addCC($cc);
             $this->correo->isHTML(true);
             $this->correo->Subject = $subject;
@@ -39,17 +59,16 @@ class Email{
             $this->correo->CharSet = "UTF-8";
             // $this->correo->send(); // la funcion envia un correo cada que se ejecuata -- no descomentar
 
-            if(!$this->correo->send()) {
-                echo 'Message could not be sent.';
-                echo 'Mailer Error: ' . $this->correo->ErrorInfo;
-            } else {
-                echo 'Message has been sent';
-            }
-            return true;
-        }
-        catch (Exception $e){
-            return $this->correo->ErrorInfo;
-        }
+            // if (!$this->correo->send()) {
+            //     echo 'Message could not be sent.';
+            //     echo 'Mailer Error: ' . $this->correo->ErrorInfo;
+            // } else {
+            //     echo 'Message has been sent';
+            // }
 
+            return ["status" => ($this->correo->send() ? true : false)]; // en teoria esto nunca devulve false, pero uno nunca sabe
+        } catch (Exception $e) {
+            return ["status" => false, "error" => $this->correo->ErrorInfo];
+        }
     }
 }

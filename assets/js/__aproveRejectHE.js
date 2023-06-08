@@ -715,8 +715,7 @@ function executeComment(ids, comentario, isCommentsVisibles = false) {
                 }catch (e) {
                     return true;
                 }
-
-
+    
             }else if([6, 8, 10].includes(estado)){
                 let detailReject;
                 try {

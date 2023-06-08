@@ -85,7 +85,6 @@ $(document).ready(async function () {
             //     document.querySelector(`#total-progress${ident}`).style.opacity = "0"
             // });
 
-
             // this.on("sendingmultiple", function () { });
             this.on("successmultiple", function (files, response) {
                 response = JSON.parse(response);
