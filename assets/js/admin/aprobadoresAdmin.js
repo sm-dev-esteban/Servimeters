@@ -35,30 +35,28 @@ $(document).ready(async function () {
         })
     });
 
-    // pendiente
-
-    $(`.bootstrap-switch span`).on("click", function () {
-        $this = $(this.parentNode.parentNode);
-        $check = $this.hasClass("bootstrap-switch-on");
-    });
-
     $("#nombre, #correo").on("input", function () {
         $this = $(this);
-        $.ajax(`../controller/search.ldap.php`, {
-            dataType: "JSON",
-            type: "POST",
-            data: {
-                search: $this.val()
-            },
-            success: function (response) {
-                if (response.count == 1) {
-                    $(`#nombre`).val(response[0].name[0]);
-                    $(`#correo`).val(response[0].mail[0]);
+        $checkbox = $(`#check_directorio_activo`);
+        $divcheck = $(`.bootstrap-switch-id-${$checkbox.attr(`id`)}`);
+        
+        $check = $divcheck.hasClass("bootstrap-switch-on");
+        if ($check) {
+            $.ajax(`../controller/search.ldap.php`, {
+                dataType: "JSON",
+                type: "POST",
+                data: {
+                    search: $this.val()
+                },
+                success: function (response) {
+                    if (response.count == 1) {
+                        $(`#nombre`).val(response[0].name[0]);
+                        $(`#correo`).val(response[0].mail[0]);
+                    }
                 }
-            }
-        });
+            });
+        }
     });
-    // pendiente
 
 });
 

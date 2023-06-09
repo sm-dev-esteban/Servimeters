@@ -68,45 +68,47 @@
                             <p data-report="aprobador"><b>Aprobador: </b>##########</p>
                         </div>
                     </div>
-                    <table data-report="detailContent" class="table">
-                        <thead>
-                            <tr>
-                                <th>Permisos Descuentos</th>
-                                <th>Ext Diu Fes Dom</th>
-                                <th>Ext Diu Ord</th>
-                                <th>Ext Noc Fes Dom</th>
-                                <th>Ext Noc Ord</th>
-                                <th>Rec Fes Diu</th>
-                                <th>Rec Fes Noc</th>
-                                <th>Rec Noc</th>
-                                <th>Rec Ord Fes Noc</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th colspan="9">Actividad</th>
-                            </tr>
-                            <tr>
-                                <td colspan="9">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Saepe aut consectetur ipsa rerum facere harum temporibus illum quasi. Nemo veritatis delectus similique asperiores labore cupiditate dolores quod vero reiciendis necessitatibus?</td>
-                            </tr>
-                            <tr>
-                                <td>#</td>
-                                <td>#</td>
-                                <td>#</td>
-                                <td>#</td>
-                                <td>#</td>
-                                <td>#</td>
-                                <td>#</td>
-                                <td>#</td>
-                                <td>#</td>
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th colspan="9">Nota: Se presenta las horas registradas en la plataforma, favor tener presente que estas deben ser aprobadas por el jefe de área</th>
-                            </tr>
-                        </tfoot>
-                    </table>
+                    <div class="table-responsive">
+                        <table data-report="detailContent" class="table">
+                            <thead>
+                                <tr>
+                                    <th>Permisos Descuentos</th>
+                                    <th>Ext Diu Fes Dom</th>
+                                    <th>Ext Diu Ord</th>
+                                    <th>Ext Noc Fes Dom</th>
+                                    <th>Ext Noc Ord</th>
+                                    <th>Rec Fes Diu</th>
+                                    <th>Rec Fes Noc</th>
+                                    <th>Rec Noc</th>
+                                    <th>Rec Ord Fes Noc</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th colspan="9">Actividad</th>
+                                </tr>
+                                <tr>
+                                    <td colspan="9">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Saepe aut consectetur ipsa rerum facere harum temporibus illum quasi. Nemo veritatis delectus similique asperiores labore cupiditate dolores quod vero reiciendis necessitatibus?</td>
+                                </tr>
+                                <tr>
+                                    <td>#</td>
+                                    <td>#</td>
+                                    <td>#</td>
+                                    <td>#</td>
+                                    <td>#</td>
+                                    <td>#</td>
+                                    <td>#</td>
+                                    <td>#</td>
+                                    <td>#</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="9">Nota: Se presenta las horas registradas en la plataforma, favor tener presente que estas deben ser aprobadas por el jefe de área</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer justify-content-between">

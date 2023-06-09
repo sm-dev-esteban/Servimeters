@@ -91,8 +91,23 @@ $(document).ready(async function () {
                 if (response.error) {
                     alerts({ title: `Error SQL: ${response.error}`, icon: "error", duration: 10000 });
                 } else if (response.status == true) {
-                    $(`[href*="estado/listEstado.view"]`).click();
-                    alerts({ title: "Horas extras registradas", icon: "success", duration: 5000 });
+                    email = localStorage.getItem("email");
+                    usuario = localStorage.getItem("usuario");
+                    id_aprobador = $(`[name="data[id_aprobador]"]`).val();
+                    $check = { status: true };
+                    if (id_aprobador != "" && id_aprobador > 0) {
+                        correoAprobador = automaticForm(`getValueSql`, [id_aprobador, "@primary", "correo", "Aprobadores"])
+                        $check = sendMail(email, correoAprobador, `Actualizacion Horas Extra por ${usuario}`, `
+                        Buen dia, Las Horas Extra con el número ${edit} han sido actualizadas y estan pendiente por revisar.
+                        Este mensaje ha sido generado automáticamente.
+                        `);
+                    }
+                    if ($check.status == true) {
+                        $(`[href*="estado/listEstado.view"]`).click();
+                        alerts({ title: "Horas extras registradas", icon: "success", duration: 5000 });
+                    } else {
+                        alerts({ title: "HHa ocurrido un error al intentar enviar el correo.", icon: "info", duration: 5000 });
+                    }
                 } else {
                     alerts({ title: "Error al registrar las horas extras registradas, inténtalo más tarde", icon: "error" });
                 }

@@ -204,7 +204,7 @@ $(document).ready(async function () {
                         email,
                         "Aprobación de Horas Extra",
                         `
-                        Buen día, sus horas extras fueron rechazadas.<br>
+                        Buen día, sus horas extras fueron aprobadas.<br>
                         Este mensaje ha sido generado automáticamente.<br>
                         `
                     )
