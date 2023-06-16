@@ -18,7 +18,6 @@ class Email
         $this->config = LoadConfig::getConfig();
     }
 
-
     public function sendEmail($to, $cc, $subject, $body)
     {
         $address = [

@@ -86,6 +86,10 @@ $(document).ready(async function () {
             // });
 
             // this.on("sendingmultiple", function () { });
+
+
+            // pendiente
+
             this.on("successmultiple", function (files, response) {
                 response = JSON.parse(response);
                 if (response.error) {

@@ -147,6 +147,7 @@ $(document).ready(async function () {
                             }).then((confirmJefe) => {
                                 if (confirmJefe.isConfirmed) {
                                     /* gerente a jefe */
+                                    change = config.RECHAZO_GERENTE;
                                     rechazo(config, rol, change, id_aprobador, true, [{ "id_aprobador": confirmJefe.value, "checkStatus": 1 }]);
                                 }
                             })

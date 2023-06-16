@@ -316,7 +316,7 @@ function sendMail(to, cc, subject, body) {
             }
         },
         complete: function () { // Los correos son pesados para enviar así que cargo una animación pa que no se aburra
-            window.clearInterval($interval);
+            window.clearInterval($interval); // destruye el interval
             $div.attr("class", $div_class).css({
                 "height": `0`
             });

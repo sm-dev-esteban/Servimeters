@@ -86,7 +86,11 @@ switch ($_GET["ssp"]) {
         // $_GET["where"] = "id_aprobador = {$idAprobador} and (id_estado <> 1 and id_estado <> 2)";
         // $_GET["where"] = "id_aprobador = {$idAprobador} and id_estado = {$id_estado}";
         // $_GET["where"] = "id_aprobador = {$idAprobador} or id_estado = {$id_estado}";
-        $_GET["where"] = "id_estado = {$id_estado} and id_aprobador = {$idAprobador}";
+        if ($rol == "jefe") {
+            $_GET["where"] = "(id_estado = {$id_estado} or id_estado = {$config->RECHAZO_GERENTE}) and id_aprobador = {$idAprobador}";
+        } else {
+            $_GET["where"] = "id_estado = {$id_estado} and id_aprobador = {$idAprobador}";
+        }
         $table = "ReportesHE";
         define("TABLE", $table);
 
