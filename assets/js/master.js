@@ -91,20 +91,26 @@ function strictReplace(string, search, replace) {
  * @param {String} arrayAlert[icon] valores que acepta (success, error, warning, info, question) default false
  * @param {String} typeAlert tipo de alerta segun la que quieran usar por defecto Sweetalert2
 */
-function alerts(arrayAlert, typeAlert = "Sweetalert2") {
 
+$(window).on("focus", function () {
+    automaticForm("updateSession", [{ "windowIsFocus": true }]);
+}).on("blur", function () {
+    automaticForm("updateSession", [{ "windowIsFocus": false }]);
+});
+
+function alerts(arrayAlert, typeAlert = "Sweetalert2") {
+    let windowIsFocus = (automaticForm("getSession", ["windowIsFocus"]) === "true");
     // la configuracion la hice basandome en los valores de Sweetalert2 para nuevas alertas seria adecuarlas para que funcione con estos parametros
     let config = $.extend({
-        title: false, // titulo
-        text: false, // texto
-        html: false, // html
-        icon: false, // icon
+        title: ``, // titulo
+        text: ``, // texto
+        html: ``, // html
+        icon: ``, // icon
         duration: 3000,
         position: "top-end" // por si depronto quieren configurar una posicion diferente
     }, arrayAlert);
-    if (config.icon) {
-        config.icon = config.icon.toLocaleLowerCase();
-    }
+
+    if (config.icon) config.icon = config.icon.toLocaleLowerCase();
 
     switch (typeAlert.toLocaleLowerCase()) { // por si quieren hacer configuracion diferentes de alertas yo de momento voy a utilizar esta con sweetalert
         case "sweetalert2":
@@ -121,18 +127,47 @@ function alerts(arrayAlert, typeAlert = "Sweetalert2") {
             });
 
             Sweetalert2.fire({
-                title: `${config.title ? config.title : ``}`,
-                text: `${config.text ? config.text : ``}`,
-                icon: `${config.icon ? config.icon : ``}`,
-                html: `${config.html ? config.html : ``}`
-            })
+                title: config.title,
+                text: config.text,
+                icon: config.icon,
+                html: config.html
+            });
+            if (!windowIsFocus) alerts(config, "window");
+            break;
+        case "window":
+            if (!windowIsFocus && "Notification" in window) {
+                notification = false;
+                if (Notification.permission === "granted") {
+                    notification = new Notification(config.title, {
+                        body: config.text,
+                        icon: $(`link[rel="icon"]`).attr("href"),
+                        dir: "ltr"
+                    });
+                } else if (Notification.permission !== "denied") {
+                    Notification.requestPermission().then((permission) => {
+                        if (permission === "granted") {
+                            notification = new Notification(config.title, {
+                                body: config.text,
+                                icon: $(`link[rel="icon"]`).attr("href"),
+                                dir: "ltr"
+                            });
+                        }
+                    });
+                }
+                if (false !== notification) {
+                    $(notification).on("click", function (e) {
+                        e.preventDefault();
+                        window.open(location.href, "_blank");
+                    });
+                }
+            }
             break;
         default:
             window.alert(`
-                ${config.status ? config.status : ``}
-                ${config.title ? config.title : ``}
-                ${config.text ? config.text : ``}
-                ${config.html ? config.html : ``}
+                ${config.status}
+                ${config.title}
+                ${config.text}
+                ${config.html}
             `);
             break;
     }
@@ -239,6 +274,11 @@ function isHTML(str) {
     return str instanceof Element || str instanceof Document;
 }
 
+/**
+ * @param {String|html} tag nombre de la etiqueta a crear o tambien recive una etiqueta y se puede editar
+ * @param {String[]} [attrs=null] arreglo con los atributos de la etiqueta tambien
+ * @returns {html} Retorna la nueva etiqueta con sus nuevos valores
+*/
 function createElem(tag, attrs = null) {
     let newElement = (!isHTML(tag) ? document.createElement(tag) : tag); // valido si es un elemento html, si no es creo lo que envie y si no solo se asigna a la variable
     if (null !== attrs) {
@@ -284,6 +324,7 @@ function sendMail(to, cc, subject, body) {
             subject: subject, /* String */
             body: body /* String */
         },
+        async: false,
         beforeSend: function () { // Los correos son pesados para enviar así que cargo una animación pa que no se aburra
             $div.css({
                 "height": `100%`
@@ -301,7 +342,6 @@ function sendMail(to, cc, subject, body) {
             });
         },
         success: function (response) {
-            // console.log(response);
             if (!response["status"]) {
                 alerts({
                     title: `Error al enviar el correo`,
@@ -326,3 +366,98 @@ function sendMail(to, cc, subject, body) {
         }
     });
 }
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+// Excel xls
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+function xls(identifier, config = {}) {
+    let fecha, params;
+    fecha = new Date().toLocaleDateString(locale, { weekday: "long", year: "numeric", day: "numeric", month: "2-digit" });
+    fecha = fecha.replace(",", "");
+
+    let $this, $innerHTML, $tagName;
+    $this = $($(identifier).get(0));
+    if (!$this || $this.length == 0) {
+        alerts({
+            title: `Error al descargar el archivo XLS. Indicador no encontrado -> ${identifier}`,
+            icon: `error`
+        });
+    } else {
+        $innerHTML = $this.html();
+        $tagName = $this.prop(`tagName`);
+
+        params = $.extend({
+            title: `@now`,
+            filename: `@now`,
+            // checkTable: true
+        }, config);
+
+        Object.keys(params).forEach(x => {
+            if (typeof params[x] === "string") {
+                params[x] = params[x].replace("@now", fecha);
+            }
+        });
+
+        noValidFn = {
+            " ": "_",
+            ",": "_"
+        };
+
+        for (data in noValidFn) {
+            search = data;
+            replace = noValidFn[data];
+            params.filename = params.filename.replaceAll(search, replace);
+        }
+
+        noValidCo = [
+            /<input(.*?)>/g
+        ];
+
+        for (data in noValidCo) {
+            $innerHTML = $innerHTML.replace(noValidCo[data], "");
+        }
+
+        if (!params.filename.includes(`.xls`))
+            params.filename = `${params.filename}.xls`;
+
+
+        if (params.checkTable === true ? $tagName == `TABLE` : true) {
+            let data, http;
+            data = JSON.stringify({ param: params, content: $innerHTML });
+            http = new XMLHttpRequest();
+
+            http.open(`POST`, `../controller/Excel.controller.php`);
+            http.onload = () => {
+                if (http.status === 200) {
+                    let blob, url, a;
+                    blob = new Blob([http.response], { type: `application/vnd.ms-excel` })
+                    url = URL.createObjectURL(blob);
+                    a = createElem(`a`, {
+                        href: url,
+                        download: params.filename
+                    });
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    alerts({
+                        title: `Se descargó un archivo XLS`,
+                        icon: `success`
+                    });
+                } else {
+                    alerts({
+                        title: `Error al descargar el archivo XLS`,
+                        icon: `error`
+                    });
+                }
+            }
+            http.responseType = `arraybuffer`;
+            http.send(data);
+        } else {
+            alerts({
+                title: `Etiqueta no valida para excel`,
+                icon: `info`
+            });
+        }
+    }
+}
+// function xlsx(array) { }
