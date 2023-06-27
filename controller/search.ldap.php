@@ -1,21 +1,21 @@
 <?php
 
-$search = isset($_POST["search"]) ? $_POST["search"] : "";
+$search = $_POST["search"] ?? "";
 
-$user = isset($_POST["user"]) ? $_POST["user"] : "esteban.serna";
-$pass = isset($_POST["pass"]) ? $_POST["pass"] : "Es123456*";
+$user = $_POST["user"] ?? "esteban.serna";
+$pass = $_POST["pass"] ?? "Es123456*";
 
 $ldap_get_entries = [];
 
 $dn = 'dc=' . getenv("USERDOMAIN") . ', dc=COM';
 
-$attributes = ["ou", "name", "mail", "samaccountname"];
+$attributes = array_merge(["ou", "name", "mail", "samaccountname"], $_POST["attrs"] ?? []);
 
 define("FILTER", $search);
-$filter = "(|" . implode("", array_map(function ($x) {
-    return "({$x}=" . FILTER . "*)";
-}, $attributes)) . ")";
 
+$filter = "(|" . implode("", array_map(function ($x) {
+    return "({$x}=*" . FILTER . "*)";
+}, $attributes)) . ")";
 
 $ldap = ldap_connect(getenv("USERDNSDOMAIN"));
 ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);

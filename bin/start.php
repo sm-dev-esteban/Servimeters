@@ -17,7 +17,7 @@ fwrite($check_bat, '
 setlocal
 
 REM Puerto a verificar
-set "puerto=8080"
+set "puerto=' . $config->WEBSOCKET . '"
 
 REM Comando a ejecutar si encuentra el puerto
 set "comando=' . $cmd . '"
@@ -27,7 +27,7 @@ netstat -ano | findstr ":%puerto%" >nul
 
 REM Si encuentra el puerto, ejecuta el comando
 if %errorlevel% equ 0 (
-    echo El puerto %puerto% esta activo.
+    echo El puerto %puerto% esta activo, Pero puede que el proceso en segundo plano este inactivo, busca el cmd con el servidor y presiona la tecla "Intro - Enter".
 ) else (
     %comando%
 )
@@ -47,5 +47,3 @@ function executeCMD($cmd)
         exec("{$cmd} > /dev/null &");
     }
 }
-
-

@@ -96,14 +96,14 @@ class Aprobador
         return $this->result->fetchAll(PDO::FETCH_OBJ);
     }
 
-    public function getPermisos($logUser)
+    public function getPermisos($logEmail)
     {
-        if (isset($logUser)) {
-            $this->nombre = trim($logUser);
-            $this->sql = 'SELECT * FROM dbo.Aprobadores WHERE nombre = :nombre';
+        if (isset($logEmail)) {
+            $this->correo = trim($logEmail);
+            $this->sql = 'SELECT * FROM dbo.Aprobadores WHERE correo = :correo';
 
             $this->result = $this->connection->prepare($this->sql);
-            $this->result->bindParam(':nombre', $this->nombre);
+            $this->result->bindParam(':correo', $this->correo);
             $this->result->execute();
 
             $user = $this->result->fetchAll(PDO::FETCH_OBJ);
@@ -113,9 +113,9 @@ class Aprobador
                 $_SESSION["gestion"] = $user[0]->gestiona;
                 $_SESSION["idAprobador"] = $user[0]->id;
                 $_SESSION["isAdmin"] = $user[0]->esAdmin;
-                echo $user[0]->tipo;
+                return $user[0]->tipo;
             } else {
-                echo false;
+                return false;
             }
 
             exit();

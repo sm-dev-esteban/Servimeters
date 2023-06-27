@@ -18,6 +18,8 @@ define("MESES", [
     12 => "Diciembre"
 ]);
 
+define("CECO", AutomaticForm::getDataSql("CentrosCosto"));
+
 $config = AutomaticForm::getConfig();
 $correo = $_SESSION["email"] ?? false;
 $Chart = [];
@@ -54,7 +56,9 @@ switch ($_GET["chart"]) {
         $HEtotal = array_sum($arrayknob); // 100%
 
         for ($i = 0; $i < count($arrayknob); $i++)
-            $Chart["knob"][] = $HEtotal > 0 ? $arrayknob[$i] * 100 / $HEtotal : 0; // x%
+            $Chart["knob"][] = [
+                "data" => round($HEtotal > 0 ? $arrayknob[$i] * 100 / $HEtotal : 0, 2)
+            ];
 
         for ($i = 0; $i < count(MESES); $i++) {
             if ($m == 13) {
@@ -66,13 +70,40 @@ switch ($_GET["chart"]) {
             $m = str_pad($m, 2, 0, STR_PAD_LEFT);
             $TotalMeses = AutomaticForm::getDataSql(
                 "HorasExtra HE inner join ReportesHE RHE on HE.id_reporteHE = RHE.id",
-                "HE.fecha like '%{$y}-{$m}%' and RHE.correoEmpleado = '{$correo}'",
+                // "HE.fecha like '%{$y}-{$m}%' and RHE.correoEmpleado = '{$correo}'",
+                "HE.fecha like '%{$y}-{$m}%'",
                 "sum(HE.total) count",
                 ["checkTableExists" => false]
             );
 
             $Chart["data"][] = $TotalMeses[0]["count"] ?? 0;
             $m++;
+        }
+        break;
+    case 'he_ceco':
+        $Chart["label"] = "Reportes";
+
+        $ceco = [];
+
+        foreach (CECO as $data) {
+            $totalCeco = AutomaticForm::getDataSql(
+                "ReportesHE",
+                "id_ceco = '{$data["id"]}'",
+                "count(*) count",
+                ["checkTableExists" => false]
+            );
+            if (!empty($totalCeco[0]["count"] ?? 0)) {
+                $Chart["labels"][] = $data["titulo"];
+                $Chart["data"][] = $totalCeco[0]["count"];
+            }
+        }
+
+        $cecoTotal = array_sum($Chart["data"]);
+        foreach ($Chart["data"] as $key => $value) {
+            $Chart["knob"][] = [
+                "title" => "% {$Chart["labels"][$key]}",
+                "data" => round($value > 0 ? $value * 100 / $cecoTotal : 0, 2)
+            ];
         }
         break;
 }

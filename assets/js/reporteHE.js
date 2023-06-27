@@ -17,6 +17,8 @@ $(document).ready(async function () {
                 x => x.tipo.toLocaleUpperCase() == "GERENTE" ? true : false
             ), "#listGerente", "id", "nombre");
 
+            $("#listJefe, #listGerente").select2();
+
         });
     let ident = Date.now();
     let edit = sessionStorage.getItem("edit");
@@ -30,7 +32,7 @@ $(document).ready(async function () {
     }
 
     $("#formReporte").createDropzone({
-        url: "../controller/submit.controller.php?action=registroHE",
+        url: `../controller/submit.controller.php?t=${timezone}&t=${timezone}&action=registroHE`,
         table: "ReportesHE",
         preview: edit ? "adjuntos" : false,
         ident: edit ? edit : ident,
@@ -95,11 +97,12 @@ $(document).ready(async function () {
                 if (response.error) {
                     alerts({ title: `Error SQL: ${response.error}`, icon: "error", duration: 10000 });
                 } else if (response.status == true) {
-                    email = localStorage.getItem("email");
-                    usuario = localStorage.getItem("usuario");
+                    email = automaticForm("getSession", ["email"]);
+                    usuario = automaticForm("getSession", ["usuario"]);
                     id_aprobador = $(`[name="data[id_aprobador]"]`).val();
                     $check = { status: true };
-                    if (id_aprobador != "" && id_aprobador > 0) {
+                    mode = $("#formReporte").data("mode");
+                    if (id_aprobador != "" && id_aprobador > 0 && mode === "UPDATE") {
                         correoAprobador = automaticForm(`getValueSql`, [id_aprobador, "@primary", "correo", "Aprobadores"])
                         $check = sendMail(email, correoAprobador, `Actualizacion Horas Extra por ${usuario}`, `
                         Buen dia, Las Horas Extra con el número ${edit} han sido actualizadas y estan pendiente por revisar.

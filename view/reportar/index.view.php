@@ -163,11 +163,7 @@
                                     <input type="radio" id="jefe" value="Jefe" name="aprobador">
                                     <label for="jefe">Jefe</label>
                                 </div>
-                                <select name="listJefe" id="listJefe" class="form-control mt-1" disabled>
-                                    <option value="">###</option>
-                                    <option value="">###</option>
-                                    <option value="">###</option>
-                                </select>
+                                <select name="listJefe" id="listJefe" class="form-control" disabled style="width: 100%;"></select>
                             </div>
                         </div>
                         <div class="col-6">
@@ -176,11 +172,7 @@
                                     <input type="radio" id="gerente" value="Gerente" name="aprobador">
                                     <label for="gerente">Gerente</label>
                                 </div>
-                                <select name="listGerente" id="listGerente" class="form-control mt-1" disabled>
-                                    <option value="">###</option>
-                                    <option value="">###</option>
-                                    <option value="">###</option>
-                                </select>
+                                <select name="listGerente" id="listGerente" class="form-control" disabled style="width: 100%;"></select>
                             </div>
                         </div>
                         <input type="hidden" name="data[id_estado]">

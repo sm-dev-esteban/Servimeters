@@ -1,6 +1,9 @@
 <section class="content">
     <div class="container-fluid">
         <div class="card card-primary">
+            <div class="overlay d-none">
+                <i class="fas fa-2x fa-sync fa-spin"></i>
+            </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-12 pb-3 col-xl-6">
@@ -13,10 +16,10 @@
                         <hr>
                     </div>
                     <div class="col-12 pb-3 col-xl-6">
-                        <button class="btn btn-success btn-block" id="STodo"><i class="fa fa-check-circle"></i> Selecionar Todo</button>
+                        <button class="btn btn-success btn-block" id="STodo"><i class="fa fa-check-circle"></i> Seleccionar Todo</button>
                     </div>
                     <div class="col-12 pb-3 col-xl-6">
-                        <button class="btn btn-primary btn-block" id="DTodo"><i class="fa fa-check-circle"></i> Deselecionar Todo</button>
+                        <button class="btn btn-primary btn-block" id="DTodo"><i class="fa fa-check-circle"></i> Deseleccionar Todo</button>
                     </div>
                     <div class="col-12 pb-3">
                         <div class="table-responsive">

@@ -99,11 +99,11 @@ if (isset($_GET["respaldo"])) {
                 $k[] = $datColumn["COLUMN_NAME"];
                 if ($datColumn["TYPE_NAME"] == "datetime") {
                     $d = $dat[$datColumn["COLUMN_NAME"]];
-                    $t = $d->format("Y-m-d H:i:s");
+                    $t = $d === null ? '' : $d->format("Y-m-d H:i:s");
                     $tv[] = "'{$t}'";
                 } else if ($datColumn["TYPE_NAME"] == "date") {
                     $d = $dat[$datColumn["COLUMN_NAME"]];
-                    $t = $d->format("Y-m-d");
+                    $t = $d === null ? '' : $d->format("Y-m-d");
                     $tv[] = "'{$t}'";
                 } else {
                     $tv[] = "'{$dat[$datColumn["COLUMN_NAME"]]}'";

@@ -1,18 +1,15 @@
 <?php
 // CONFIGURACIÓN DEL JSON CON PHP
 // Nota: mejor tomar los datos con php ya que se puede acceder a la información mas facil 
-define("S_PROT", $_SERVER["SERVER_PROTOCOL"]);
-define("D_PROT", $_SERVER["DOCUMENT_ROOT"]);
 define("S_NAME", $_SERVER["SERVER_NAME"]);
 define("S_PORT", $_SERVER["SERVER_PORT"]);
-define("US_COM", getenv("COMPUTERNAME"));
-// define("US_USE", getenv("USERNAME"));
 
 $config = [
     "__COMMENT__" => "editar en el php la información del json",
     "LIMIT_HE" => 48,
     "SERVER_DB" => S_NAME,
     "SERVER_PORT" => S_PORT,
+    "WEBSOCKET" => str_pad(S_PORT, 4, S_PORT), // Hacer la configuración manual del puerto, de momento lo voy a dejar así, pero en un servidor puede que el puerto ya esté en uso. 
     "DATABASE" => "HorasExtra",
     "USER_DB" => "sa",
     "PASS_DB" => "Es123456*",
@@ -35,7 +32,7 @@ $config = [
     "EDICION" => 1002
 ];
 
-$configJSON = fopen("./config/config.JSON", "w");
+$configJSON = fopen("./config/config.json", "w");
 fwrite($configJSON, json_encode($config, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
 fclose($configJSON);
 

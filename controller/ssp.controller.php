@@ -72,9 +72,10 @@ switch ($_GET["ssp"]) {
             ]
         ];
         break;
-    case 'listAprobar':
+    case "listAprobar":
         $idAprobador = AutomaticForm::getValueSql($_SESSION["email"], "correo", "id", "Aprobadores");
         $rol = strtolower(isset($_SESSION["rol"]) ? $_SESSION["rol"] : false);
+        $gestion = strtolower(isset($_SESSION["gestion"]) ? $_SESSION["gestion"] : false);
         // $rol = AutomaticForm::getSession("rol");
         $estado = [
             "jefe" => $config->APROBACION_JEFE,
@@ -82,15 +83,22 @@ switch ($_GET["ssp"]) {
             "rh" => $config->APROBACION_RH,
             "contable" => $config->APROBACION_CONTABLE
         ];
-        $id_estado = $rol ? $estado[$rol] : $rol;
-        // $_GET["where"] = "id_aprobador = {$idAprobador} and (id_estado <> 1 and id_estado <> 2)";
-        // $_GET["where"] = "id_aprobador = {$idAprobador} and id_estado = {$id_estado}";
-        // $_GET["where"] = "id_aprobador = {$idAprobador} or id_estado = {$id_estado}";
+        $rol_estado = $estado[$rol] ?? 0;
+        $rol_gestion = $estado[$gestion] ?? 0;
+
         if ($rol == "jefe") {
-            $_GET["where"] = "(id_estado = {$id_estado} or id_estado = {$config->RECHAZO_GERENTE}) and id_aprobador = {$idAprobador}";
+            $_GET["where"] = "
+            id_estado = '{$rol_estado}' or
+            id_estado = '{$rol_gestion}' or
+            id_estado = {$config->RECHAZO_GERENTE}" .
+                ($rol_gestion != 0 ? "" : " and id_aprobador = {$idAprobador}");
         } else {
-            $_GET["where"] = "id_estado = {$id_estado} and id_aprobador = {$idAprobador}";
+            $_GET["where"] = "
+            id_estado = '{$rol_estado}' or
+            id_estado = '{$rol_gestion}'" .
+                ($rol_gestion != 0 ? "" : " and id_aprobador = {$idAprobador}");
         }
+
         $table = "ReportesHE";
         define("TABLE", $table);
 
@@ -225,7 +233,7 @@ switch ($_GET["ssp"]) {
             ]
         ];
         break;
-    case 'clase':
+    case "clase":
         $table = "Clase";
         define("TABLE", $table);
 
@@ -255,7 +263,7 @@ switch ($_GET["ssp"]) {
             ]
         ];
         break;
-    case 'ceco':
+    case "ceco":
         $table = "CentrosCosto CC inner join Clase C on CC.id_clase = C.id";
         $table = "CentrosCosto";
         define("TABLE", $table);
@@ -310,7 +318,7 @@ switch ($_GET["ssp"]) {
             ]
         ];
         break;
-    case 'aprobadores':
+    case "aprobadores":
         $table = "Aprobadores";
         define("TABLE", $table);
         $columns = [
@@ -356,7 +364,7 @@ switch ($_GET["ssp"]) {
                 "db" => "gestiona", "dt" => $i++, "formatter" => function ($d, $row) {
                     $id_table = $row["id"];
                     $option = "";
-                    foreach (["NA", "RH", "Gerente"] as $key => $value) {
+                    foreach (["NA", "RH", "Contable"] as $key => $value) {
                         $option .= '<option value="' . $value . '" ' . ($value == $d ? "selected" : "") . '>' . $value . '</option>';
                     }
                     return '

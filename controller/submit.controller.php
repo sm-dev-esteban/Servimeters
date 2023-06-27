@@ -2,6 +2,10 @@
 require("automaticForm.php");
 $config = AutomaticForm::getConfig();
 
+if ($_GET["t"] ?? false) {
+    date_default_timezone_set($_GET["t"]);
+}
+
 switch ($_GET["action"]) {
     case 'registroHE':
         $data = array_merge(isset($_POST) ? $_POST : [], isset($_FILES) ? $_FILES : []);

@@ -10,7 +10,7 @@ class sessionController
      * @param Array $x Recibe un objeto con las sessiones que quieren crear o actualizar
      * @return Bool Siempre retorna true 
      */
-    public static function createSession(array $x): Bool
+    static function createSession(array $x): Bool
     {
         foreach ($x as $key => $value) {
             $_SESSION[$key] = $value;
@@ -22,10 +22,10 @@ class sessionController
     /**
      * @return Array Devuelve todas las sessiones activas
      */
-    public static function readSession(): array
+    static function readSession(): array
     {
         return array_merge(
-            array_map("self::utf8", $_SESSION),
+            self::utf8encode($_SESSION),
             ["count" => count($_SESSION)]
         );
     }
@@ -33,17 +33,27 @@ class sessionController
     /**
      * @return Mixed uft8_encode valido con arreglos
      */
-    public static function utf8(mixed $utf8): mixed
+    static function utf8encode(mixed $utf8): mixed
     {
         return !is_array($utf8)
             ? AutomaticForm::iso8859_1_to_utf8($utf8)
-            : array_map("self::utf8", $utf8);
+            : array_map("self::utf8encode", $utf8);
     }
 
     /**
-     * @return String Devuelve una de las sessiones activas
+     * @return Mixed uft8_decode valido con arreglos
      */
-    public static function getSession($key): String
+    static function utf8decode(mixed $utf8): mixed
+    {
+        return !is_array($utf8)
+            ? AutomaticForm::utf8_to_iso8859_1($utf8)
+            : array_map("self::utf8decode", $utf8);
+    }
+
+    /**
+     * @return Mixed Devuelve una de las sessiones activas
+     */
+    static function getSession($key): Mixed
     {
         return $_SESSION[$key] ? $_SESSION[$key] : "";
     }
@@ -52,7 +62,7 @@ class sessionController
      * @param Array $x Recibe un objeto con las sessiones que quieren crear o actualizar
      * @return Bool Siempre retorna true 
      */
-    public static function updateSession(array $x): Bool
+    static function updateSession(array $x): Bool
     {
         return sessionController::createSession($x);
     }
@@ -60,7 +70,7 @@ class sessionController
     /**
      * @param Array|String $x Recibe un arreglo con los nombres de las sessiones a borrar
      */
-    public static function deleteSession(array|String $x): Bool
+    static function deleteSession(array|String $x): Bool
     {
         if (is_array($x)) {
             foreach ($x as $key => $value) {

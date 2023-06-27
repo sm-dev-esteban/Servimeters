@@ -1,3 +1,4 @@
+<?php session_start() ?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -27,13 +28,13 @@
                     <p>Bienvenido!</p>
                 </header>
                 <p style="color: white;"> Digite las credenciales de su equipo</p>
-                <form method="" action="#" id="login">
+                <form id="login">
                     <div class="row gtr-uniform gtr-50">
                         <div class="col-12 col-12-xsmall">
-                            <input type="text" name="user" class="loginInput" id="user" value="<?= getenv("USERNAME") ?>" placeholder="Nombre de Usuario" />
+                            <input type="text" name="user" class="loginInput" id="user" required value="<?= getenv("USERNAME") ?>" placeholder="Nombre de Usuario" />
                         </div>
                         <div class="col-12 col-12-xsmall">
-                            <input type="password" name="pass" class="loginInput" id="pass" value="" placeholder="Contraseña" />
+                            <input type="password" name="pass" class="loginInput" id="pass" required value="" placeholder="Contraseña" />
                         </div>
                         <div class="col-12">
                             <ul class="actions">
@@ -44,7 +45,6 @@
                 </form>
             </div>
         </section>
-        <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> -->
         <script src="./assets/js/jquery.min.js"></script>
         <script src="./assets/js/login.js"></script>
 

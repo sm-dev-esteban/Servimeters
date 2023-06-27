@@ -8,8 +8,33 @@ $(document).ready(async function () {
         "ajax": "../controller/ssp.controller.php?ssp=listEstadoHe"
     })).buttons().container().appendTo($('.col-sm-6:eq(0)'));
 
+    $(`[data-action="qrcode"]`).on("click", function () {
+        mail = $(`[data-report="mail"]`).text().split(" ")[1];
+        $modalTitle = `${$("#detail-title").html().replace(" ", "")}.html`;
+        $("#viewQrcode").modal("show").find("[data-show-qr]").html(
+            generateQR(
+                `${config.URL_SITE}files/${mail}/${encodeURIComponent($modalTitle)}`,
+                {
+                    width: 200,
+                    height: 200
+                }
+            )
+        );
+    });
+
     $(`[data-action="print"]`).on("click", function () {
-        wPrint("#viewDetail .modal-body")
+        mail = $(`[data-report="mail"]`).text().split(" ")[1];
+        wPrint("#viewDetail .modal-body", {
+            createFile: true,
+            folder: mail,
+            filename: $("#detail-title").html()
+        });
+    });
+
+    $(`[data-action="excel"]`).on("click", function () {
+        xls(`[data-report="detailContent"]`, {
+            title: $("#detail-title").html()
+        })
     });
 
 });

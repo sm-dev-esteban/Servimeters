@@ -11,30 +11,24 @@ function validateRole()
     require_once('../model/Aprobador.model.php');
 
     $validate = new Aprobador();
-    $user = $validate->getPermisos($_SESSION["usuario"]);
+    $user = $validate->getPermisos($_SESSION["email"]);
 
-    if (!empty($user)) {
-        echo $user;
-        exit();
-    }
+    return $user;
 }
 
 switch ($_GET['action']) {
     case 'init':
         $isSession = $session->init_session($_POST['user'], $_POST['pass']);
-        if ($isSession) {
-            echo $isSession;
-            exit();
+        if ($isSession["status"] == true) {
+            echo json_encode(["status" => true, "rol" => validateRole()], JSON_UNESCAPED_UNICODE);
+        } else {
+            echo json_encode($isSession, JSON_UNESCAPED_UNICODE);
         }
-        echo false;
+        exit();
         break;
     case 'finish':
-
         session_destroy();
         header('Location:' . $config->URL_SITE);
-        break;
-    case 'validateRole':
-        validateRole();
         break;
     default:
         echo '';

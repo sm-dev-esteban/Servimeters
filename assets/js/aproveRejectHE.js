@@ -10,7 +10,9 @@ $(document).ready(async function () {
             "deferRender": true
         }
     )).on("draw", function () {
-        $("tr").each(function () {
+        $("tr").css({
+            cursor: "pointer"
+        }).each(function () {
             let status = $(this).find("span").data("status");
             let tr = $(this);
             if (status == 2) {
@@ -54,11 +56,14 @@ $(document).ready(async function () {
         }
     });
 
+    mail = automaticForm("getSession", ["email"]);
+    rol = automaticForm("getSession", ["rol"]).toLocaleLowerCase();
+    gestion = automaticForm("getSession", ["gestion"]).toLocaleLowerCase();
+    usuario = automaticForm("getSession", ["usuario"]);
+    id_aprobador = automaticForm("getValueSql", [mail, "correo", "id", "Aprobadores"]);
+
     $("#rechazar, #aprobar").on("click", function () { // aprobar y rechazar
         let type = $(this).attr("id") == "rechazar" ? 2 : 1;
-        let email = localStorage.getItem("email");
-        let rol = localStorage.getItem("rol").toLocaleLowerCase();
-        let change = "";
         let aprobadores = [
             "jefe",
             "gerente",
@@ -66,229 +71,41 @@ $(document).ready(async function () {
             "contable"
         ];
 
-        if (type == 2) { // rechazo segun area
-            change = (
-                rol == "jefe" ? config.RECHAZO : (
-                    rol == "gerente" ? config.RECHAZO : (
-                        rol == "rh" ? config.RECHAZO_RH : (
-                            rol == "contable" ? config.RECHAZO_CONTABLE : "Error"
-                        )
-                    )
-                )
-            );
-        } else if (type == 1) { // aprobación segun area
-            change = (
-                rol == "jefe" ? config.APROBACION_GERENTE : (
-                    rol == "gerente" ? config.APROBACION_RH : (
-                        rol == "rh" ? config.APROBACION_CONTABLE : (
-                            rol == "contable" ? config.APROBADO : "Error"
-                        )
-                    )
-                )
-            );
-        }
-
-
-
         if (aprobadores.includes(rol)) {
-            let id_aprobador = automaticForm("getValueSql", [
-                email,
-                "correo",
-                "id",
-                "Aprobadores"
-            ]);
-            if (type == 2) {
-
-                if (rol == "gerente") {
-                    Swal.fire({
-                        title: `Realizar rechazo a un jefe`,
-                        showDenyButton: true,
-                        confirmButtonText: `Si`,
-                        denyButtonText: `No`,
-                    }).then((confirm) => {
-                        $jefes = automaticForm("getDataSql", ["Aprobadores", "tipo = 'Jefe'", "id, nombre"])
-                        options = {};
-                        // options = ``;
-
-                        for (data in $jefes) {
-                            options[$jefes[data]["id"]] = $jefes[data]["nombre"];
-                            // options += `<option value="${[$jefes[data]["id"]]}">${$jefes[data]["nombre"]}</option>`;
-                        }
-
-                        // intent ponerle select 2 pero el estilo de la alerta de no deja :c
-                        if (confirm.isConfirmed) {
-                            Swal.fire({
-                                title: "Seleccione al jefe",
-                                input: `select`,
-                                inputAttributes: {
-                                    id: `swal2-input-jefe`
-                                },
-                                inputOptions: options,
-                                customClass: {
-                                    // input: "form-control form-control-lg"
-                                    input: "form-control-lg"
-                                },
-                                // html: `
-                                // <div class="mb-3">
-                                //     <select id="swal2-input-jefe" class="form-control form-control-lg" style="width: 100%">${options}</select>
-                                // </div>
-                                // <script>
-                                // $(document).ready(function () {
-                                //     $("#swal2-input-jefe").select2();
-                                // })
-                                // </script>
-                                // `,
-                                confirmButtonText: `Confirmar`,
-                                cancelButtonText: 'Cancelar',
-                                didOpen: () => {
-                                    $select = $("select#swal2-input-jefe");
-                                    // $select.select2();
-                                }
-                            }).then((confirmJefe) => {
-                                if (confirmJefe.isConfirmed) {
-                                    /* gerente a jefe */
-                                    change = config.RECHAZO_GERENTE;
-                                    rechazo(config, rol, change, id_aprobador, true, [{ "id_aprobador": confirmJefe.value, "checkStatus": 1 }]);
-                                }
-                            })
-                        } else if (confirm.isDenied) {
-                            /* gerente */
-                            change = config.RECHAZO_GERENTE;
-                            rechazo(config, rol, change, id_aprobador, false, [{ "id_aprobador": id_aprobador, "checkStatus": 1 }]);
-                        }
-                    })
-                } else {
-                    /* otros roles */
-                    rechazo(config, rol, change, id_aprobador, (rol == "jefe" ? false : true), [{ "id_aprobador": id_aprobador, "checkStatus": 1 }]);
-                }
-
-            } else if (type == 1) {
-                let $sendMail = [];
-                let $aprobados = automaticForm("getDataSql", [ // buscamos a los rechazados
-                    "ReportesHE",
-                    `checkStatus = '2' and id_aprobador = '${id_aprobador}' and id_estado = '${(
-                        rol == "jefe" ? config.APROBACION_JEFE : (
-                            rol == "gerente" ? config.APROBACION_GERENTE : (
-                                rol == "rh" ? config.APROBACION_RH : (
-                                    rol == "contable" ? config.APROBACION_CONTABLE : false
-                                )
-                            )
-                        )
-                    )}'`,
-                    "id, empleado, correoEmpleado"
-                ]);
-                $aprobados.forEach(aprueba => {
-                    if (rol == "jefe" | rol == "gerente" | rol == "rh") {
-                        $sendMail.push({
-                            name: aprueba.empleado,
-                            mail: aprueba.correoEmpleado
-                        });
-                    } else if (rol == "contable") {
-                        sendMail([
-                            {
-                                name: aprueba.empleado,
-                                mail: aprueba.correoEmpleado
-                            }],
-                            email,
-                            "Aprobación de Horas Extra",
-                            `
-                            Buen dia, Las Horas Extra con el número ${aprueba.id} han sido aprobadas.<br>
-                            Este mensaje ha sido generado automáticamente.<br>
-                            `
-                        )
-                    }
-                });
-
-                if (rol == "jefe" | rol == "gerente" | rol == "rh") {
-                    sendMail(
-                        $sendMail,
-                        email,
-                        "Aprobación de Horas Extra",
-                        `
-                        Buen día, sus horas extras fueron aprobadas.<br>
-                        Este mensaje ha sido generado automáticamente.<br>
-                        `
-                    )
-                }
-
-                let check = automaticForm("updateValueSql", [ // los aprobados
-                    change,
-                    "id_estado",
-                    {
-                        "checkStatus": "2",
-                        "id_aprobador": id_aprobador,
-                        "id_estado": (
-                            rol == "jefe" ? config.APROBACION_JEFE : (
-                                rol == "gerente" ? config.APROBACION_GERENTE : (
-                                    rol == "rh" ? config.APROBACION_RH : (
-                                        rol == "contable" ? config.APROBACION_CONTABLE : false
-                                    )
-                                )
-                            )
-                        )
-                    },
-                    "ReportesHE"
-                ]);
-
-                if (check.error) {
-                    alerts({
-                        title: check.error,
-                        icon: "Error",
-                        duration: 10000
-                    });
-                } else {
-                    alerts({
-                        title: "Aprobación realizada",
-                        icon: "Success"
-                    });
-                    updateDatable();
-                }
+            if (type == 1) {
+                aprueba(config);
+            } else {
+                rechaza(config);
             }
         } else {
             alerts({
-                "title": `Tu rol no permite realizar cambios: ${rol}`,
+                "title": `Tu rol no permite realizar cambios: ${rol} - ${gestion}`,
                 "icon": "info"
             });
         }
-
     });
 
     $("#STodo, #DTodo").on("click", function () { // marcar y desmarcar varios
         let change = $(this).attr("id") == "STodo" ? 2 : 1;
-        let email = localStorage.getItem("email");
-        let rol = localStorage.getItem("rol").toLocaleLowerCase();
-        let id_aprobador = automaticForm("getValueSql", [
-            email,
-            "correo",
-            "id",
-            "Aprobadores"
-        ]);
-
-        let check = automaticForm("updateValueSql", [
-            change,
-            "checkStatus",
-            {
+        flujo = {
+            "jefe": "APROBACION_JEFE",
+            "gerente": "APROBACION_GERENTE",
+            "rh": "APROBACION_RH",
+            "contable": "APROBACION_CONTABLE",
+        };
+        if (rol != "na") {
+            automaticForm("updateValueSql", [change, "checkStatus", {
                 "id_aprobador": id_aprobador,
-                "id_estado": rol == "jefe"
-                    ? config.APROBACION_JEFE
-                    : (
-                        rol == "gerente"
-                            ? config.APROBACION_GERENTE
-                            : false
-                    )
-            },
-            "ReportesHE"
-        ]);
-
-        if (check.error) {
-            alerts({
-                "title": check.error,
-                "icon": "Error"
-            });
+                "id_estado": config[flujo[rol]] ?? "'id_estado'",
+            }, "ReportesHE"]);
         }
-
+        if (gestion != "na") {
+            automaticForm("updateValueSql", [change, "checkStatus", {
+                "id_aprobador": id_aprobador,
+                "id_estado": config[flujo[gestion]] ?? "'id_estado'"
+            }, "ReportesHE"]);
+        }
         updateDatable();
-
     });
 
 });
@@ -297,30 +114,89 @@ function updateDatable() {
     $("#listAprov").DataTable().ajax.reload(null, false);
 }
 
+function aprueba(config) {
+    flujo = {
+        "APROBACION_JEFE": config.APROBACION_GERENTE,
+        "APROBACION_GERENTE": config.APROBACION_RH,
+        "APROBACION_RH": config.APROBACION_CONTABLE,
+        "APROBACION_CONTABLE": config.APROBADO
+    };
 
-function rechazo(config, rol, change, id_aprobador, envioMasivo = true, modifyHE) {
-    email = localStorage.getItem("email");
-    userA = localStorage.getItem("usuario");
+    let aprobadores = [
+        "jefe",
+        "gerente",
+        "rh",
+        "contable"
+    ];
 
-    let user_id_aprobador = automaticForm("getValueSql", [
-        email,
-        "correo",
-        "id",
-        "Aprobadores"
-    ]);
+    // user
+    mail = automaticForm("getSession", ["email"]);
+    rol = automaticForm("getSession", ["rol"]).toLocaleLowerCase();
+    gestion = automaticForm("getSession", ["gestion"]).toLocaleLowerCase();
+    usuario = automaticForm("getSession", ["usuario"]);
+    // user
 
-    let $where = [];
-
-    if (modifyHE && modifyHE.length > 0) {
-        modifyHE.forEach(element => {
-            for (data in element) {
-                $where.push(`${data} = '${element[data]}'`);
+    if (aprobadores.includes(rol) || aprobadores.includes(gestion)) {
+        // mail
+        $to = [];
+        $cc = mail;
+        $subject = "Aprobación de Horas Extra";
+        $body = "";
+        // mail
+        id_aprobador = automaticForm("getValueSql", [mail, "correo", "id", "Aprobadores"]);
+        $aprueba = automaticForm("getDataSql", [
+            "ReportesHE",
+            `id_aprobador = '${id_aprobador}' and checkStatus = 2`,
+            "id, empleado, correoEmpleado, id_estado"
+        ]);
+        $aprueba.forEach($a => {
+            // update
+            change = flujo[Object.keys(Object.filter(config, q => q == $a.id_estado))[0]];
+            $check = automaticForm("updateValueSql", [change, "checkStatus = 1, id_estado", $a.id, "ReportesHE"]);
+            // update
+            if ($check.status == true) {
+                // mail
+                if (gestion == "contable") { // correo individual
+                    sendMail(
+                        [
+                            {
+                                name: $a.empleado,
+                                mail: $a.correoEmpleado,
+                            }
+                        ],
+                        $cc,
+                        $subject,
+                        `Buen dia, Las horas con el numero ${$a.id} han sido aprobadas.<br>
+                        Gestiona: ${usuario} - ${mail}.<br>
+                        Este mensaje ha sido generado automáticamente.<br>`
+                    );
+                } else { // correo agrupado
+                    $to.push({
+                        name: $a.empleado,
+                        name: $a.correoEmpleado
+                    });
+                    $body += `${$a.empleado} - ${$a.id}<br>`;
+                }
+                // mail
             }
         });
+        if (gestion != "contable") {
+            sendMail(
+                $to,
+                $cc,
+                $subject,
+                `Buen día el siguiente lote fue aprobado.<br>
+                ${$body}
+                Gestiona: ${usuario} - ${mail}.<br>
+                Este mensaje ha sido generado autoamticamente.<br>`
+            );
+        }
+    } else {
+        alerts({ title: "Tu rol no está habilitado para realizar esta acción", icon: "info" });
     }
-
-    $where = $where.join(", ");
-
+    updateDatable();
+}
+function rechaza(config) {
     Swal.fire({
         title: 'MOTIVO DE RECHAZO',
         // input: 'text',
@@ -344,136 +220,174 @@ function rechazo(config, rol, change, id_aprobador, envioMasivo = true, modifyHE
         }
     }).then((result) => {
         if (result.isConfirmed) {
-
-            let $sendMail = [];
-
-            let $rechazados = automaticForm("getDataSql", [ // buscamos a los rechazados
-                "ReportesHE",
-                `checkStatus = '2' and id_aprobador = '${id_aprobador}' and id_estado = '${(
-                    rol == "jefe" ? config.APROBACION_JEFE : (
-                        rol == "gerente" ? config.APROBACION_GERENTE : (
-                            rol == "rh" ? config.APROBACION_RH : (
-                                rol == "contable" ? config.APROBACION_CONTABLE : false
-                            )
-                        )
-                    )
-                )}'`,
-                "id, empleado, correoEmpleado"
-            ]);
-
-            let check = automaticForm("updateValueSql", [ // los rechazamos
-                change,
-                `${$where}, id_estado`,
-                {
-                    "checkStatus": "2",
-                    "id_aprobador": id_aprobador,
-                    "id_estado": rol == "jefe"
-                        ? config.APROBACION_JEFE
-                        : (
-                            rol == "gerente"
-                                ? config.APROBACION_GERENTE
-                                : false
-                        )
-                },
-                "ReportesHE"
-            ]);
-
-            if (check.error) { // si ocurre un error lo mostramos en una alerta
-                alerts({
-                    title: check.error,
-                    icon: "Error",
-                    duration: 10000
-                });
-            } else { // si todo bien hacemos un recorrido de los rechazados
-                $rechazados.forEach(rechazo => {
-                    if (envioMasivo == false) {
-                        sendMail(
-                            [
-                                {
-                                    name: rechazo.empleado,
-                                    mail: rechazo.correoEmpleado
-                                }
-                            ],
-                            email,
-                            `Rechazo de Horas Extra`,
-                            `
-                            Buen dia, el usuario ${userA} ha rechazado un lote de Horas Extra.<br>
-                            Motivo: ${result.value.cuerpo}.<br>
-                            Este mensaje ha sido generado automáticamente.<br>
-                            `
-                        );
-                    } else if (envioMasivo == true) {
-                        $sendMail.push({
-                            name: rechazo.empleado,
-                            mail: rechazo.correoEmpleado
-                        });
-                    }
-                    // ajax
-                    $.ajax(`../controller/submit.controller.php?action=rechazo`, { // lo enviamos a el ajax para registrar el comentario de cada uno
-                        type: "POST",
-                        dataType: "JSON",
-                        data: {
-                            data: $.extend(result.value, {
-                                id_reporte: rechazo.id,
-                                creadoPor: localStorage.getItem("usuario")
-                            })
-                        },
-                        success: function (response) {
-                            if (response.error) { // si ocurre un error en el registro lo mostramos
-                                alerts({
-                                    title: response.error,
-                                    icon: "Error",
-                                    duration: 10000
-                                });
-                            } else { // caso contrario buscamos a ese usuario y le emitimos un mensaje
-                                if (server) {
-                                    let duration = Number(result.value.length * 100);
-                                    duration = duration <= 2000 ? 3000 : duration;
-                                    // send server
-                                    server.send(
-                                        JSON.stringify({
-                                            general: true,
-                                            usuario: rechazo.empleado,
-                                            type: "alerts",
-                                            data: {
-                                                arrayAlert: {
-                                                    title: "Un aprobador ha rechazado tu solicitud.",
-                                                    text: `Motivo: ${result.value.cuerpo}`,
-                                                    icon: "info",
-                                                    duration: duration
+            flujo = {
+                "RECHAZO_GERENTE": config.RECHAZO,
+                "APROBACION_JEFE": config.RECHAZO,
+                "APROBACION_GERENTE": config.RECHAZO_GERENTE,
+                "APROBACION_RH": config.RECHAZO_RH,
+                "APROBACION_CONTABLE": config.RECHAZO_CONTABLE
+            }
+            let aprobadores = [
+                "jefe",
+                "gerente",
+                "rh",
+                "contable"
+            ];
+            // user
+            mail = automaticForm("getSession", ["email"]);
+            rol = automaticForm("getSession", ["rol"]).toLocaleLowerCase();
+            gestion = automaticForm("getSession", ["gestion"]).toLocaleLowerCase();
+            usuario = automaticForm("getSession", ["usuario"]);
+            // user
+            if (aprobadores.includes(rol) || aprobadores.includes(gestion)) {
+                // mail
+                $to = [];
+                $cc = mail;
+                $subject = "Rechazo de Horas Extra";
+                $body = "";
+                // mail
+                id_aprobador = automaticForm("getValueSql", [mail, "correo", "id", "Aprobadores"]);
+                $rechaza = automaticForm("getDataSql", [
+                    "ReportesHE",
+                    `id_aprobador = '${id_aprobador}' and checkStatus = 2`,
+                    "id, empleado, correoEmpleado, id_estado"
+                ]);
+                if (rol == "gerente" && false) {
+                    gerente_to_jefe();
+                } else {
+                    $rechaza.forEach($r => {
+                        // update
+                        change = flujo[Object.keys(Object.filter(config, q => q == $r.id_estado))[0]];
+                        $check = automaticForm("updateValueSql", [change, "checkStatus = 1, id_estado", $r.id, "ReportesHE"]);
+                        // update
+                        if ($check.status == true) {
+                            // ajax
+                            $.ajax(`../controller/submit.controller.php?t=${timezone}&action=rechazo`, { // lo enviamos a el ajax para registrar el comentario de cada uno
+                                type: "POST",
+                                dataType: "JSON",
+                                data: {
+                                    data: $.extend(result.value, {
+                                        id_reporte: $r.id,
+                                        creadoPor: localStorage.getItem("usuario")
+                                    })
+                                },
+                                success: function (response) {
+                                    if (response.error) { // si ocurre un error en el registro lo mostramos
+                                        alerts({
+                                            title: response.error,
+                                            icon: "Error",
+                                            duration: 10000
+                                        });
+                                    } else { // caso contrario buscamos a ese usuario y le emitimos un mensaje
+                                        if (server) {
+                                            let duration = Number(result.value.length * 100);
+                                            duration = duration <= 2000 ? 3000 : duration;
+                                            // send server
+                                            sendWS({
+                                                general: true,
+                                                usuario: $r.empleado,
+                                                type: "alerts",
+                                                data: {
+                                                    arrayAlert: {
+                                                        title: "Un aprobador ha rechazado tu solicitud.",
+                                                        text: `Motivo: ${result.value.cuerpo}`,
+                                                        icon: "info",
+                                                        duration: duration
+                                                    }
                                                 }
-                                            }
-                                        })
-                                    );
-                                    // send server
+                                            });
+                                            // send server
+                                        }
+                                    }
                                 }
+                            });
+                            // ajax
+                            // mail
+                            if (gestion == "contable") { // correo individual
+                                sendMail(
+                                    [
+                                        {
+                                            name: $r.empleado,
+                                            mail: $r.correoEmpleado,
+                                        }
+                                    ],
+                                    $cc,
+                                    $subject,
+                                    `Buen dia, Las horas con el numero ${$r.id} han sido aprobadas.<br>
+                                    Motivo de rechazo: ${result.value.cuerpo}.<br>
+                                    Gestiona: ${usuario} - ${mail}.<br>
+                                    Este mensaje ha sido generado automáticamente.<br>`
+                                );
+                            } else { // correo agrupado
+                                $to.push({
+                                    name: $r.empleado,
+                                    name: $r.correoEmpleado
+                                });
+                                $body += `${$r.empleado} - ${$r.id}<br>`;
                             }
+                            // mail
                         }
                     });
-                    // ajax
-                });
-                if (envioMasivo == true) {
-                    if ($sendMail.length > 0) {
+                    if (gestion != "contable") {
                         sendMail(
-                            $sendMail,
-                            email,
-                            `Rechazo de Horas Extra`,
-                            `
-                            Buen día, sus horas extras fueron rechazadas.<br>
-                            Motivo: ${result.value.cuerpo}.<br>
-                            Este mensaje ha sido generado automáticamente.<br>
-                            `
+                            $to,
+                            $cc,
+                            $subject,
+                            `Buen día el siguiente lote fue rechazado.<br>
+                            ${$body}
+                            Gestiona: ${usuario} - ${mail}.<br>
+                            Este mensaje ha sido generado autoamticamente.<br>`
                         );
                     }
                 }
-                updateDatable();
+            } else {
+                alerts({ title: "Tu rol no está habilitado para realizar esta acción", icon: "info" });
             }
-
-        } else {
-            alerts({
-                title: "Rechazo no confirmado",
-                icon: "info"
-            })
         }
     });
+    updateDatable();
 }
+
+function gerente_to_jefe() {
+    Swal.fire({
+        title: `Realizar rechazo a un jefe`,
+        showDenyButton: true,
+        confirmButtonText: `Si`,
+        denyButtonText: `No`,
+    }).then((confirm) => {
+        $jefes = automaticForm("getDataSql", ["Aprobadores", "tipo = 'Jefe'", "id, nombre"])
+        options = {}
+
+        for (data in $jefes) {
+            options[$jefes[data]["id"]] = $jefes[data]["nombre"]
+        }
+
+        if (confirm.isConfirmed) {
+            Swal.fire({
+                title: "Seleccione al jefe",
+                input: `select`,
+                inputAttributes: {
+                    id: `swal2-input-jefe`
+                },
+                inputOptions: options,
+                customClass: {
+                    input: "form-control-lg"
+                },
+                confirmButtonText: `Confirmar`,
+                cancelButtonText: 'Cancelar',
+                didOpen: () => {
+                    $select = $("select#swal2-input-jefe")
+                }
+            }).then((confirmJefe) => {
+                if (confirmJefe.isConfirmed) {
+                    /* gerente a jefe */
+                }
+            })
+        } else if (confirm.isDenied) {
+            /* gerente */
+        }
+    })
+}
+
+/* https://stackoverflow.com/questions/5072136/javascript-filter-for-objects */
+Object.filter = (obj, predicate) => Object.keys(obj).filter(key => predicate(obj[key])).reduce((res, key) => (res[key] = obj[key], res), {});

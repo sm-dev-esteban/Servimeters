@@ -34,7 +34,9 @@ class Servimeters implements MessageComponentInterface
         );
 
         foreach ($this->clients as $client) {
-            if (strpos($msg, '"general":true') ? true : $from !== $client) {
+            $msgC = json_decode($msg);
+            $general = ($msgC->general ?? false == true);
+            if ($general ? true : $from !== $client) {
                 $client->send($msg);
             }
         }

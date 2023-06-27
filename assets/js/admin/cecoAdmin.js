@@ -10,7 +10,7 @@ $(document).ready(async function () {
 
     $("#add").on("submit", function (e) {
         e.preventDefault();
-        $.ajax(`../controller/submit.controller.php?action=ceco`, {
+        $.ajax(`../controller/submit.controller.php?t=${timezone}&t=${timezone}&action=ceco`, {
             dataType: "JSON",
             type: "POST",
             data: new FormData(this),
@@ -25,28 +25,26 @@ $(document).ready(async function () {
                         duration: 10000
                     })
                 } else {
-                    let usuario = localStorage.getItem(`usuario`);
+                    let usuario = automaticForm("getSession", ["usuario"]);
                     let $valor = $("#titulo").val();
                     updateDatable();
-                    server.send(
-                        JSON.stringify({
-                            type: "alerts",
-                            data: {
-                                arrayAlert: {
-                                    title: `Se añadio un nuevo centro de costo`,
-                                    html: `
+                    sendWS({
+                        type: "alerts",
+                        data: {
+                            arrayAlert: {
+                                title: `Se añadio un nuevo centro de costo`,
+                                html: `
                                     <p>
                                         <b>${usuario}:</b>
                                         <span class="text-success">
                                             ${$valor}
                                         </span>
                                     </p>`,
-                                    icon: `info`,
-                                    duration: 10000
-                                }
+                                icon: `info`,
+                                duration: 10000
                             }
-                        })
-                    )
+                        }
+                    });
                 }
             }
         })
@@ -73,17 +71,16 @@ function updateClass(x) {
     u = $this.data(`update`);
     t = $this.data(`table`);
     $valor = automaticForm(`getValueSql`, [u, `@primary`, c, t]);
-    usuario = localStorage.getItem(`usuario`);
+    usuario = automaticForm("getSession", ["usuario"]);
     $check = automaticForm(`updateValueSql`, [v, c, u, t]);
     if ($check.status == true) {
         updateDatable();
-        server.send(
-            JSON.stringify({
-                type: "alerts",
-                data: {
-                    arrayAlert: {
-                        title: `Modificación centro de costo`,
-                        html: `
+        sendWS({
+            type: "alerts",
+            data: {
+                arrayAlert: {
+                    title: `Modificación centro de costo`,
+                    html: `
                         <p>
                             <b>${usuario}:</b>
                             <span class="text-warning">
@@ -93,12 +90,11 @@ function updateClass(x) {
                                 <i class="fas fa-arrow-right text-sm"></i> ${v}
                             </span>
                         </p>`,
-                        icon: `info`,
-                        duration: 10000
-                    }
+                    icon: `info`,
+                    duration: 10000
                 }
-            })
-        )
+            }
+        });
     } else {
         alerts({
             title: $check.error,

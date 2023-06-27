@@ -1,16 +1,18 @@
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 // Cargamos el contenido de la pantalla principal
 //------------------------------------------------------------------------------------------------------------------------------------------------------
-$(document).ready(async function () {
-    // por si depronto se necesita el config en algun lado, pero lo pongo unicamente para mantener actualizado el config cuando se carga la pagina
-    config = await loadConfig();
-    let error = sessionStorage.getItem("Content");
-    if (error) {
-        sessionStorage.removeItem("Content");
-        contentPage(`error/error.view?filenotfound=errorUrlByUser&error=${error}`, "Erro Url");
-    } else {
-        contentPage("Principal/default.view", "Dashboard");
-    }
+$(document).ready(function () {
+    $home = $($(`nav a[href="Principal/default.view"]`).get(0));
+    cP = automaticForm("getSession", ["contentPage"]);
+    if (cP) contentPage( // ultima pagina
+        cP.page,
+        cP.title,
+        cP.scripts
+    ); else contentPage( // pagina inicial
+        $home.attr("href"),
+        $home.data("title") ?? $home.html(),
+        $home.data("script")
+    );
 });
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 // Boton para salir
@@ -41,6 +43,13 @@ $(`nav .nav-item .nav-link[href!="#"][href!="exit"]`).on(`click`, function (e) {
 // Contenido de la pagina con peticiones de jquery
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 function contentPage(page, title, scripts = undefined) {
+    automaticForm("createSession", [{
+        "contentPage": {
+            page: page ?? "",
+            title: title ?? "",
+            scripts: scripts ?? ""
+        }
+    }]);
     checkSession();
     let session = sessionStorage.getItem("session");
     if (session == true || 'true') {
@@ -78,7 +87,8 @@ function contentPage(page, title, scripts = undefined) {
                         "../assets/js/admin/claseAdmin.js",
                         "../assets/js/admin/cecoAdmin.js",
                         "../assets/js/admin/aprobadoresAdmin.js",
-                        "../assets/js/solicitud.js"
+                        "../assets/js/solicitud.js",
+                        "../assets/js/home.js"
                     ];
 
                     let loadScripts = []; // arreglo que va a contener los scripts que se van a cargar en la pagina
@@ -125,12 +135,14 @@ $(`[data-widget="dark-mode"]`).on(`click`, function () {
     let classCheck = $(`[data-widget="dark-mode"] i`).attr(`class`);
 
     if (classCheck == `fa fa-sun`) {
+        automaticForm("updateSession", [{ "dark-mode": "true" }]);
         $(`.main-header`).attr(`class`, `main-header navbar navbar-expand navbar-dark`);
         $(`[data-widget="dark-mode"] i`).attr(`class`, `fa fa-moon`);
         $(`.sidebar`).removeClass(`os-theme-dark`).addClass(`os-theme-light`);
         $(`.main-sidebar`).removeClass(`sidebar-light-primary`).addClass(`sidebar-dark-primary`);
         $(`body`).addClass(`dark-mode`);
     } else {
+        automaticForm("updateSession", [{ "dark-mode": "false" }]);
         $(`.main-header`).attr(`class`, `main-header navbar navbar-expand navbar-white navbar-light`);
         $(`[data-widget="dark-mode"] i`).attr(`class`, `fa fa-sun`);
         $(`.sidebar`).removeClass(`os-theme-light`).addClass(`os-theme-dark`);
@@ -142,12 +154,14 @@ $(`[data-widget="dark-mode"]`).on(`click`, function () {
     let classCheck = $(`[data-widget="dark-mode"] i`).attr(`class`);
 
     if (classCheck == `fa fa-sun`) {
+        automaticForm("updateSession", [{ "dark-mode": "false" }]);
         $(`.main-header`).attr(`class`, `main-header navbar navbar-expand navbar-white navbar-light`);
         $(`[data-widget="dark-mode"] i`).attr(`class`, `fa fa-sun`);
         $(`.sidebar`).removeClass(`os-theme-light`).addClass(`os-theme-dark`);
         $(`.main-sidebar`).removeClass(`sidebar-dark-primary`).addClass(`sidebar-light-primary`);
         $(`body`).removeClass(`dark-mode`);
     } else {
+        automaticForm("updateSession", [{ "dark-mode": "true" }]);
         $(`.main-header`).attr(`class`, `main-header navbar navbar-expand navbar-dark`);
         $(`[data-widget="dark-mode"] i`).attr(`class`, `fa fa-moon`);
         $(`.sidebar`).removeClass(`os-theme-dark`).addClass(`os-theme-light`);

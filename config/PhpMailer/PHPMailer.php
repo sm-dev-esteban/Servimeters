@@ -1168,7 +1168,7 @@ class PHPMailer
      *
      * @return array
      */
-    public static function parseAddresses($addrstr, $useimap = true)
+    static function parseAddresses($addrstr, $useimap = true)
     {
         $addresses = [];
         if ($useimap and function_exists('imap_rfc822_parse_adrlist')) {
@@ -1296,7 +1296,7 @@ class PHPMailer
      *
      * @return bool
      */
-    public static function validateAddress($address, $patternselect = null)
+    static function validateAddress($address, $patternselect = null)
     {
         if (null === $patternselect) {
             $patternselect = static::$validator;
@@ -1362,7 +1362,7 @@ class PHPMailer
      *
      * @return bool `true` if required functions for IDN support are present
      */
-    public static function idnSupported()
+    static function idnSupported()
     {
         return function_exists('idn_to_ascii') and function_exists('mb_convert_encoding');
     }
@@ -3780,7 +3780,7 @@ class PHPMailer
      *
      * @return string
      */
-    public static function rfcDate()
+    static function rfcDate()
     {
         // Set the time zone to whatever the default is to avoid 500 errors
         // Will default to UTC if it's not set properly in php.ini
@@ -3822,7 +3822,7 @@ class PHPMailer
      *
      * @return bool
      */
-    public static function isValidHost($host)
+    static function isValidHost($host)
     {
         //Simple syntax limits
         if (empty($host)
@@ -4060,7 +4060,7 @@ class PHPMailer
      *
      * @return string MIME type of file
      */
-    public static function _mime_types($ext = '')
+    static function _mime_types($ext = '')
     {
         $mimes = [
             'xl' => 'application/excel',
@@ -4191,7 +4191,7 @@ class PHPMailer
      *
      * @return string
      */
-    public static function filenameToType($filename)
+    static function filenameToType($filename)
     {
         // In case the path is a URL, strip any query string before getting extension
         $qpos = strpos($filename, '?');
@@ -4215,7 +4215,7 @@ class PHPMailer
      *
      * @return string|array
      */
-    public static function mb_pathinfo($path, $options = null)
+    static function mb_pathinfo($path, $options = null)
     {
         $ret = ['dirname' => '', 'basename' => '', 'extension' => '', 'filename' => ''];
         $pathinfo = [];
@@ -4299,7 +4299,7 @@ class PHPMailer
      *
      * @return string
      */
-    public static function normalizeBreaks($text, $breaktype = null)
+    static function normalizeBreaks($text, $breaktype = null)
     {
         if (null === $breaktype) {
             $breaktype = static::$LE;
@@ -4319,7 +4319,7 @@ class PHPMailer
      *
      * @return string
      */
-    public static function getLE()
+    static function getLE()
     {
         return static::$LE;
     }
@@ -4596,7 +4596,7 @@ class PHPMailer
      *
      * @return bool
      */
-    public static function hasLineLongerThanMax($str)
+    static function hasLineLongerThanMax($str)
     {
         return (bool) preg_match('/^(.{' . (self::MAX_LINE_LENGTH + strlen(static::$LE)) . ',})/m', $str);
     }

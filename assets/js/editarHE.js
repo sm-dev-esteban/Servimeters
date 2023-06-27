@@ -1,5 +1,5 @@
-$(document).ready(function() {
-    $('#addComment').on('click', function(e) {
+$(document).ready(function () {
+    $('#addComment').on('click', function (e) {
         // $('.comentarios').removeClass("oculto");  
         // $(".comentarios").addClass("visible");
 
@@ -17,26 +17,26 @@ $(document).ready(function() {
         $(".comentarios").html(comment);
         addComment();
 
-        $('#addComment').css({display: 'none'});
-        $('#hideComment').css({display: 'inline'});
+        $('#addComment').css({ display: 'none' });
+        $('#hideComment').css({ display: 'inline' });
     });
 
-    $('#hideComment').on('click', function(e) {
+    $('#hideComment').on('click', function (e) {
         // $('.comentarios').removeClass("visible");  
         // $(".comentarios").addClass("oculto");
 
         $(".comentarios").html('');
 
-        $('#addComment').css({display: 'inline'});
-        $('#hideComment').css({display: 'none'});
+        $('#addComment').css({ display: 'inline' });
+        $('#hideComment').css({ display: 'none' });
     });
 
 });
 
 
 function addComment() {
-    $('#sendComment').on('click', function(e) {
-        
+    $('#sendComment').on('click', function (e) {
+
         var row;
         e.preventDefault();
 
@@ -62,16 +62,16 @@ function addComment() {
                 'cuerpo': comentario
             }
         }
-        
+
         $.ajax({
-            data:  object,
+            data: object,
             url: '../controller/CRUD.controller.php?action=execute&model=Comentario&crud=insert',
             type: 'post',
-            beforeSend: function() {
-                $('#sendComment').css({display: 'none'});
+            beforeSend: function () {
+                $('#sendComment').css({ display: 'none' });
             },
-            success: function(result){
-                
+            success: function (result) {
+
                 if (isNaN(parseInt(result))) {
                     $.notify('No se envió el comentario', 'error');
                     return false;
@@ -83,13 +83,13 @@ function addComment() {
                 <tr>
                 <td>${comentario}</td>
                 </tr>`;
-                
+
                 $('#bodyComments').append(row);
-                
+
                 $('#comentario').val('');
-                
+
                 $.notify('Comentario enviado', 'success');
-                $('#sendComment').css({display: 'inline'});
+                $('#sendComment').css({ display: 'inline' });
 
                 let correoAprobador = localStorage.getItem('correoAprobador');
                 let correoEmpleado = $('#cc').data('correoempleado');
@@ -103,10 +103,10 @@ function addComment() {
                 }
 
                 $.ajax({
-                    data:  data,
+                    data: data,
                     url: '../controller/Email.controller.php?email=reporteNovedad',
                     type: 'post',
-                    success: function(result){
+                    success: function (result) {
 
                         if (result == 1) {
                             $.notify('Notificación enviada', 'success');

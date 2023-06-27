@@ -7,7 +7,7 @@
             <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-            <a href="Principal/default.view" class="nav-link">Home</a>
+            <a href="Principal/default.view" data-script="home.js" class="nav-link">Home</a>
         </li>
     </ul>
     <ul class="navbar-nav ml-auto">
@@ -33,7 +33,8 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" data-widget="dark-mode" href="#" role="button">
-                <i class="fa fa-sun"></i>
+                <?php $dark = (($_SESSION["dark-mode"] ?? false) === "true") ?>
+                <i class="<?= $dark ? "fa fa-moon" : "fa fa-sun" ?>"></i>
             </a>
         </li>
         <li class="nav-item">

@@ -290,7 +290,7 @@ class AutomaticForm extends DB
      * @param String $table nombre de la tabla
      * @return String Solo retorna el nombre de la llave primaria de una tabla, algo innecesario pero útil.
      */
-    public static function getNamePrimary(String $table): String
+    static function getNamePrimary(String $table): String
     { // no he probado esta madre, pero confio en cristo rey :)
         if (!self::checkTableExists($table)) {
             return "Tabla es obligatoria";
@@ -322,19 +322,21 @@ class AutomaticForm extends DB
      * @param Array  $config variable especial para cambiar algunos parametros 
      * @return String devuelve el valor enviado en $return si esta vacia o no se ejecuta la consulta devuelve false
      */
-    public static function getValueSql($filter, $column, $return, $table, $config = []): String|Int
+    static function getValueSql($filter, $column, $return, $table, $config = []): String|Int
     {
-
-        if (!self::checkTableExists($table)) {
-            return "Tabla es obligatoria";
-        }
 
         $defaultConfig = [
             "like" => false,
-            "notResult" => false
+            "notResult" => false,
+            "checkTableExists" => true
         ];
 
         $c = array_merge($defaultConfig, is_array($config) ? $config : []);
+
+        if ($c["checkTableExists"] ? !self::checkTableExists($table) : false) {
+            return "Tabla es obligatoria";
+        }
+
 
         $db = new DB();
         $conn = $db->Conectar();
@@ -366,11 +368,18 @@ class AutomaticForm extends DB
      * @param String $where condición
      * @param String $return valores a devolver por defecto todos
      */
-    public static function getDataSql(String $table, String $where = "1 = 1", String $return = "*"): array
+    static function getDataSql(String $table, String $where = "1 = 1", String $return = "*", $config = []): array
     {
-        if (!self::checkTableExists($table)) {
+        $defaultConfig = [
+            "checkTableExists" => true
+        ];
+
+        $c = array_merge($defaultConfig, is_array($config) ? $config : []);
+
+        if ($c["checkTableExists"] ? !self::checkTableExists($table) : false) {
             return ["error" => "Tabla es obligatoria"];
         }
+
         $db = new DB();
         $conn = $db->Conectar();
 
@@ -396,7 +405,7 @@ class AutomaticForm extends DB
      * @param String $table nombre de la tabla
      * @return Array retorna un arreglo con el status y el error en el caso de que suceda
      */
-    public static function updateValueSql($value, String $column, $primaryKey, String $table): array
+    static function updateValueSql($value, String $column, $primaryKey, String $table): array
     {
         if (!self::checkTableExists($table)) {
             return ["error" => "Tabla es obligatoria"];
@@ -423,7 +432,7 @@ class AutomaticForm extends DB
             return ["status" => false, "query" => $q, "error" => $th->errorInfo];
         }
     }
-    public static function checkTableExists(String $table): Bool
+    static function checkTableExists(String $table): Bool
     {
         $db = new DB();
         $conn = $db->Conectar();
@@ -440,7 +449,7 @@ class AutomaticForm extends DB
      * @param Bool $is_static boolean para obtener valores todos metodos (true - solo los static, false - public)
      * @return Array retorna un arreglo con los nombres de cada metodo de la clase que selecionaron
      */
-    public static function getClassMethods(String $classname = "AutomaticForm", Bool $is_static = true): array
+    static function getClassMethods(String $classname = "AutomaticForm", Bool $is_static = true): array
     {
         $reflection = new ReflectionClass($classname);
         if ($is_static) {
@@ -453,7 +462,7 @@ class AutomaticForm extends DB
     /**
      * https://php.watch/versions/8.2/utf8_encode-utf8_decode-deprecated#:~:text=Replacements%20for%20utf8_decode,intl%20extension%2C%20or%20iconv%20extension.
      */
-    public static function iso8859_1_to_utf8(string $s): string
+    static function iso8859_1_to_utf8(string $s): string
     {
         $s .= $s;
         $len = \strlen($s);
@@ -471,6 +480,39 @@ class AutomaticForm extends DB
                     $s[$j] = "\xC3";
                     $s[++$j] = \chr(\ord($s[$i]) - 64);
                     break;
+            }
+        }
+
+        return substr($s, 0, $j);
+    }
+
+    /**
+     * https://php.watch/versions/8.2/utf8_encode-utf8_decode-deprecated#:~:text=Replacements%20for%20utf8_decode,intl%20extension%2C%20or%20iconv%20extension.
+     */
+    static function utf8_to_iso8859_1(string $string): string
+    {
+        $s = (string) $string;
+        $len = \strlen($s);
+
+        for ($i = 0, $j = 0; $i < $len; ++$i, ++$j) {
+            switch ($s[$i] & "\xF0") {
+                case "\xC0":
+                case "\xD0":
+                    $c = (\ord($s[$i] & "\x1F") << 6) | \ord($s[++$i] & "\x3F");
+                    $s[$j] = $c < 256 ? \chr($c) : '?';
+                    break;
+
+                case "\xF0":
+                    ++$i;
+                    // no break
+
+                case "\xE0":
+                    $s[$j] = '?';
+                    $i += 2;
+                    break;
+
+                default:
+                    $s[$j] = $s[$i];
             }
         }
 

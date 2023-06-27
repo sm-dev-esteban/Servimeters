@@ -65,21 +65,34 @@ $(document).ready(function () {
 // Nota: función peligrosa ojo en como se usa
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 /**
- * @param {string} string cadena de texto
+ * @param {string|string[]} string cadena u objeto de texto
  * @param {string} search valor que van a buscar
  * @param {string} replace valor con el que lo van a reemplazar
  * @return retorna una nueva cadena
 */
 function strictReplace(string, search, replace) {
-    if (!string.includes(search) || search == replace) { // valido si esta lo que quieren reemplazar y que no sea igual lo que busca con lo que quiere reemplazar
-        return string; // si no esta pa fuera (sale por que no hay nada que reemplazar)
-    } else { // si esta lo que quieren reemplzar pasa a esta validación
-        string = string.replaceAll(search, replace); // replace normal de toda la vida
-        if (string.includes(search)) { // aqui viene el truco, valido si todavia tiene lo que quieren reemplazar
-            string = strictReplace(string, search, replace); // genero un bucle con el cual reenvio el nuevo string
+    if ("string" == typeof string) {
+        if (!string.includes(search) || search == replace) { // valido si esta lo que quieren reemplazar y que no sea igual lo que busca con lo que quiere reemplazar
+            return string; // si no esta pa fuera (sale por que no hay nada que reemplazar)
+        } else { // si esta lo que quieren reemplzar pasa a esta validación
+            string = string.replaceAll(search, replace); // replace normal de toda la vida
+            if (string.includes(search)) { // aqui viene el truco, valido si todavia tiene lo que quieren reemplazar
+                string = strictReplace(string, search, replace); // genero un bucle con el cual reenvio el nuevo string
+            }
         }
-        return string; // si termina pa fuera (sale por que ya reemplazo todo)
+    } else if ("object" == typeof string) {
+        for (data in string) {
+            if ("string" == typeof string[data]) {
+                string[data] = string[data].replaceAll(search, replace);
+                if (string[data].includes(search)) {
+                    string[data] = strictReplace(string[data], search, replace);
+                }
+            } else if ("object" == typeof string[data]) {
+                string[data] = strictReplace(string[data], search, replace);
+            }
+        }
     }
+    return string;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 // alertas personalizables
@@ -189,19 +202,14 @@ function cargarLista(data, ident, idvalue, content) {
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 // imprime documentos en una ventana independiente
 //------------------------------------------------------------------------------------------------------------------------------------------------------
-function wPrint(ident) {
-    let windowPrint = window.open('', 'PRINT', 'fullscreen');
+function wPrint(ident, config = {}) {
 
-    windowPrint.document.write(`<!DOCTYPE html>`);
-    windowPrint.document.write(`<html lang="${language}">`);
+    let c = strictReplace($.extend({
+        createFile: false,
+        folder: "wPrint",
+        filename: "wPrint.html"
+    }, config), " ", "");
 
-    windowPrint.document.write(`<head>`);
-    windowPrint.document.write(`<meta charset="UTF-8">`);
-    windowPrint.document.write(`<meta http-equiv="X-UA-Compatible" content="IE=edge">`);
-    windowPrint.document.write(`<meta name="viewport" content="width=device-width, initial-scale=1.0">`);
-    windowPrint.document.write(`<title>${$("html title").text()}</title>`);
-    // windowPrint.document.write(`<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">`);
-    // estaba sin internet y me di cuenta que es mejor usar los estilos de la plantilla para prevenir
     let links = [];
 
     $(`head link[rel="stylesheet"]`).each(function () {
@@ -220,6 +228,18 @@ function wPrint(ident) {
         x => x.replace("../", folder)
     ); // cambio la ruta para que este completa
 
+    let windowPrint = window.open('', 'PRINT', 'fullscreen');
+
+    windowPrint.document.write(`<!DOCTYPE html>`);
+    windowPrint.document.write(`<html lang="${language}">`);
+
+    windowPrint.document.write(`<head>`);
+    windowPrint.document.write(`<meta charset="UTF-8">`);
+    windowPrint.document.write(`<meta http-equiv="X-UA-Compatible" content="IE=edge">`);
+    windowPrint.document.write(`<meta name="viewport" content="width=device-width, initial-scale=1.0">`);
+    windowPrint.document.write(`<title>${$("html title").text()}</title>`);
+    // windowPrint.document.write(`<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">`);
+    // estaba sin internet y me di cuenta que es mejor usar los estilos de la plantilla para prevenir
     for (data in links) {
         windowPrint.document.write(`<link rel="stylesheet" href="${links[data]}">`);
     }
@@ -251,6 +271,19 @@ function wPrint(ident) {
 
     windowPrint.document.write(`</html>`);
     windowPrint.document.close();
+    if (c.createFile === true) {
+        writeHTML(new XMLSerializer().serializeToString(windowPrint.document), `${c.filename.split(".")[0]}.html`, c.folder);
+    }
+}
+function writeHTML(data, filename, folder) {
+    $.ajax("../controller/createFile.controller.php", {
+        type: "POST",
+        data: {
+            data: data,
+            filename: filename,
+            folder: folder
+        }
+    })
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 // accede a las funciones static de automaticForm
@@ -304,6 +337,7 @@ function createElem(tag, attrs = null) {
  * @description Envía correos a uno o múltiples correos a la vez. Mientras se envía, muestra una pequeña animación para que no lo molesten.
 */
 function sendMail(to, cc, subject, body) {
+
     $div = $(`.wrapper .preloader`);
     $img = $(`.wrapper .preloader img`);
 
@@ -315,7 +349,24 @@ function sendMail(to, cc, subject, body) {
     $justifyContent = ["start", "end", "center", "between", "around"];
     $alignItems = ["start", "end", "center", "baseline", "stretch"];
 
-    $.ajax(`../controller/Email.controller.php?email=default`, {
+    // beforesend
+    $div.css({
+        "height": `100%`
+    });
+
+    $interval = setInterval(() => {
+        $rJC = Math.floor(Math.random() * $justifyContent.length);
+        $rAI = Math.floor(Math.random() * $alignItems.length);
+        $div.attr("class", `preloader flex-column justify-content-${$justifyContent[$rJC]} align-items-${$alignItems[$rAI]}`);
+    }, 2500);
+
+    $img.removeAttr("class").attr("src", "../images/email.png").css({
+        "display": `block`,
+        "animation": `wobble 2500ms infinite`
+    });
+    // beforesend
+
+    let resp = $.ajax(`../controller/Email.controller.php?email=default`, {
         dataType: "JSON",
         type: "POST",
         data: {
@@ -325,46 +376,39 @@ function sendMail(to, cc, subject, body) {
             body: body /* String */
         },
         async: false,
-        beforeSend: function () { // Los correos son pesados para enviar así que cargo una animación pa que no se aburra
-            $div.css({
-                "height": `100%`
-            });
+        // beforeSend: function () {},
+        // success: function (response) {},
+        // complete: function () {}
+    }).responseJSON;
 
-            $interval = setInterval(() => {
-                $rJC = Math.floor(Math.random() * $justifyContent.length);
-                $rAI = Math.floor(Math.random() * $alignItems.length);
-                $div.attr("class", `preloader flex-column justify-content-${$justifyContent[$rJC]} align-items-${$alignItems[$rAI]}`);
-            }, 2500);
+    // success
+    if (!resp["status"]) {
+        alerts({
+            title: `Error al enviar el correo`,
+            icon: `error`,
+            duration: 10000
+        })
+    } else {
+        alerts({
+            title: `Correo Enviado`,
+            icon: `success`
+        })
+    }
+    // success
 
-            $img.removeAttr("class").attr("src", "../images/email.png").css({
-                "display": `block`,
-                "animation": `wobble 2500ms infinite`
-            });
-        },
-        success: function (response) {
-            if (!response["status"]) {
-                alerts({
-                    title: `Error al enviar el correo`,
-                    icon: `error`,
-                    duration: 10000
-                })
-            } else {
-                alerts({
-                    title: `Correo Enviado`,
-                    icon: `success`
-                })
-            }
-        },
-        complete: function () { // Los correos son pesados para enviar así que cargo una animación pa que no se aburra
-            window.clearInterval($interval); // destruye el interval
-            $div.attr("class", $div_class).css({
-                "height": `0`
-            });
-            $img.attr("class", $img_class).attr("src", $img_src).css({
-                "display": `none`
-            });
-        }
-    });
+    // complete
+    if (resp) {
+        window.clearInterval($interval); // destruye el interval
+        $div.attr("class", $div_class).css({
+            "height": `0`
+        });
+        $img.attr("class", $img_class).attr("src", $img_src).css({
+            "display": `none`
+        });
+    }
+    // complete
+
+    return resp;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 // Excel xls
@@ -461,3 +505,18 @@ function xls(identifier, config = {}) {
     }
 }
 // function xlsx(array) { }
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+// Qr
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+function generateQR(str, config = {}) {
+    let qrdiv = createElem("div");
+
+    let qrcode = new QRCode(qrdiv, $.extend({
+        width: 500,
+        height: 500
+    }, config));
+
+    qrcode.makeCode(str);
+
+    return qrdiv;
+}

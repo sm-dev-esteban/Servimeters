@@ -29,7 +29,7 @@
                             <select name="data[gestiona]" id="gestiona" class="form-control select2" style="width: 100%">
                                 <option value="NA">NA</option>
                                 <option value="RH">RH</option>
-                                <option value="Gerente">Gerente</option>
+                                <option value="Contable">Contable</option>
                             </select>
                         </div>
                         <div class="col-4 mb-3">

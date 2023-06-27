@@ -17,13 +17,13 @@ class Sesion
         $ad = new LDAP();
         $this->ldapResult = $ad->connectAD($user, $pass);
 
-        if ($this->ldapResult == '0' || $this->ldapResult == '') {
+        if ($this->ldapResult["status"] == false) {
             $this->inSession = false;
-            echo $this->inSession;
-            return;
+            return ["status" => $this->inSession, "error" => $this->ldapResult["error"]];
+        } else {
+            $this->ldapResult = $this->ldapResult["data"];
         }
 
-         
         $this->inSession = true;
         $_SESSION["usuario"] = $this->ldapResult[0]['cn'][0];
         $_SESSION["BuscarArea"] = $this->ldapResult[0]['distinguishedname'][0];
@@ -31,7 +31,6 @@ class Sesion
         $_SESSION["usuarioRegistro"] = $this->ldapResult[0]['samaccountname'][0];
         $_SESSION["infoUsuario"] = $this->ldapResult;
         $_SESSION["estadoAutentica"] = "conectado";
-        echo $this->inSession;
-        return;
+        return ["status" => $this->inSession, "error" => false];
     }
 }
