@@ -6,3 +6,5 @@ files
 respaldo
 # .bat que valida le puerto y corre el socket
 bin/check.bat
+# carpeta de dependcias de composer
+vendor
