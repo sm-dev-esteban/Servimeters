@@ -6,6 +6,9 @@ use Ratchet\WebSocket\WsServer;
 use MyApp\Servimeters;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
+require dirname(__DIR__) . '/config/LoadConfig.config.php';
+
+$config = LoadConfig::getConfig();
 
 $server = IoServer::factory(
     new HttpServer(
@@ -13,7 +16,7 @@ $server = IoServer::factory(
             new Servimeters()
         )
     ),
-    8080
+    $config->WEBSOCKET ?? 0
 );
 
 $server->run();

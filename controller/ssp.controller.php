@@ -7,6 +7,9 @@ define("CONFIG", $config);
 define("MESES", ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]);
 $i = 0;
 
+// echo json_encode($_GET, JSON_UNESCAPED_UNICODE);
+// exit();
+
 switch ($_GET["ssp"]) {
     case "listEstadoHe":
         $_GET["where"] = "empleado = '{$_SESSION["usuario"]}'";
@@ -74,30 +77,38 @@ switch ($_GET["ssp"]) {
         break;
     case "listAprobar":
         $idAprobador = AutomaticForm::getValueSql($_SESSION["email"], "correo", "id", "Aprobadores");
-        $rol = strtolower(isset($_SESSION["rol"]) ? $_SESSION["rol"] : false);
-        $gestion = strtolower(isset($_SESSION["gestion"]) ? $_SESSION["gestion"] : false);
-        // $rol = AutomaticForm::getSession("rol");
-        $estado = [
-            "jefe" => $config->APROBACION_JEFE,
-            "gerente" => $config->APROBACION_GERENTE,
+
+        $rol = strtolower($_SESSION["rol"] ?? false);
+        $gestion = strtolower($_SESSION["gestion"] ?? false);
+
+        define("GESTION", $gestion);
+        define("ROL", $rol);
+
+        $flujo = [
+            "jefe" => [
+                $config->APROBACION_JEFE,
+                $config->RECHAZO_GERENTE
+            ],
+            "gerente" => [
+                $config->APROBACION_GERENTE,
+                $config->RECHAZO_RH,
+                $config->RECHAZO_CONTABLE
+            ],
             "rh" => $config->APROBACION_RH,
             "contable" => $config->APROBACION_CONTABLE
         ];
-        $rol_estado = $estado[$rol] ?? 0;
-        $rol_gestion = $estado[$gestion] ?? 0;
 
-        if ($rol == "jefe") {
-            $_GET["where"] = "
-            id_estado = '{$rol_estado}' or
-            id_estado = '{$rol_gestion}' or
-            id_estado = {$config->RECHAZO_GERENTE}" .
-                ($rol_gestion != 0 ? "" : " and id_aprobador = {$idAprobador}");
-        } else {
-            $_GET["where"] = "
-            id_estado = '{$rol_estado}' or
-            id_estado = '{$rol_gestion}'" .
-                ($rol_gestion != 0 ? "" : " and id_aprobador = {$idAprobador}");
-        }
+        $id_estado = implode(" OR ", array_map(function ($vs) {
+            if (!is_array($vs))
+                return "id_estado = '{$vs}'";
+            return implode(" OR ", array_map(function ($vs_s) {
+                return "id_estado = '{$vs_s}'";
+            }, $vs));
+        }, array_filter($flujo, function ($fv) {
+            return $fv == GESTION || $fv == ROL;
+        }, ARRAY_FILTER_USE_KEY)));
+
+        $_GET["where"] = "({$id_estado})" . (in_array(ROL, array_keys($flujo)) ? " and id_aprobador = '{$idAprobador}'" : "");
 
         $table = "ReportesHE";
         define("TABLE", $table);
@@ -106,7 +117,7 @@ switch ($_GET["ssp"]) {
             [
                 "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
                     $id_table = $row["id"];
-                    $status = AutomaticForm::getValueSql($d, "@primary", "checkStatus", "ReportesHE", [
+                    $status = AutomaticForm::getValueSql($d, "@primary", "check_user", "ReportesHE", [
                         "notResult" => 1
                     ]);
                     return '<span data-ident="' . $d . '" data-status="' . $status . '">' . $d . '</span>';

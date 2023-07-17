@@ -3,7 +3,7 @@
 $(document).ready(async function () {
     config = await loadConfig();
     try {
-        server = new WebSocket(`ws://localhost:${config.WEBSOCKET}/`);
+        server = new WebSocket(`ws://${location.host}:${config.WEBSOCKET}/`);
     }
     catch (err) { }
 

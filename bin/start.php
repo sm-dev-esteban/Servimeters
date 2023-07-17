@@ -1,6 +1,6 @@
 <?php
 session_start();
-require("../controller/automaticForm.php");
+require(dirname(__DIR__) . "/controller/automaticForm.php");
 
 $config = AutomaticForm::getConfig();
 
@@ -27,7 +27,7 @@ netstat -ano | findstr ":%puerto%" >nul
 
 REM Si encuentra el puerto, ejecuta el comando
 if %errorlevel% equ 0 (
-    echo El puerto %puerto% esta activo, Pero puede que el proceso en segundo plano este inactivo, busca el cmd con el servidor y presiona la tecla "Intro - Enter".
+    echo El puerto %puerto% esta activo, Pero puede que el proceso en segundo plano este inactivo, busca el cmd con el servidor y presiona la tecla "Enter".
 ) else (
     %comando%
 )
@@ -41,9 +41,6 @@ executeCMD('start cmd.exe @cmd /k "' . __DIR__ . '\check.bat"');
 
 function executeCMD($cmd)
 {
-    if (substr(php_uname(), 0, 7) == "Windows") {
-        pclose(popen("start /B {$cmd}", "r"));
-    } else {
-        exec("{$cmd} > /dev/null &");
-    }
+    if (substr(php_uname(), 0, 7) == "Windows") pclose(popen("start /B {$cmd}", "r"));
+    else exec("{$cmd} > /dev/null &");
 }

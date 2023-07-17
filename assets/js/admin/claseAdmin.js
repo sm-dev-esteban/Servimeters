@@ -10,7 +10,7 @@ $(document).ready(async function () {
 
     $("#add").on("submit", function (e) {
         e.preventDefault();
-        $.ajax(`../controller/submit.controller.php?t=${timezone}&t=${timezone}&action=clase`, {
+        $.ajax(`../controller/submit.controller.php?t=${timezone}&action=Clase`, {
             dataType: "JSON",
             type: "POST",
             data: new FormData(this),

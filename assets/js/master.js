@@ -297,7 +297,7 @@ function automaticForm(action, params) {
         async: false
     });
 
-    return resp.responseJSON;
+    return resp.responseJSON; // json - text
 
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -519,4 +519,10 @@ function generateQR(str, config = {}) {
     qrcode.makeCode(str);
 
     return qrdiv;
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+// utlimo dia :n
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+function ultimoDia(Año = new Date().toLocaleString(locale, $.extend(timezone, { year: "numeric" })), Mes = new Date().toLocaleString(locale, $.extend(timezone, { month: "2-digit" }))) {
+    return new Date(Año, Mes, 0).getDate();
 }

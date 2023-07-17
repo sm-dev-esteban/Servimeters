@@ -10,7 +10,7 @@ $(document).ready(async function () {
 
     $("#add").on("submit", function (e) {
         e.preventDefault();
-        $.ajax(`../controller/submit.controller.php?t=${timezone}&t=${timezone}&action=aprobador`, {
+        $.ajax(`../controller/submit.controller.php?t=${timezone}&action=Aprobadores`, {
             dataType: "JSON",
             type: "POST",
             data: new FormData(this),
@@ -35,12 +35,19 @@ $(document).ready(async function () {
         })
     });
 
-    $("#nombre, #correo").on("input", function () {
+    direc = {
+        "#nombre": "name",
+        "#correo": "mail"
+    };
+
+    $(Object.keys(direc).join(", ")).on("input", function () {
         $this = $(this);
         $checkbox = $(`#check_directorio_activo`);
         $divcheck = $(`.bootstrap-switch-id-${$checkbox.attr(`id`)}`);
-        
+
         $check = $divcheck.hasClass("bootstrap-switch-on");
+        $list = $("#list_directorio_activo");
+        $list.html("");
         if ($check) {
             $.ajax(`../controller/search.ldap.php`, {
                 dataType: "JSON",
@@ -49,9 +56,26 @@ $(document).ready(async function () {
                     search: $this.val()
                 },
                 success: function (response) {
-                    if (response.count == 1) {
-                        $(`#nombre`).val(response[0].name[0]);
-                        $(`#correo`).val(response[0].mail[0]);
+                    count = response.count
+                    delete response.count;
+                    if (count == 1) {
+                        console.log("== 1");
+                        for (ident in direc) {
+                            getResult = response[0][direc[ident]][0] ?? false;
+                            if (getResult)
+                                $(ident).val(getResult);
+                        }
+                    } else if (count > 1) {
+                        console.log("> 1");
+                        for (data in response) {
+                            getResult = response[data][direc[`#${$this.attr("id")}`]][0] ?? false;
+                            if (getResult)
+                                $list.append(
+                                    createElem("option", {
+                                        value: getResult
+                                    })
+                                );
+                        }
                     }
                 }
             });

@@ -32,7 +32,7 @@ $(document).ready(async function () {
     }
 
     $("#formReporte").createDropzone({
-        url: `../controller/submit.controller.php?t=${timezone}&t=${timezone}&action=registroHE`,
+        url: `../controller/submit.controller.php?t=${timezone}&action=registroHE`,
         table: "ReportesHE",
         preview: edit ? "adjuntos" : false,
         ident: edit ? edit : ident,
@@ -163,6 +163,8 @@ $(document).ready(async function () {
 
 function total() {
     let descuentototal = 0;
+    let codigos = [];
+    // -----------------------------------------------------
     $(`[data-he="descuento"]`).each(function () {
         descuentototal += Number($(this).val());
     });
@@ -172,6 +174,7 @@ function total() {
     $(`[data-he="EDO"]`).each(function () {
         EDOtotal += Number($(this).val());
     });
+    if (EDOtotal > 0) codigos.push({ tipo_horaExtra: 11001, cantidad: EDOtotal });
     $(`[data-codigo="EDO"]`).val(EDOtotal > 0 ? `11001` : ``);
     $(`[data-info-he="EDO"]`).html(EDOtotal);
     // -----------------------------------------------------
@@ -179,6 +182,7 @@ function total() {
     $(`[data-he="ENO"]`).each(function () {
         ENOtotal += Number($(this).val());
     });
+    if (ENOtotal > 0) codigos.push({ tipo_horaExtra: 11002, cantidad: ENOtotal });
     $(`[data-codigo="ENO"]`).val(ENOtotal > 0 ? `11002` : ``);
     $(`[data-info-he="ENO"]`).html(ENOtotal);
     // -----------------------------------------------------
@@ -186,6 +190,7 @@ function total() {
     $(`[data-he="EDF"]`).each(function () {
         EDFtotal += Number($(this).val());
     });
+    if (EDFtotal > 0) codigos.push({ tipo_horaExtra: 11003, cantidad: EDFtotal });
     $(`[data-codigo="EDF"]`).val(EDFtotal > 0 ? `11003` : ``);
     $(`[data-info-he="EDF"]`).html(EDFtotal);
     // -----------------------------------------------------
@@ -193,6 +198,7 @@ function total() {
     $(`[data-he="ENF"]`).each(function () {
         ENFtotal += Number($(this).val());
     });
+    if (ENFtotal > 0) codigos.push({ tipo_horaExtra: 11004, cantidad: ENFtotal });
     $(`[data-codigo="ENF"]`).val(ENFtotal > 0 ? `11004` : ``);
     $(`[data-info-he="ENF"]`).html(ENFtotal);
     // -----------------------------------------------------
@@ -200,6 +206,7 @@ function total() {
     $(`[data-he="RN"]`).each(function () {
         RNtotal += Number($(this).val());
     });
+    if (RNtotal > 0) codigos.push({ tipo_horaExtra: 11501, cantidad: RNtotal });
     $(`[data-codigo="RN"]`).val(RNtotal > 0 ? `11501` : ``);
     $(`[data-info-he="RN"]`).html(RNtotal);
     // -----------------------------------------------------
@@ -207,6 +214,7 @@ function total() {
     $(`[data-he="RFD"]`).each(function () {
         RFDtotal += Number($(this).val());
     });
+    if (RFDtotal > 0) codigos.push({ tipo_horaExtra: 11502, cantidad: RFDtotal });
     $(`[data-codigo="RFD"]`).val(RFDtotal > 0 ? `11502` : ``);
     $(`[data-info-he="RFD"]`).html(RFDtotal);
     // -----------------------------------------------------
@@ -214,6 +222,7 @@ function total() {
     $(`[data-he="RFN"]`).each(function () {
         RFNtotal += Number($(this).val());
     });
+    if (RFNtotal > 0) codigos.push({ tipo_horaExtra: 11503, cantidad: RFNtotal });
     $(`[data-codigo="RFN"]`).val(RFNtotal > 0 ? `11503` : ``);
     $(`[data-info-he="RFN"]`).html(RFNtotal);
     // -----------------------------------------------------
@@ -221,6 +230,7 @@ function total() {
     $(`[data-he="ROF"]`).each(function () {
         ROFtotal += Number($(this).val());
     });
+    if (ROFtotal > 0) codigos.push({ tipo_horaExtra: 11504, cantidad: ROFtotal });
     $(`[data-codigo="ROF"]`).val(ROFtotal > 0 ? `11504` : ``);
     $(`[data-info-he="ROF"]`).html(ROFtotal);
     // -----------------------------------------------------
@@ -244,6 +254,7 @@ function total() {
 
     $(`#total`).html(Ctotal);
     $(`[name="data[total]"]`).val(Ctotal); // suma de todos los valores
+    $(`[name="detalle"], [name="data[ObjectDetalle]"]`).val(JSON.stringify(codigos));
 }
 
 function deleteT(x) {
@@ -261,10 +272,6 @@ function fechas() {
     } else {
         $(`[name="HorasExtra[fecha][]"]`).removeAttr("min").removeAttr("max");
     }
-}
-
-function ultimoDia(Año, Mes) {
-    return new Date(Año, Mes, 0).getDate();
 }
 
 function getFechas() {

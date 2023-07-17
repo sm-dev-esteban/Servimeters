@@ -5,18 +5,39 @@
 //     show () {}
 //     modify () {}
 // }
+
+$(`[data-chart-download]`).on("click", function () {
+    fecha = new Date().toLocaleDateString(locale, { weekday: "long", year: "numeric", day: "numeric", month: "2-digit" });
+    fecha = fecha.replace(",", "");
+    dname = $(this).attr("title") ?? "@now";
+    dname = dname.replace("@now", fecha);
+
+    a = createElem("a", {
+        href: charts[$(this).data("chart-download")].toBase64Image(),
+        download: dname
+    });
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+});
+
 charts = {};
 
-$(`canvas[data-chart-ident]`).each(function () {
-    let $canvas, $chart, $type;
-    $canvas = $(this);
-    $chart = $canvas.data("chart-ident");
-    $type = $canvas.data("chart-type") ?? "line";
-    $.ajax(`../controller/chart.controller.php?chart=${$chart}`, {
-        dataType: "JSON",
-        success: function (r) {
-            if (r.knob.length > 0) {
-                for (i in r.knob) {
+// showChart();
+
+function showChart(chart = false) {
+    $(`canvas[data-chart-ident${chart !== false ? `="${chart}"` : ``}]`).each(function () {
+        let $canvas, $chart, $type;
+        $canvas = $(this);
+        $chart = $canvas.data("chart-ident");
+        $type = $canvas.data("chart-type") ?? "line";
+        $.ajax(`../controller/chart.controller.php?chart=${$chart}`, {
+            dataType: "JSON",
+            // async: false,
+            beforeSend: function () { },
+            success: function (r) {
+                if (r.knob.length > 0) for (i in r.knob) {
                     // datos
                     let knob_count, knob_data, knob_title;
                     knob_count = r.knob.length;
@@ -36,7 +57,7 @@ $(`canvas[data-chart-ident]`).each(function () {
                         $div_t_knob.html(knob_title ?? $div_t_knob.html());
                     } else {
                         $div_knob.append(`
-                        <div class="col-5 col-xl-${knob_count > 12 ? 1 : String(12 / knob_count).split(".")[0]} text-center">
+                        <div class="col-12 col-xl-${knob_count > 12 ? 2 : String(12 / knob_count).split(".")[0]} text-center">
                             <input type="text" class="knob" data-knob="${$chart}" value="${knob_data}" data-readonly="true" data-width="60" data-height="60" data-fgColor="#28a745">
                             <div data-chart-knob-title>${knob_title ?? ""}</div>
                         </div>
@@ -45,62 +66,63 @@ $(`canvas[data-chart-ident]`).each(function () {
                         $input_knob.knob();
                     }
                 }
-            }
-            config = {
-                type: $type,
-                data: {
-                    labels: r.labels,
-                    datasets: [
-                        {
-                            label: r.label,
-                            data: r.data,
-                            fill: false,
-                            borderWidth: 2,
-                            lineTension: 0,
-                            spanGaps: true,
-                            borderColor: `#0e71b1`,
-                            pointRadius: 3,
-                            pointHoverRadius: 7,
-                            pointColor: `#0e71b1`,
-                            pointBackgroundColor: `#0e71b1`
-                        }
-                    ]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    responsive: true,
-                    legend: {
-                        display: false
+
+                config = {
+                    type: $type,
+                    data: {
+                        labels: r.labels,
+                        datasets: [
+                            {
+                                label: r.label,
+                                data: r.data,
+                                fill: false,
+                                borderWidth: 2,
+                                lineTension: 0,
+                                spanGaps: true,
+                                borderColor: `#0e71b1`,
+                                pointRadius: 3,
+                                pointHoverRadius: 7,
+                                pointColor: `#0e71b1`,
+                                pointBackgroundColor: `#0e71b1`
+                            }
+                        ]
                     },
-                    scales: {
-                        xAxes: [{
-                            ticks: {
-                                fontColor: `#0e71b1`
-                            },
-                            gridLines: {
-                                display: false,
-                                color: `#0e71b1`,
-                                drawBorder: false
-                            }
-                        }],
-                        yAxes: [{
-                            ticks: {
-                                stepSize: 5000,
-                                fontColor: `#0e71b1`
-                            },
-                            gridLines: {
-                                display: true,
-                                color: `#0e71b1`,
-                                drawBorder: false
-                            }
-                        }]
+                    options: {
+                        maintainAspectRatio: false,
+                        responsive: true,
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            xAxes: [{
+                                ticks: {
+                                    fontColor: `#0e71b1`
+                                },
+                                gridLines: {
+                                    display: false,
+                                    color: `#0e71b1`,
+                                    drawBorder: false
+                                }
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                    stepSize: 5000,
+                                    fontColor: `#0e71b1`
+                                },
+                                gridLines: {
+                                    display: true,
+                                    color: `#0e71b1`,
+                                    drawBorder: false
+                                }
+                            }]
+                        }
                     }
-                }
-            };
-            charts[$chart] = new Chart($canvas, config);
-        }
+                };
+                charts[$chart] = new Chart($canvas, config);
+            }
+        });
     });
-});
+}
 
 function modifyChart(chart, data, modify) {
     switch (modify) {

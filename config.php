@@ -1,8 +1,21 @@
 <?php
 // CONFIGURACIÓN DEL JSON CON PHP
 // Nota: mejor tomar los datos con php ya que se puede acceder a la información mas facil 
+include __DIR__ . "/controller/automaticForm.php";
 define("S_NAME", $_SERVER["SERVER_NAME"]);
 define("S_PORT", $_SERVER["SERVER_PORT"]);
+
+define("ACTIVE", "localhost");
+
+define("MODE", [
+    "localhost" => [],
+    "produccion" => [
+        "PASS_DB" => "S3rv1830117370*",
+        "SERVER_DB" => "10.10.10.6",
+        "DATABASE" => "HorasExtra_temp",
+        "WEBSOCKET" => 8080
+    ]
+]);
 
 $config = [
     "__COMMENT__" => "editar en el php la información del json",
@@ -20,20 +33,24 @@ $config = [
     "FROM_EMAIL" => "soportesm@servimeters.net",
     "URL_SITE" => getenv("REQUEST_SCHEME") . "://" . getenv("HTTP_HOST") . dirname(getenv("REQUEST_URI")) . "/",
     "FOLDER_SITE" => __DIR__ . "\\",
-    "APROBADO" => 1,
-    "RECHAZO" => 2,
-    "APROBACION_JEFE" => 3,
-    "APROBACION_GERENTE" => 5,
-    "RECHAZO_GERENTE" => 6,
-    "APROBACION_RH" => 7,
-    "RECHAZO_RH" => 8,
-    "APROBACION_CONTABLE" => 9,
-    "RECHAZO_CONTABLE" => 10,
-    "EDICION" => 1002
+    "APROBADO" => getEstados("aprobado"),
+    "RECHAZO" => getEstados("rechazado"),
+    "APROBACION_JEFE" => getEstados("revision j"),
+    "APROBACION_GERENTE" => getEstados("revision g"),
+    "RECHAZO_GERENTE" => getEstados("rechazo g"),
+    "APROBACION_RH" => getEstados("revision r"),
+    "RECHAZO_RH" => getEstados("rechazo r"),
+    "APROBACION_CONTABLE" => getEstados("revision c"),
+    "RECHAZO_CONTABLE" => getEstados("rechazo c"),
+    "EDICION" => getEstados("edicion")
 ];
 
 $configJSON = fopen("./config/config.json", "w");
-fwrite($configJSON, json_encode($config, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+fwrite($configJSON, json_encode(array_merge($config, MODE[ACTIVE] ?? []), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
 fclose($configJSON);
 
 phpinfo();
+function getEstados($filter, $column = "nombre", $return = "id", $config = ["like" => true, "notResult" => "Error"])
+{
+    return AutomaticForm::getValueSql($filter, $column, $return, "Estados", $config);
+}

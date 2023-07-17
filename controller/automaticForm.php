@@ -2,7 +2,7 @@
 
 use JetBrains\PhpStorm\Internal\returnTypeContract;
 
-require_once $_SERVER["DOCUMENT_ROOT"] . '/' . explode("/", $_SERVER['REQUEST_URI'])[1] . "/config/DB.config.php";
+require_once dirname(__DIR__) . "/config/DB.config.php";
 
 /*
  * - CREATE
@@ -164,7 +164,6 @@ class AutomaticForm extends DB
 
                 // creamos los campos si no existen
                 $query = $this->conn->prepare("
-
                     IF NOT EXISTS (SELECT * FROM sysobjects WHERE name = '{$this->table}' and xtype = 'U')
                         CREATE TABLE {$this->table} (
                             id INT IDENTITY(1,1) PRIMARY KEY,
@@ -234,9 +233,8 @@ class AutomaticForm extends DB
             foreach ($this->file["name"] as $key => $value) {
                 if ($checkEmptyValues ? !empty($value) : !empty($key)) {
 
-                    if (!file_exists(FOLDER_SITE)) { // creamos la carpeta si no existeF
+                    if (!file_exists(FOLDER_SITE))  // creamos la carpeta si no existeF
                         mkdir(FOLDER_SITE, 0777, true);
-                    }
 
                     if (is_array($value)) {
                         foreach ($this->file["name"][$key] as $keyM => $valueM) {
@@ -255,11 +253,10 @@ class AutomaticForm extends DB
                         }
                     }
 
-                    if ($this->action == "INSERT") {
+                    if ($this->action == "INSERT")
                         $insert = str_replace("``", "`?=>{$key}`, ``", str_replace("''", "'?=>{$value}', ''", $insert));
-                    } else if ($this->action == "UPDATE") {
+                    else if ($this->action == "UPDATE")
                         $update = str_replace("`` = ''", "`?=>{$key}` = '?=>{$value}', `` = ''", $update);
-                    }
                 }
             }
         }
@@ -376,8 +373,12 @@ class AutomaticForm extends DB
 
         $c = array_merge($defaultConfig, is_array($config) ? $config : []);
 
-        if ($c["checkTableExists"] ? !self::checkTableExists($table) : false) {
-            return ["error" => "Tabla es obligatoria"];
+        $bool = ["true" => true, "false" => false];
+
+        if (is_string($c["checkTableExists"]) ? $bool[$c["checkTableExists"]] ?? false : $c["checkTableExists"]) {
+            if (!self::checkTableExists($table)) {
+                return ["error" => "Tabla es obligatoria"];
+            }
         }
 
         $db = new DB();

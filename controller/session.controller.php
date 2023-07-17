@@ -19,11 +19,10 @@ function validateRole()
 switch ($_GET['action']) {
     case 'init':
         $isSession = $session->init_session($_POST['user'], $_POST['pass']);
-        if ($isSession["status"] == true) {
-            echo json_encode(["status" => true, "rol" => validateRole()], JSON_UNESCAPED_UNICODE);
-        } else {
-            echo json_encode($isSession, JSON_UNESCAPED_UNICODE);
-        }
+
+        if ($isSession["status"] == true) echo json_encode(["status" => true, "rol" => validateRole()], JSON_UNESCAPED_UNICODE);
+        else echo json_encode($isSession, JSON_UNESCAPED_UNICODE);
+
         exit();
         break;
     case 'finish':

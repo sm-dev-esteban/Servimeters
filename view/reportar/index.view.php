@@ -64,22 +64,16 @@
                                             <th>Fecha <b class="text-danger">*</b></th>
                                             <th>Actividad <b class="text-danger">*</b></th>
                                             <th>Permisos Descuentos</th>
-                                            <th>Extras Diurn Ordinaria</th> <?php #11001 
-                                                                            ?>
-                                            <th>Extras Noct Ordinaria</th> <?php #11002 
-                                                                            ?>
-                                            <th>Extras Diurn Fest Domin</th> <?php #11003 
-                                                                                ?>
-                                            <th>Extras Noct Fest Domin</th> <?php #11004 
-                                                                            ?>
-                                            <th>Recargo Nocturno</th> <?php #11501 
-                                                                        ?>
-                                            <th>Recargo Festivo Diurno</th> <?php #11502 
-                                                                            ?>
-                                            <th>Recargo Festivo Noctur</th> <?php #11503 
-                                                                            ?>
-                                            <th>Recargo Ord Fest Noct</th> <?php #11504 
-                                                                            ?>
+
+                                            <th>Extras Diurn Ordinaria</th> <?php /* 11001 */ ?>
+                                            <th>Extras Noct Ordinaria</th> <?php /* 11002 */ ?>
+                                            <th>Extras Diurn Fest Domin</th> <?php /* 11003 */ ?>
+                                            <th>Extras Noct Fest Domin</th> <?php /* 11004 */ ?>
+                                            <th>Recargo Nocturno</th> <?php /* 11501 */ ?>
+                                            <th>Recargo Festivo Diurno</th> <?php /* 11502 */ ?>
+                                            <th>Recargo Festivo Noctur</th> <?php /* 11503 */ ?>
+                                            <th>Recargo Ord Fest Noct</th> <?php /* 11504 */ ?>
+
                                             <th>Acción</th>
                                         </tr>
                                     </thead>
@@ -88,6 +82,7 @@
                                             <td><input type="date" name="HorasExtra[fecha][]" class="form-control" required></td>
                                             <td><input type="text" name="HorasExtra[novedad][]" class="form-control" required></td>
                                             <td><input type="number" name="HorasExtra[descuento][]" class="form-control" data-he="descuento" oninput="total()" step="0.5" min="0"></td>
+
                                             <td><input type="number" name="HorasExtra[E_Diurna_Ord][]" class="form-control" data-he="EDO" oninput="total()" step="0.5" min="0"></td>
                                             <td><input type="number" name="HorasExtra[E_Nocturno_Ord][]" class="form-control" data-he="ENO" oninput="total()" step="0.5" min="0"></td>
                                             <td><input type="number" name="HorasExtra[E_Diurna_Fest][]" class="form-control" data-he="EDF" oninput="total()" step="0.5" min="0"></td>
@@ -96,6 +91,7 @@
                                             <td><input type="number" name="HorasExtra[R_Fest_Diurno][]" class="form-control" data-he="RFD" oninput="total()" step="0.5" min="0"></td>
                                             <td><input type="number" name="HorasExtra[R_Fest_Nocturno][]" class="form-control" data-he="RFN" oninput="total()" step="0.5" min="0"></td>
                                             <td><input type="number" name="HorasExtra[R_Ord_Fest_Noct][]" class="form-control" data-he="ROF" oninput="total()" step="0.5" min="0"></td>
+
                                             <td><input type="hidden" name="HorasExtra[id][]"><button class="btn btn-danger" type="button" disabled onclick="deleteT(this)"><i class="fa fa-times"></i></button></td>
                                         </tr>
                                     </tbody>
@@ -175,13 +171,16 @@
                                 <select name="listGerente" id="listGerente" class="form-control" disabled style="width: 100%;"></select>
                             </div>
                         </div>
+                        <input type="hidden" name="data[check_user]" value="0">
+                        <input type="hidden" name="detalle">
+                        <input type="hidden" name="data[ObjectDetalle]">
                         <input type="hidden" name="data[id_estado]">
                         <input type="hidden" name="data[id_aprobador]">
                         <input type="hidden" name="data[empleado]" value="<?= $_SESSION['usuario'] ?>">
                         <input type="hidden" name="data[fechaInicio]">
                         <input type="hidden" name="data[fechaFin]">
                         <input type="hidden" name="action" value="<?= isset($_GET["edit"]) ? "UPDATE" : "INSERT" ?>">
-                        <input type="hidden" name="edit" value="<?= isset($_GET["edit"]) ? $_GET["edit"] : "" ?>">
+                        <input type="hidden" name="edit" value="<?= $_GET["edit"] ?? "" ?>">
                         <input type="hidden" name="data[fechaRegistro]">
                         <input type="hidden" name="data[timezone]">
                         <div class="col-12">

@@ -14,7 +14,7 @@ class Email
         include_once('../config/PhpMailer/PHPMailer.php');
         include_once('../config/PhpMailer/SMTP.php');
         $this->correo = new PHPMailer(true);
-        require_once "LoadConfig.config.php";
+        require_once dirname(__DIR__) . "/config/LoadConfig.config.php";
         $this->config = LoadConfig::getConfig();
     }
 
@@ -48,7 +48,7 @@ class Email
             // $this->correo->addAddress($this->config->FROM_EMAIL);
             foreach ($address as $key => $value) {
                 if (isset($value["mail"])) {
-                    $this->correo->addAddress($value["mail"], (isset($value["name"]) ? $value["name"] : "Empleado"));
+                    $this->correo->addAddress($value["mail"], $value["name"] ?? "Empleado");
                 }
             }
             $this->correo->addCC($cc);

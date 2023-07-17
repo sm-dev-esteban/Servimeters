@@ -4,17 +4,18 @@
             <div class="card-body">
                 <form id="add">
                     <div class="row">
+                        <datalist id="list_directorio_activo"></datalist>
                         <div class="col-12 mb-3">
                             <label for="check_directorio_activo">Buscar en el directorio activo</label>
                             <input type="checkbox" name="check_directorio_activo" id="check_directorio_activo" data-bootstrap-switch>
                         </div>
                         <div class="col-4 mb-3">
                             <label for="nombre">Nombre</label>
-                            <input type="text" name="data[nombre]" id="nombre" class="form-control">
+                            <input type="text" name="data[nombre]" id="nombre" class="form-control" list="list_directorio_activo">
                         </div>
                         <div class="col-4 mb-3">
                             <label for="correo">E-mail</label>
-                            <input type="email" name="data[correo]" id="correo" class="form-control">
+                            <input type="email" name="data[correo]" id="correo" class="form-control" list="list_directorio_activo">
                         </div>
                         <div class="col-4 mb-3">
                             <label for="tipo">Tipo</label>

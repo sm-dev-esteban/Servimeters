@@ -1,30 +1,38 @@
-<?php
-
-if (!isset($_SESSION["estadoAutentica"])) {
-	require_once "../../config/LoadConfig.config.php";
-	$config = LoadConfig::getConfig();
-	header('Location:' . $config['URL_SITE'] . 'index.php');
-}
-?>
-<section id="four" class="content" style="height: 75vh;">
-	<div class="container">
-		<div class="box alt">
-			<section id="five" class="wrapper style2 special fade">
-				<div class="container">
-					<header>
-						<h3 style="color: white;">Seleccione un rango de fechas</h3>
-					</header>
-					<form method="post" action="reporte/template.php" class="cta">
-						<div class="row">
-							<label for="fechaInicio" style="color: white;">Desde</label>
-							<div class="col-4 col-sm-8"><input type="date" name="fechaInicio" id="fechaInicio" style="color: black" required /></div>
-							<label for="fechaFin" style="color: white;">Hasta</label>
-							<div class="col-4 col-sm-8"><input type="date" name="fechaFin" id="fechaFin" style="color: black" required /></div>
-							<div class="col-4 col-sm-8"><input type="submit" value="Generar" class="fit primary fit small" /></div>
-						</div>
-					</form>
-				</div>
-			</section>
-		</div>
-	</div>
+<?php $type = base64_decode($_GET["type"] ?? 0) ?>
+<section class="content">
+    <div class="container-fluid">
+        <div class="card card-primary">
+            <div class="card-header">
+                <form id="formExcel" data-type="<?= $type ?>">
+                    <div class="row">
+                        <div class="col-12 col-xl-6 mb-3">
+                            <label for="fechaInicio">fecha Inicio</label>
+                            <input type="month" name="fechaInicio" id="fechaInicio" class="form-control" required>
+                        </div>
+                        <div class="col-12 col-xl-6 mb-3">
+                            <label for="fechaFin">fecha Fin</label>
+                            <input type="month" name="fechaFin" id="fechaFin" class="form-control" required>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-info"><i class="fa fa-search"></i></button>
+                            <button type="button" class="btn btn-success" data-action="excel" disabled><i class="fa fa-file-excel"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="table-responsive">
+                            <table class="table" id="tableExcel">
+                                <thead></thead>
+                                <tbody></tbody>
+                                <tfoot></tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>

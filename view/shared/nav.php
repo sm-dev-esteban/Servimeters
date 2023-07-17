@@ -71,57 +71,58 @@
         </div>
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                <!-- <li class="nav-header">Titulo</li> -->
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fa fa-cog"></i>
-                        <p>
-                            Administrar
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="admin/clase.view" data-script="claseAdmin" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Clase</p>
-                            </a>
-                        </li>
-                    </ul>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="admin/centroCosto.view" data-script="cecoAdmin" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Centros de Costo</p>
-                            </a>
-                        </li>
-                    </ul>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="admin/Aprobadores.view" data-script="aprobadoresAdmin" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Aprobadores</p>
-                            </a>
-                        </li>
-                    </ul>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="prueba.view" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Tipos de Recargo</p>
-                            </a>
-                        </li>
-                    </ul>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="prueba.view" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Tipos de HE</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <!-- <li class="nav-header">Titulo</li> -->
+                <?php if ($_SESSION["isAdmin"] ?? false == "Si") : ?>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fa fa-cog"></i>
+                            <p>
+                                Administrar
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="admin/clase.view" data-script="claseAdmin" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Clase</p>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="admin/centroCosto.view" data-script="cecoAdmin" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Centros de Costo</p>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="admin/Aprobadores.view" data-script="aprobadoresAdmin" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Aprobadores</p>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="prueba.view" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Tipos de Recargo</p>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="prueba.view" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Tipos de HE</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                <?php endif ?>
+
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon far fa-clock"></i>
@@ -144,7 +145,7 @@
                                 <p>Mis horas extras</p>
                             </a>
                         </li>
-                        <?php if (isset($_SESSION["rol"])) : ?>
+                        <?php if ((isset($_SESSION["rol"]) && $_SESSION["rol"] != "NA") || (isset($_SESSION["gestion"]) && $_SESSION["gestion"] != "NA")) : ?>
                             <li class="nav-item">
                                 <!-- <a href="gestionHE/gestionar.view" class="nav-link" data-script="aproveRejectHE, detailsReporte"> -->
                                 <a href="gestionHE/gestionar.view" class="nav-link" data-script="aproveRejectHE">
@@ -153,33 +154,52 @@
                                 </a>
                             </li>
                         <?php endif ?>
+                        <?php if (isset($_SESSION["gestion"]) && $_SESSION["gestion"] != "NA") : ?>
+                            <li class="nav-header">Reportes</li>
+                            <?php if (isset($_SESSION["gestion"]) && $_SESSION["gestion"] == "Contable") : ?>
+                                <li class="nav-item">
+                                    <a href="reporte/index.view.php?type=<?= base64_encode(1) ?>" class="nav-link" data-script="generarReporte">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Reporte Contable</p>
+                                    </a>
+                                </li>
+                            <?php endif ?>
+                            <li class="nav-item">
+                                <a href="reporte/index.view.php?type=<?= base64_encode(2) ?>" class="nav-link" data-script="generarReporte">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Reporte de horas</p>
+                                </a>
+                            </li>
+                        <?php endif ?>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-calendar"></i>
-                        <p>
-                            Permisos
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="permisos/solicitud.view" class="nav-link" data-script="solicitud">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Solicitar permiso</p>
-                            </a>
-                        </li>
-                    </ul>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="permisos/listSolicitud.view" class="nav-link" data-script="solicitud">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Mis solicitudes</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                <?php if (false) : ?>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-calendar"></i>
+                            <p>
+                                Permisos
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="permisos/solicitud.view" class="nav-link" data-script="solicitud">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Solicitar permiso</p>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="permisos/listSolicitud.view" class="nav-link" data-script="solicitud">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Mis solicitudes</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                <?php endif ?>
                 <li class="nav-item">
                     <a href="exit" class="nav-link text-danger">
                         <i class="nav-icon fas fa-times"></i>

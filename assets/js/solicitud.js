@@ -10,7 +10,7 @@ $(document).ready(async function () {
         $(`[name="data[fechaRegistro]"]`).val($date);
         $(`[name="data[timezone]"]`).val(timezone);
 
-        $.ajax(`../controller/submit.controller.php?t=${timezone}&t=${timezone}&action=permiso`, {
+        $.ajax(`../controller/submit.controller.php?t=${timezone}&action=Permisos`, {
             type: "POST",
             dataType: "JSON",
             data: new FormData(this),
