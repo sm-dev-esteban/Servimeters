@@ -13,12 +13,8 @@ $(document).ready(function () {
             type: 'post',
             dataType: "json",
             success: function (result) {
-                console.log(result);
-                if (result.status == false) {
-                    $.notify("Error al iniciar sesión!", 'error');
-                } else if (result.status == true) {
-                    window.location.href = 'view/home';
-                }
+                if (result.status == false) $.notify("Error al iniciar sesión!", 'error');
+                else if (result.status == true) window.location.href = 'view/home';
             },
             error: function () {
                 $.notify("Error al iniciar sesión!", 'error');
@@ -26,6 +22,3 @@ $(document).ready(function () {
         });
     });
 });
-
-// function validateRol() {
-// }

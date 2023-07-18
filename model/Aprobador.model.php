@@ -107,16 +107,13 @@ class Aprobador
             $this->result->execute();
 
             $user = $this->result->fetchAll(PDO::FETCH_OBJ);
-
-            if (!empty($user)) {
+            if (is_array($user) && !empty(count($user))) {
                 $_SESSION["rol"] = $user[0]->tipo;
                 $_SESSION["gestion"] = $user[0]->gestiona;
                 $_SESSION["idAprobador"] = $user[0]->id;
                 $_SESSION["isAdmin"] = $user[0]->esAdmin;
                 return $user[0]->tipo;
-            } else {
-                return false;
-            }
+            } else return false;
 
             exit();
         }
