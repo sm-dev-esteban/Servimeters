@@ -110,6 +110,7 @@ $(document).ready(async function () {
                 console.log($a["query"] ?? "noquery", "gestion");
             }
         }
+        updateDatable();
     });
 
 });
@@ -206,23 +207,22 @@ async function newAprueba() {
         const Apr_contable = $aprueba.filter((q) => {
             return q.id_estado == config.APROBACION_CONTABLE;
         })
-        if (Apr_contable.length > 0) {
-            Apr_contable.forEach($Apr => {
-                $check = automaticForm("updateValueSql", [config.APROBACION, `check_user = 0, id_estado`, $Apr.id, "ReportesHE"]);
-                if ($check.status == true) {
-                    if (false) sendMail([{
-                        name: $Apr.empleado,
-                        mail: $Apr.correoEmpleado
-                    }], $cc, $subject,
-                        `Buen día, Las horas con el numero ${$Apr.id} han sido aprobadas.<br>
+        if (Apr_contable.length > 0) Apr_contable.forEach($Apr => {
+            $check = automaticForm("updateValueSql", [config.APROBADO, `check_user = 0, id_aprobador = ${id_aprobador}, id_estado`, $Apr.id, "ReportesHE"]);
+            if ($check.status == true) {
+                if (false) sendMail([{
+                    name: $Apr.empleado,
+                    mail: $Apr.correoEmpleado
+                }], $cc, $subject,
+                    `Buen día, Las horas con el numero ${$Apr.id} han sido aprobadas.<br>
                         Gestiona: ${usuario} - ${mail}.<br>
                         Este mensaje ha sido generado automáticamente.<br>`);
-                    $body += `${$Apr.empleado} - #${$Apr.id}<br>`
-                } else {
-                    console.log("Error:", ($check.error ? $check.error : "request"));
-                }
-            });
-        }
+                $body += `${$Apr.empleado} - #${$Apr.id}<br>`
+            } else {
+                console.log("Error:", ($check.error ? $check.error : "request"));
+            }
+        });
+
     }
     // despues de ejecutar todo el codigó enviamos el correo y actualizamos la tabla
     if ($to.length > 0 && false) sendMail($to, $cc, $subject,
@@ -319,7 +319,16 @@ async function newRechaza() {
             motivo = await solicitarRechazo();
 
             if (motivo.cuerpo ?? false) Rec_rh.forEach($Rec => {
-                $check = automaticForm("updateValueSql", [config.RECHAZO_RH, "id_estado", $Rec.id, "ReportesHE"])
+                $check = automaticForm("updateValueSql", [config.RECHAZO_RH, `check_user = 0, id_aprobador = '${approver}', id_estado`, $Rec.id, "ReportesHE"]);
+                if ($check.status === true) {
+                    $to.push({
+                        name: $Rec.empleado,
+                        mail: $Rec.correoEmpleado
+                    });
+                    $body += `${$Rec.empleado} - ${$Rec.id}<br>`;
+                } else {
+                    console.log("Error:", ($check.error ? $check.error : "request"));
+                }
             })
         }
     } else if (gestion == "CONTABLE") {
@@ -327,7 +336,7 @@ async function newRechaza() {
             return q.id_estado == config.APROBACION_CONTABLE;
         })
         if (Rec_gestion.length > 0) {
-            approver = await solicitarAprovador(["GERENTE"]);
+            approver = await solicitarAprovador(["GERENTE"]); // esperando hasta que obtenga la respuesta
             motivo = await solicitarRechazo();
 
             if (motivo.cuerpo ?? false) Rec_gestion.forEach($Rec => {
@@ -401,7 +410,7 @@ async function solicitarRechazo() {
                 <input id="swal2-input-titulo" class="form-control form-control-lg" placeholder="Titulo" type="text" value="Rechazo ${rol}">
             </div>
             <div class="mb-3">
-                <textarea id="swal2-input-cuerpo" class="form-control form-control-lg" placeholder="Cuerpo"></textarea>
+                <textarea id="swal2-input-cuerpo" class="form-control form-control-lg" placeholder="Cuerpo" required></textarea>
             </div>
             `,
         showCancelButton: true,

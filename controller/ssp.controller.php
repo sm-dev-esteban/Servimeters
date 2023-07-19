@@ -118,7 +118,7 @@ switch ($_GET["ssp"]) {
                 "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
                     $id_table = $row["id"];
                     $status = AutomaticForm::getValueSql($d, "@primary", "check_user", "ReportesHE", [
-                        "notResult" => 1
+                        "notResult" => 0
                     ]);
                     return '<span data-ident="' . $d . '" data-status="' . $status . '">' . $d . '</span>';
                 }
