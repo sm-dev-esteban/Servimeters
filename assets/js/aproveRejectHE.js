@@ -101,13 +101,13 @@ $(document).ready(async function () {
                     "id_aprobador": id_aprobador,
                     "id_estado": config[flujo[rol]] ?? "'id_estado'",
                 }, "ReportesHE"]);
-                console.log($a["query"] ?? "noquery", "rol");
+                // console.log($a["query"] ?? "noquery", "rol");
             }
             if (gestion != "na") {
                 $a = automaticForm("updateValueSql", [change, "check_user", {
                     "id_estado": config[flujo[gestion]] ?? "'id_estado'"
                 }, "ReportesHE"]);
-                console.log($a["query"] ?? "noquery", "gestion");
+                // console.log($a["query"] ?? "noquery", "gestion");
             }
         }
         updateDatable();
@@ -120,6 +120,7 @@ function updateDatable() {
 }
 
 async function newAprueba() {
+    idTipoComentario = automaticForm("getValueSql", ["Apro", "nombre", "id", "TipoComentario", { like: true }]);
     let config, mail, rol, gestion, usuario, id_aprobador, $aprueba;
     // config
     config = await loadConfig();
@@ -148,7 +149,14 @@ async function newAprueba() {
         if (Apr_jefe.length > 0) {
             newApproverRol = await solicitarAprovador(["GERENTE"]);
 
-            if (newApproverRol) Apr_jefe.forEach($Apr => {
+            if (newApproverRol) Apr_jefe.forEach(async $Apr => {
+                await registrarMotivo({
+                    titulo: `Aprobación ${rol}`,
+                    cuerpo: `Reporte aprobado por "${usuario}"`,
+                    id_reporte: $Apr.id,
+                    creadoPor: usuario,
+                    idTipoComentario: idTipoComentario
+                })
                 $check = automaticForm("updateValueSql", [config.APROBACION_GERENTE, `check_user = 0, id_aprobador = ${newApproverRol}, id_estado`, $Apr.id, "ReportesHE"]);
                 if ($check.status == true) {
                     $to.push({
@@ -157,7 +165,7 @@ async function newAprueba() {
                     });
                     $body += `${$Apr.empleado} - ${$Apr.id}<br>`;
                 } else {
-                    console.log("Error:", ($check.error ? $check.error : "request"));
+                    // console.log("Error:", ($check.error ? $check.error : "request"));
                 }
             });
         }
@@ -168,7 +176,14 @@ async function newAprueba() {
         if (Apr_gerente.length > 0) {
             newApproverRol = await solicitarAprovador(["RH"]);
 
-            if (newApproverRol) Apr_gerente.forEach($Apr => {
+            if (newApproverRol) Apr_gerente.forEach(async $Apr => {
+                await registrarMotivo({
+                    titulo: `Aprobación ${rol}`,
+                    cuerpo: `Reporte aprobado por "${usuario}"`,
+                    id_reporte: $Apr.id,
+                    creadoPor: usuario,
+                    idTipoComentario: idTipoComentario
+                })
                 $check = automaticForm("updateValueSql", [config.APROBACION_RH, `check_user = 0, id_aprobador = ${newApproverRol}, id_estado`, $Apr.id, "ReportesHE"]);
                 if ($check.status == true) {
                     $to.push({
@@ -177,7 +192,7 @@ async function newAprueba() {
                     });
                     $body += `${$Apr.empleado} - #${$Apr.id}<br>`
                 } else {
-                    console.log("Error:", ($check.error ? $check.error : "request"));
+                    // console.log("Error:", ($check.error ? $check.error : "request"));
                 }
             });
         }
@@ -190,7 +205,14 @@ async function newAprueba() {
         if (Apr_rh.length > 0) {
             newApproverGestion = await solicitarAprovador(["CONTABLE"]);
 
-            if (newApproverGestion) Apr_rh.forEach($Apr => {
+            if (newApproverGestion) Apr_rh.forEach(async $Apr => {
+                await registrarMotivo({
+                    titulo: `Aprobación ${gestion}`,
+                    cuerpo: `Reporte aprobado por "${usuario}"`,
+                    id_reporte: $Apr.id,
+                    creadoPor: usuario,
+                    idTipoComentario: idTipoComentario
+                })
                 $check = automaticForm("updateValueSql", [config.APROBACION_CONTABLE, `check_user = 0, id_aprobador = ${newApproverGestion}, id_estado`, $Apr.id, "ReportesHE"]);
                 if ($check.status == true) {
                     $to.push({
@@ -199,7 +221,7 @@ async function newAprueba() {
                     });
                     $body += `${$Apr.empleado} - #${$Apr.id}<br>`
                 } else {
-                    console.log("Error:", ($check.error ? $check.error : "request"));
+                    // console.log("Error:", ($check.error ? $check.error : "request"));
                 }
             });
         }
@@ -207,7 +229,14 @@ async function newAprueba() {
         const Apr_contable = $aprueba.filter((q) => {
             return q.id_estado == config.APROBACION_CONTABLE;
         })
-        if (Apr_contable.length > 0) Apr_contable.forEach($Apr => {
+        if (Apr_contable.length > 0) Apr_contable.forEach(async $Apr => {
+            await registrarMotivo({
+                titulo: `Aprobación ${gestion}`,
+                cuerpo: `Reporte aprobado por "${usuario}"`,
+                id_reporte: $Apr.id,
+                creadoPor: usuario,
+                idTipoComentario: idTipoComentario
+            })
             $check = automaticForm("updateValueSql", [config.APROBADO, `check_user = 0, id_aprobador = ${id_aprobador}, id_estado`, $Apr.id, "ReportesHE"]);
             if ($check.status == true) {
                 if (false) sendMail([{
@@ -219,7 +248,7 @@ async function newAprueba() {
                         Este mensaje ha sido generado automáticamente.<br>`);
                 $body += `${$Apr.empleado} - #${$Apr.id}<br>`
             } else {
-                console.log("Error:", ($check.error ? $check.error : "request"));
+                // console.log("Error:", ($check.error ? $check.error : "request"));
             }
         });
 
@@ -234,7 +263,8 @@ async function newAprueba() {
 }
 
 async function newRechaza() {
-    let config, mail, rol, gestion, usuario, id_aprobador, $aprueba;
+    idTipoComentario = automaticForm("getValueSql", ["Rech", "nombre", "id", "TipoComentario", { like: true }]);
+    let config, mail, rol, gestion, usuario, id_aprobador, $rechaza;
     // config
     config = await loadConfig();
     // user
@@ -262,7 +292,12 @@ async function newRechaza() {
         if (Rec_jefe.length > 0) {
             motivo = await solicitarRechazo();
 
-            if (motivo.cuerpo ?? false) Rec_jefe.forEach($Rec => {
+            if (motivo.cuerpo ?? false) Rec_jefe.forEach(async $Rec => {
+                await registrarMotivo($.extend(motivo, {
+                    id_reporte: $Rec.id,
+                    creadoPor: usuario,
+                    idTipoComentario: idTipoComentario
+                }));
                 $check = automaticForm("updateValueSql", [config.RECHAZO, "check_user = 0, id_estado", $Rec.id, "ReportesHE"]);
                 if ($check.status == true) {
                     $to.push({
@@ -271,7 +306,7 @@ async function newRechaza() {
                     });
                     $body += `${$Rec.empleado} - ${$Rec.id}<br>`;
                 } else {
-                    console.log("Error:", ($check.error ? $check.error : "request"));
+                    // console.log("Error:", ($check.error ? $check.error : "request"));
                 }
             });
         }
@@ -293,7 +328,12 @@ async function newRechaza() {
             if (newApprover) {
                 motivo = await solicitarRechazo();
 
-                if (motivo.cuerpo ?? false) Rec_gerente.forEach($Rec => {
+                if (motivo.cuerpo ?? false) Rec_gerente.forEach(async $Rec => {
+                    await registrarMotivo($.extend(motivo, {
+                        id_reporte: $Rec.id,
+                        creadoPor: usuario,
+                        idTipoComentario: idTipoComentario
+                    }));
                     estado = (newApprover === true ? config.RECHAZO : config.RECHAZO_GERENTE);
                     aprobador = (newApprover === true ? id_aprobador : newApprover);
                     $check = automaticForm("updateValueSql", [estado, `check_user = 0, id_aprobador = '${aprobador}', id_estado`, $Rec.id, "ReportesHE"]);
@@ -304,7 +344,7 @@ async function newRechaza() {
                         });
                         $body += `${$Rec.empleado} - ${$Rec.id}<br>`;
                     } else {
-                        console.log("Error:", ($check.error ? $check.error : "request"));
+                        // console.log("Error:", ($check.error ? $check.error : "request"));
                     }
                 });
             }
@@ -318,7 +358,12 @@ async function newRechaza() {
             approver = await solicitarAprovador(["GERENTE"]);
             motivo = await solicitarRechazo();
 
-            if (motivo.cuerpo ?? false) Rec_rh.forEach($Rec => {
+            if (motivo.cuerpo ?? false) Rec_rh.forEach(async $Rec => {
+                await registrarMotivo($.extend(motivo, {
+                    id_reporte: $Rec.id,
+                    creadoPor: usuario,
+                    idTipoComentario: idTipoComentario
+                }));
                 $check = automaticForm("updateValueSql", [config.RECHAZO_RH, `check_user = 0, id_aprobador = '${approver}', id_estado`, $Rec.id, "ReportesHE"]);
                 if ($check.status === true) {
                     $to.push({
@@ -327,7 +372,7 @@ async function newRechaza() {
                     });
                     $body += `${$Rec.empleado} - ${$Rec.id}<br>`;
                 } else {
-                    console.log("Error:", ($check.error ? $check.error : "request"));
+                    // console.log("Error:", ($check.error ? $check.error : "request"));
                 }
             })
         }
@@ -339,7 +384,12 @@ async function newRechaza() {
             approver = await solicitarAprovador(["GERENTE"]); // esperando hasta que obtenga la respuesta
             motivo = await solicitarRechazo();
 
-            if (motivo.cuerpo ?? false) Rec_gestion.forEach($Rec => {
+            if (motivo.cuerpo ?? false) Rec_gestion.forEach(async $Rec => {
+                await registrarMotivo($.extend(motivo, {
+                    id_reporte: $Rec.id,
+                    creadoPor: usuario,
+                    idTipoComentario: idTipoComentario
+                }));
                 $check = automaticForm("updateValueSql", [config.RECHAZO_CONTABLE, `id_aprobador = ${approver}, id_estado`, $Rec.id, "ReportesHE"]);
                 if ($check) {
                     $to.push({
@@ -348,7 +398,7 @@ async function newRechaza() {
                     });
                     $body += `${$Rec.empleado} - ${$Rec.id}<br>`;
                 } else {
-                    console.log("Error:", ($check.error ? $check.error : "request"));
+                    // console.log("Error:", ($check.error ? $check.error : "request"));
                 }
             })
         }
@@ -428,3 +478,13 @@ async function solicitarRechazo() {
     return motivo;
 }
 
+async function registrarMotivo(d) {
+    return $.ajax("../controller/submit.controller.php?action=Comentarios", {
+        data: {
+            data: d
+        },
+        dataType: "JSON",
+        type: "POST",
+        async: false
+    }).responseJSON;
+}
