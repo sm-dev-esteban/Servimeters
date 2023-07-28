@@ -526,3 +526,66 @@ function generateQR(str, config = {}) {
 function ultimoDia(Año = new Date().toLocaleString(locale, $.extend(timezone, { year: "numeric" })), Mes = new Date().toLocaleString(locale, $.extend(timezone, { month: "2-digit" }))) {
     return new Date(Año, Mes, 0).getDate();
 }
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+// Modal timeline
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+$(`#modalComments${new Date().getFullYear()}`).on('show.bs.modal', function (e) {
+    // select  from 
+    var $this = $(this)
+    var $btn = $(e.relatedTarget)
+    var id = $btn.data('id')
+    var $timeline = $this.find(".modal-body .timeline")
+
+    $timeline.html("")
+
+    var data = automaticForm("getDataSql", [
+        "Comentarios C inner join TipoComentario TC on C.idTipoComentario = TC.id",
+        `C.id_reporte = '${id}' order by C.fechaRegistro desc`,
+        "C.*, TC.icon",
+        { checkTableExists: false }
+    ])
+
+    if (!data.length || data.length == 0) $timeline.html(`
+    <div>
+        <i class="fas fa-question"></i>
+        <div class="timeline-item">
+            <span class="time"><i class="fas fa-question"></i></span>
+            <h4 class="timeline-header">¯\\_(ツ)_/¯</h4>
+        </div>
+    </div>
+    `)
+    else data.forEach(x => {
+        fecha = new Date(x["fechaRegistro"] ?? "now").toLocaleString(locale, {
+            timeZone: timezone,
+            year: 'numeric',
+            month: 'short',
+            day: '2-digit'
+        })
+
+        hora = new Date(x["fechaRegistro"] ?? "now").toLocaleString(locale, {
+            timeZone: timezone,
+            hour: '2-digit',
+            hour12: false,
+            minute: '2-digit'
+        })
+
+        $timeline.append(`
+        <div class="time-label">
+            <span class="bg-info">${fecha}</span>
+        </div>
+
+        <div>
+            <i class="${x["icon"]}"></i>
+            <div class="timeline-item">
+                <span class="time"><i class="fas fa-clock"></i> ${hora}</span>
+                <h3 class="timeline-header">${x["titulo"]}</h3>
+                <div class="timeline-body">
+                    ${x["cuerpo"]}
+                </div>
+            </div>
+        </div>
+        `)
+    })
+
+    if (data.length) $timeline.append(`<div><i class="fas fa-clock bg-gray"></i></div>`);
+})
