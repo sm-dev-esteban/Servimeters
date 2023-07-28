@@ -21,6 +21,7 @@ if (isset($_GET["p"]) && !empty($_GET["p"]))
     <div class="wrapper">
         <?php include "shared/nav.php" ?>
         <router></router>
+        <?php include "shared/Comentarios.php" ?>
     </div>
 </body>
 

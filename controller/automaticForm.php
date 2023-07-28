@@ -57,24 +57,20 @@ class AutomaticForm extends DB
         $this->table = $table;
         $this->action = strtoupper($action);
 
-        if ($this->action == "UPDATE") {
-            if (!is_array($update)) { // si no es un arreglo busco a la llave primaria de la tabla y que filtre por el valor que le estoy pasando
+        if ($this->action == "UPDATE")
+            if (!is_array($update))  // si no es un arreglo busco a la llave primaria de la tabla y que filtre por el valor que le estoy pasando
                 $this->update = [self::getNamePrimary($this->table) => $update];
-            } else { // si es un arreglo verguero el que me toco hacer :c
+            else { // si es un arreglo verguero el que me toco hacer :c
 
                 $check = key(array_filter($update, function ($x) { // busco que el arreglo contenga la palabra @primary para hacerle el cambio de la llave primaria de esa tabla
                     return str_contains($x, "@primary");
                 }, ARRAY_FILTER_USE_KEY));
 
-                if (!is_null($check)) {
-                    $this->update = [self::getNamePrimary($this->table) => $update[$check]];
-                } else {
-                    $this->update = $update;
-                }
+                if (!is_null($check)) $this->update = [self::getNamePrimary($this->table) => $update[$check]];
+                else $this->update = $update;
             }
-        } else {
-            $this->update = ["ident" => false];
-        }
+        else $this->update = ["ident" => false];
+
 
         $this->db = new DB();
         $this->conn = $this->db->Conectar();
@@ -150,9 +146,9 @@ class AutomaticForm extends DB
     public function execute(Bool $auto_craete = true, Bool $checkEmptyValues = false): array
     {
 
-        if (empty($this->table | $this->action) || ($this->action == "INSERT" || $this->action == "UPDATE" ? false : true)) {
+        if (empty($this->table | $this->action) || ($this->action == "INSERT" || $this->action == "UPDATE" ? false : true))
             return ["error" => "Error params"];
-        } else if ($this->action == "UPDATE") {
+        else if ($this->action == "UPDATE") {
             $id_u = key($this->update);
             $va_u = $this->update[$id_u];
         }
@@ -181,20 +177,18 @@ class AutomaticForm extends DB
                 $this->file <> false && isset($this->file["name"]) && is_array($this->file["name"]) ? $this->file["name"] : []
             );
 
-            foreach ($checkAll as $key => $value) {
-                if ($checkEmptyValues && !is_array($value) ? !empty($value) : !empty($key)) {
-                    $this->conn->beginTransaction();
+            foreach ($checkAll as $key => $value) if ($checkEmptyValues && !is_array($value) ? !empty($value) : !empty($key)) {
+                $this->conn->beginTransaction();
 
-                    // creamos las columnas si no existen
-                    $query = $this->conn->prepare("
+                // creamos las columnas si no existen
+                $query = $this->conn->prepare("
                         IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{$this->table}' AND COLUMN_NAME = '{$key}')
                             BEGIN
                             ALTER TABLE {$this->table} ADD {$key} VARCHAR(MAX) DEFAULT NULL
                         END
                         ");
-                    $query->execute();
-                    $this->conn->commit();
-                }
+                $query->execute();
+                $this->conn->commit();
             }
         }
 
@@ -205,21 +199,13 @@ class AutomaticForm extends DB
         $update = "`` = ''";
 
         // data
-        if ($this->data <> false && is_array($this->data) && !empty(count($this->data))) {
-            foreach ($this->data as $key => $value) {
-                if ($checkEmptyValues ? !empty($value) : !empty($key)) {
-                    if (is_array($value)) {
-                        $value = implode("|/|", array_filter($value, function ($x) {
-                            return !empty($x);
-                        })); // hago que cada registro quede separado con este valo |/|
-                    }
-                    if ($this->action == "INSERT") {
-                        $insert = str_replace("``", "`?=>{$key}`, ``", str_replace("''", "'?=>{$value}', ''", $insert));
-                    } else if ($this->action == "UPDATE") {
-                        $update = str_replace("`` = ''", "`?=>{$key}` = '?=>{$value}', `` = ''", $update);
-                    }
-                }
-            }
+        if ($this->data <> false && is_array($this->data) && !empty(count($this->data))) foreach ($this->data as $key => $value) if ($checkEmptyValues ? !empty($value) : !empty($key)) {
+            if (is_array($value)) $value = implode("|/|", array_filter($value, function ($x) {
+                return !empty($x);
+            })); // hago que cada registro quede separado con este valo |/|
+
+            if ($this->action == "INSERT") $insert = str_replace("``", "`?=>{$key}`, ``", str_replace("''", "'?=>{$value}', ''", $insert));
+            else if ($this->action == "UPDATE") $update = str_replace("`` = ''", "`?=>{$key}` = '?=>{$value}', `` = ''", $update);
         }
         // data
 
@@ -230,34 +216,27 @@ class AutomaticForm extends DB
             define("FOLDER_SITE", "{$this->config->FOLDER_SITE}files/{$this->table}/");
             define("URL_SITE", "{$this->config->URL_SITE}files/{$this->table}/");
 
-            foreach ($this->file["name"] as $key => $value) {
-                if ($checkEmptyValues ? !empty($value) : !empty($key)) {
+            foreach ($this->file["name"] as $key => $value) if ($checkEmptyValues ? !empty($value) : !empty($key)) {
 
-                    if (!file_exists(FOLDER_SITE))  // creamos la carpeta si no existeF
-                        mkdir(FOLDER_SITE, 0777, true);
+                if (!file_exists(FOLDER_SITE))  // creamos la carpeta si no existeF
+                    mkdir(FOLDER_SITE, 0777, true);
 
-                    if (is_array($value)) {
-                        foreach ($this->file["name"][$key] as $keyM => $valueM) {
-                            if (!empty($this->file["tmp_name"][$key][$keyM])) {
-                                $value[$keyM] = FOLDER_SITE . date("YmdHis") . "_{$this->file["name"][$key][$keyM]}";
-                                move_uploaded_file($this->file["tmp_name"][$key][$keyM], $value[$keyM]);
-                                $value[$keyM] = str_replace(FOLDER_SITE, URL_SITE, $value[$keyM]);
-                            }
-                        }
-                        $value = implode("|/|", $value);
-                    } else {
-                        if (!empty($this->file["tmp_name"][$key])) {
-                            $value = FOLDER_SITE . date("YmdHis") . "_{$value}"; // le cambiamos el nombre al archivo con toda la ruta donde se va a cargar 
-                            move_uploaded_file($this->file["tmp_name"][$key], "{$value}"); // subimos el archivo
-                            $value = str_replace(FOLDER_SITE, URL_SITE, $value);
-                        }
+                if (is_array($value)) {
+                    foreach ($this->file["name"][$key] as $keyM => $valueM) if (!empty($this->file["tmp_name"][$key][$keyM])) {
+                        $value[$keyM] = FOLDER_SITE . date("YmdHis") . "_{$this->file["name"][$key][$keyM]}";
+                        move_uploaded_file($this->file["tmp_name"][$key][$keyM], $value[$keyM]);
+                        $value[$keyM] = str_replace(FOLDER_SITE, URL_SITE, $value[$keyM]);
                     }
 
-                    if ($this->action == "INSERT")
-                        $insert = str_replace("``", "`?=>{$key}`, ``", str_replace("''", "'?=>{$value}', ''", $insert));
-                    else if ($this->action == "UPDATE")
-                        $update = str_replace("`` = ''", "`?=>{$key}` = '?=>{$value}', `` = ''", $update);
+                    $value = implode("|/|", $value);
+                } else if (!empty($this->file["tmp_name"][$key])) {
+                    $value = FOLDER_SITE . date("YmdHis") . "_{$value}"; // le cambiamos el nombre al archivo con toda la ruta donde se va a cargar 
+                    move_uploaded_file($this->file["tmp_name"][$key], "{$value}"); // subimos el archivo
+                    $value = str_replace(FOLDER_SITE, URL_SITE, $value);
                 }
+
+                if ($this->action == "INSERT") $insert = str_replace("``", "`?=>{$key}`, ``", str_replace("''", "'?=>{$value}', ''", $insert));
+                else if ($this->action == "UPDATE") $update = str_replace("`` = ''", "`?=>{$key}` = '?=>{$value}', `` = ''", $update);
             }
         }
         // files
@@ -289,9 +268,8 @@ class AutomaticForm extends DB
      */
     static function getNamePrimary(String $table): String
     { // no he probado esta madre, pero confio en cristo rey :)
-        if (!self::checkTableExists($table)) {
-            return "Tabla es obligatoria";
-        }
+        if (!self::checkTableExists($table)) return "Tabla es obligatoria";
+
         $db = new DB();
         $conn = $db->Conectar();
 
@@ -300,9 +278,9 @@ class AutomaticForm extends DB
         try {
             $query = $conn->prepare($q);
 
-            if (!$query->execute()) {
+            if (!$query->execute())
                 return false;
-            } else {
+            else {
                 $data = $query->fetch(PDO::FETCH_ASSOC);
                 return (isset($data["name"]) && !empty($data["name"]) ? $data["name"] : false);
             }
@@ -330,10 +308,7 @@ class AutomaticForm extends DB
 
         $c = array_merge($defaultConfig, is_array($config) ? $config : []);
 
-        if ($c["checkTableExists"] ? !self::checkTableExists($table) : false) {
-            return "Tabla es obligatoria";
-        }
-
+        if ($c["checkTableExists"] ? !self::checkTableExists($table) : false) return "Tabla es obligatoria";
 
         $db = new DB();
         $conn = $db->Conectar();
@@ -349,9 +324,9 @@ class AutomaticForm extends DB
         try {
             $query = $conn->prepare($q);
 
-            if (!$query->execute()) {
+            if (!$query->execute())
                 return $c["notResult"];
-            } else {
+            else {
                 $data = $query->fetch(PDO::FETCH_ASSOC);
                 return (isset($data[$return]) && !empty($data[$return]) ? $data[$return] : $c["notResult"]);
             }
@@ -375,20 +350,16 @@ class AutomaticForm extends DB
 
         $bool = ["true" => true, "false" => false];
 
-        if (is_string($c["checkTableExists"]) ? $bool[$c["checkTableExists"]] ?? false : $c["checkTableExists"]) {
-            if (!self::checkTableExists($table)) {
-                return ["error" => "Tabla es obligatoria"];
-            }
-        }
+        if (is_string($c["checkTableExists"]) ? $bool[$c["checkTableExists"]] ?? false : $c["checkTableExists"])
+            if (!self::checkTableExists($table)) return ["error" => "Tabla es obligatoria"];
 
         $db = new DB();
         $conn = $db->Conectar();
 
         $q = "SELECT {$return} FROM {$table} WHERE {$where}";
 
-        if (strpos($q, "@primary") !== false) {
+        if (strpos($q, "@primary") !== false)
             $q = str_replace("@primary", self::getNamePrimary($table), $q);
-        }
 
         try {
             $query = $conn->prepare($q);
@@ -408,17 +379,13 @@ class AutomaticForm extends DB
      */
     static function updateValueSql($value, String $column, $primaryKey, String $table): array
     {
-        if (!self::checkTableExists($table)) {
-            return ["error" => "Tabla es obligatoria"];
-        }
+        if (!self::checkTableExists($table)) return ["error" => "Tabla es obligatoria"];
+
         $db = new DB();
         $conn = $db->Conectar();
         // $primaryKey
-        if (is_array($primaryKey)) {
-            foreach ($primaryKey as $key => $val) {
-                $x[] = "$key = '{$val}'";
-            }
-        }
+        if (is_array($primaryKey)) foreach ($primaryKey as $key => $val) $x[] = "$key = '{$val}'";
+
         $where = is_array($primaryKey)
             ? implode(" AND ", $x)
             : self::getNamePrimary($table) . " = '{$primaryKey}'";
@@ -433,6 +400,7 @@ class AutomaticForm extends DB
             return ["status" => false, "query" => $q, "error" => $th->errorInfo];
         }
     }
+
     static function checkTableExists(String $table): Bool
     {
         $db = new DB();
@@ -453,11 +421,8 @@ class AutomaticForm extends DB
     static function getClassMethods(String $classname = "AutomaticForm", Bool $is_static = true): array
     {
         $reflection = new ReflectionClass($classname);
-        if ($is_static) {
-            return json_decode(json_encode($reflection->getMethods(ReflectionMethod::IS_STATIC), JSON_UNESCAPED_UNICODE), true);
-        } else {
-            return json_decode(json_encode($reflection->getMethods(ReflectionMethod::IS_PUBLIC), JSON_UNESCAPED_UNICODE), true);
-        }
+        if ($is_static) return json_decode(json_encode($reflection->getMethods(ReflectionMethod::IS_STATIC), JSON_UNESCAPED_UNICODE), true);
+        else return json_decode(json_encode($reflection->getMethods(ReflectionMethod::IS_PUBLIC), JSON_UNESCAPED_UNICODE), true);
     }
 
     /**

@@ -193,28 +193,15 @@
                         </div>
                     </div>
                 </form>
-                <!-- comentarios -->
-                <div id="btn-fixed" class="d-none m-1">
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modal-comentarios">
-                        Comentarios
-                    </button>
-                </div>
-                <div class="modal fade" id="modal-comentarios" style="display: none;" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">Comentarios</h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="timeline"></div>
-                            </div>
-                        </div>
+                <?php if ($_GET["edit"] ?? false) : ?>
+                    <!-- comentarios -->
+                    <div id="btn-fixed" class="d-none m-1">
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalComments<?= date("Y") ?>" data-id="<?= $_GET["edit"] ?>">
+                            Comentarios
+                        </button>
                     </div>
-                </div>
-                <!-- comentarios -->
+                    <!-- comentarios -->
+                <?php endif ?>
             </div>
         </div>
     </div>

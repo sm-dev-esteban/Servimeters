@@ -55,7 +55,7 @@
                     <table data-report="detailContent" class="table">
                         <thead>
                             <tr>
-                                <td colspan="9">
+                                <td colspan="10">
                                     <div class="row" id="detail-content">
                                         <div class="col-6">
                                             <p data-report="document"><b>Documento: </b>##########</p>
@@ -71,11 +71,15 @@
                                         <div class="col-12">
                                             <p data-report="aprobador"><b>Aprobador: </b>##########</p>
                                         </div>
+                                        <div class="col-12">
+                                            <p data-report="actividad"></p>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
                             <tr>
                                 <th>Permisos Descuentos</th>
+                                <th>Actividad</th>
                                 <th>Ext Diu Fes Dom</th>
                                 <th>Ext Diu Ord</th>
                                 <th>Ext Noc Fes Dom</th>
@@ -87,12 +91,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <th colspan="9">Actividad</th>
-                            </tr>
-                            <tr>
-                                <td colspan="9">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Saepe aut consectetur ipsa rerum facere harum temporibus illum quasi. Nemo veritatis delectus similique asperiores labore cupiditate dolores quod vero reiciendis necessitatibus?</td>
-                            </tr>
                             <tr>
                                 <td>#</td>
                                 <td>#</td>
@@ -107,7 +105,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="9">Nota: Se presenta las horas registradas en la plataforma, favor tener presente que estas deben ser aprobadas por el jefe de área</th>
+                                <th colspan="10">Nota: Se presenta las horas registradas en la plataforma, favor tener presente que estas deben ser aprobadas por el jefe de área</th>
                             </tr>
                         </tfoot>
                     </table>

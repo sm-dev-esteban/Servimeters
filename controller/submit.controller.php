@@ -21,17 +21,15 @@ switch ($action) {
         $editarHE = [];
         foreach ($_POST["HorasExtra"] as $k => $v) { // todo lo que este dentro de este arreglo se va para el detalle 
             $i = 0;
-            if (is_array($v))
-                foreach ($v as $k1 => $v1) {
-                    if ($k <> "id") {
-                        $arrayHE[$i][$k] = $v1;
-                        $arrayHE[$i]["id_reporteHE"] = $ReportesHE->getId();
-                        $arrayHE[$i]["total"] = $_POST["data"]["total"];
-                    } else {
-                        $editarHE[$i] = $v1;
-                    }
-                    $i++;
-                }
+            if (is_array($v)) foreach ($v as $k1 => $v1) {
+                if ($k <> "id") {
+                    $arrayHE[$i][$k] = $v1;
+                    $arrayHE[$i]["id_reporteHE"] = $ReportesHE->getId();
+                    $arrayHE[$i]["total"] = $_POST["data"]["total"];
+                } else $editarHE[$i] = $v1;
+
+                $i++;
+            }
         }
         // $detalle = json_decode($data["detalle"]);
         // foreach ($detalle as $k => $v) {

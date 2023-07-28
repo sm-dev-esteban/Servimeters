@@ -68,7 +68,8 @@ switch ($_GET["ssp"]) {
                     $edicion = [CONFIG->RECHAZO, CONFIG->EDICION];
                     $r = "";
                     $r .= in_array($d, $edicion) ? '<button type="button" class="rounded btn-primary m-1" onclick="contentPage(' . "'reportar/index.view?edit={$id_table}', 'Editar Reporte #{$id_table}', 'reporteHE'" . ')"><i class="fa fa-pen"></i></button>' : '';
-                    $r .= '<button type="button" class="rounded btn-danger m-1"><i class="fa fa-trash"></i></button>';
+                    // $r .= '<button type="button" class="rounded btn-danger m-1"><i class="fa fa-trash"></i></button>';
+                    $r .= '<button type="button" class="rounded btn-warning m-1" data-toggle="modal" data-target="#modalComments' . date("Y") . '" data-id="' . $id_table . '"><i class="fas fa-history"></i></button>';
                     $r .= '<button type="button" class="rounded btn-info m-1" onclick="showinfo(' . $id_table . ')" data-toggle="modal" data-target="#viewDetail"><i class="fa fa-eye"></i></button>';
                     return $r;
                 }
@@ -239,7 +240,7 @@ switch ($_GET["ssp"]) {
             [
                 "db" => "id", "dt" => $i++, "formatter" => function ($d, $row) {
                     $id_table = $row["id"];
-                    return '<button class="btn btn-info"><i class="fa fa-print"></i></button>';
+                    return '<button class="btn btn-warning" data-toggle="modal" data-target="#modalComments' . date("Y") . '" data-id="' . $id_table . '"><i class="fa fa-clock"></i></button>';
                 }
             ]
         ];
@@ -275,7 +276,6 @@ switch ($_GET["ssp"]) {
         ];
         break;
     case "ceco":
-        $table = "CentrosCosto CC inner join Clase C on CC.id_clase = C.id";
         $table = "CentrosCosto";
         define("TABLE", $table);
 

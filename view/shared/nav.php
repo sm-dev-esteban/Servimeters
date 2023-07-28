@@ -104,22 +104,24 @@
                                 </a>
                             </li>
                         </ul>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="prueba.view" class="nav-link">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>Tipos de Recargo</p>
-                                </a>
-                            </li>
-                        </ul>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="prueba.view" class="nav-link">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>Tipos de HE</p>
-                                </a>
-                            </li>
-                        </ul>
+                        <?php if (false) : ?>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="prueba.view" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Tipos de Recargo</p>
+                                    </a>
+                                </li>
+                            </ul>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="prueba.view" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Tipos de HE</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        <?php endif ?>
                     </li>
                 <?php endif ?>
 

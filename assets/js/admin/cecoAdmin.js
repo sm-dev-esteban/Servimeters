@@ -5,7 +5,8 @@ $(document).ready(async function () {
         "processing": true,
         "serverSide": true,
         "order": [[0, `desc`]],
-        "ajax": `../controller/ssp.controller.php?ssp=ceco`
+        // "ajax": `../controller/ssp.controller.php?ssp=ceco`
+        "ajax": `../controller/Datatable.controller.php?ssp=ceco`
     })).buttons().container().appendTo($('.col-sm-6:eq(0)'));
 
     $("#add").on("submit", function (e) {
