@@ -28,7 +28,6 @@ $(document).ready(async function () {
     if (edit) {
         $(`#btn-fixed`).removeClass("d-none");
         cargarDatos(edit);
-        timeline(edit);
     }
 
     $("#formReporte").createDropzone({
@@ -334,48 +333,4 @@ function cargarDatos(x) {
         total();
         fechas();
     });
-}
-
-function timeline(x) {
-
-    $data = automaticForm("getDataSql", ["Comentarios", `id_reporte = ${x}`, "fechaRegistro, titulo, cuerpo"]);
-
-    if ($data.length == 0) {
-        $(`#btn-fixed`).addClass("d-none");
-    } else {
-
-        $timeline = $("#modal-comentarios .timeline");
-        $timeline.html(``);
-
-        for (ident in $data) {
-
-            $fecha = new Date($data[ident]["fechaRegistro"]).toLocaleString(locale, { timeZone: timezone, year: 'numeric', month: 'short', day: '2-digit' });
-            $hora = new Date($data[ident]["fechaRegistro"]).toLocaleString(locale, { timeZone: timezone, hour: '2-digit', hour12: false, minute: '2-digit' });
-
-            $timeline.append(`
-            <div class="time-label">
-                <span class="bg-info">${$fecha}</span>
-            </div>
-    
-            <div>
-                <i class="fas fa-times bg-red"></i>
-                <div class="timeline-item">
-                    <span class="time"><i class="fas fa-clock"></i> ${$hora}</span>
-                    <h3 class="timeline-header">${$data[ident]["titulo"]}</h3>
-    
-                    <div class="timeline-body">
-                        ${$data[ident]["cuerpo"]}
-                    </div>
-                </div>
-            </div>
-            `);
-        }
-
-        $timeline.append(`
-        <div>
-            <i class="fas fa-clock bg-gray"></i>
-        </div>
-        `);
-
-    }
 }
