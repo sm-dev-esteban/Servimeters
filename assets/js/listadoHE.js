@@ -75,13 +75,8 @@ function showinfo(x) {
         for (data in resp1) {
             tbody += `
             <tr>
-                <td colspan="9" align="center"><b>Actividad</b></td>
-            </tr>
-            <tr>
-                <td colspan="9" align="center">${resp1[data].novedad}</td>
-            </tr>
-            <tr>
                 <td>${Number(resp1[data].descuento)}</td>
+                <td>${resp1[data].novedad}</td>
                 <td>${Number(resp1[data].E_Diurna_Ord)}</td>
                 <td>${Number(resp1[data].E_Nocturno_Ord)}</td>
                 <td>${Number(resp1[data].E_Diurna_Fest)}</td>
@@ -96,19 +91,19 @@ function showinfo(x) {
 
         tbody += `
             <tr>
-                <td align="right" colspan="8"><b>Permisos y Descuentos</b></td>
+                <td align="right" colspan="9"><b>Permisos y Descuentos</b></td>
                 <td>${Number(resp2.totalPermisos)}</td>
             </tr>
             <tr>
-                <td align="right" colspan="8"><b>Extras</b></td>
+                <td align="right" colspan="9"><b>Extras</b></td>
                 <td>${Number(resp2.totalHorasExtras)}</td>
             </tr>
             <tr>
-                <td align="right" colspan="8"><b>Recargos</b></td>
+                <td align="right" colspan="9"><b>Recargos</b></td>
                 <td>${Number(resp2.totalRecargos)}</td>
             </tr>
             <tr>
-                <td align="right" colspan="8"><b>Total</b></td>
+                <td align="right" colspan="9"><b>Total</b></td>
                 <td>${Number(resp2.total)}</td>
             </tr>
             `;
