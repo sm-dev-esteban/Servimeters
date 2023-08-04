@@ -10,3 +10,5 @@ bin/check.bat
 vendor
 # documentos de referencia
 formatos_referencia
+# vs
+.vscode
