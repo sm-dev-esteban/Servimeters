@@ -31,8 +31,8 @@ $config = [
     "PASS_EMAIL" => "Sm-123456*",
     "PORT_EMAIL" => "587",
     "FROM_EMAIL" => "soportesm@servimeters.net",
-    "URL_SITE" => getenv("REQUEST_SCHEME") . "://" . getenv("HTTP_HOST") . dirname(getenv("REQUEST_URI")) . "/",
-    "FOLDER_SITE" => __DIR__ . "\\",
+    // "URL_SITE" => getenv("REQUEST_SCHEME") . "://" . getenv("HTTP_HOST") . dirname(getenv("REQUEST_URI")) . "/",
+    // "FOLDER_SITE" => __DIR__ . "\\",
     "APROBADO" => getEstados("aprobado"),
     "RECHAZO" => getEstados("rechazado"),
     "APROBACION_JEFE" => getEstados("revision j"),
@@ -44,6 +44,9 @@ $config = [
     "RECHAZO_CONTABLE" => getEstados("rechazo c"),
     "EDICION" => getEstados("edicion")
 ];
+
+$config["FOLDER_SITE"] = str_replace("\\", "/", __DIR__) . "/";
+$config["URL_SITE"] = str_replace(getenv("DOCUMENT_ROOT"), getenv("REQUEST_SCHEME") . "://" . getenv("HTTP_HOST"), $config["FOLDER_SITE"]);
 
 $configJSON = fopen("./config/config.json", "w");
 fwrite($configJSON, json_encode(array_merge($config, MODE[ACTIVE] ?? []), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
