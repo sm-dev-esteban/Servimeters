@@ -148,6 +148,8 @@ class AutomaticForm extends DB
 
         if (empty($this->table | $this->action) || ($this->action == "INSERT" || $this->action == "UPDATE" ? false : true))
             return ["error" => "Error params"];
+        else if (!$this->conn)
+            return ["error" => "No connect"];
         else if ($this->action == "UPDATE") {
             $id_u = key($this->update);
             $va_u = $this->update[$id_u];
@@ -406,6 +408,7 @@ class AutomaticForm extends DB
         $db = new DB();
         $conn = $db->Conectar();
 
+        if (!$conn) return false;
         $q = "SELECT * from INFORMATION_SCHEMA.TABLES where TABLE_NAME = '{$table}'";
         $query = $conn->query($q);
         $count = $query->fetchColumn();

@@ -9,7 +9,7 @@ $ldap_get_entries = [];
 
 $dn = 'dc=' . getenv("USERDOMAIN") . ', dc=COM';
 
-$attributes = array_merge(["ou", "name", "mail", "samaccountname"], $_POST["attrs"] ?? []);
+$attributes = array_merge(["ou", "dn", "name", "mail", "samaccountname"], $_POST["attrs"] ?? []);
 
 define("FILTER", $search);
 

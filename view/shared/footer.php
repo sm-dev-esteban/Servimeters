@@ -6,7 +6,6 @@
     <script src="../AdminLTE/plugins/select2/js/select2.full.min.js"></script>
     <script src="../AdminLTE/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
     <script src="../AdminLTE/plugins/chart.js/Chart.min.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
     <script src="../AdminLTE/plugins/sparklines/sparkline.js"></script>
     <script src="../AdminLTE/plugins/jqvmap/jquery.vmap.min.js"></script>
     <script src="../AdminLTE/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>

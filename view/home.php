@@ -17,7 +17,7 @@ if (isset($_GET["p"]) && !empty($_GET["p"]))
 
 <?php include "shared/header.php" ?>
 
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
     <div class="wrapper">
         <?php include "shared/nav.php" ?>
         <router></router>

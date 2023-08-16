@@ -9,7 +9,9 @@ class DataTable
      * @param String $table Nombre de la tabla
      * @param array $columns arreglo con las columnas que se van a mostrar en la tabla
      * @param array $config Configuración adicional.
-     * 1. $config["isJoin"]: En el caso de que quiera usar joins enviar en true
+     * 1. $config["condition"]: Condiciones para la consulta
+     * 2. $config["columns"]: Este campo afecta las columnas a las cuales puede acceder el "formatter". Por defecto solo se podrá acceder a los valores que esté enviando
+     * 3. deprecated $config["isJoin"]: No se si es una buena idea, pero voy a manejarlo desde el codigo (⌐■_■)
      */
     static function serverSide(
         array $request,
@@ -19,42 +21,22 @@ class DataTable
     ): array {
 
         $config = array_merge([
-            "isJoin" => false,
             "condition" => false,
             "columns" => false
         ], $config);
 
-        if (!$config["isJoin"] && strpos(strtolower($table), " join ") !== false) $config["isJoin"] = true;
-
         $data = [];
+
         $search = [":filter" => "%{$request["search"]["value"]}%"];
+
         $condition = $config["condition"] !== false ? $config["condition"] : "1 = 1";
 
-        /*-- columns --*/
-        $showColumn = $config["columns"] !== false ? $config["columns"] : implode(", ", array_map(
-            function ($x) {
-                return $x["db"] . " " . ($x["as"] ?? "");
-            },
-            $columns
-        ));
-        /*-- columns --*/
-
-        /*-- filter --*/
-        $filter = str_replace(":filter", "'{$search[":filter"]}'", implode(" OR ", array_map(
-            function ($x) {
-                return ($x["db"]) . " like :filter";
-            },
-            $columns
-        )));
-        /*-- filter --*/
-
-        /*-- order --*/
-        $order = "ORDER BY {$columns[$request["order"][0]["column"]]["db"]} {$request["order"][0]["dir"]}";
-        /*-- order --*/
-
-        /*-- limit --*/
-        $limit = self::limit($request, "sqlsrv");
-        /*-- limit --*/
+        /*-- general --*/
+        $showColumn = self::columns($request, $columns, $config);
+        $filter = self::filter($request, $columns, $search[":filter"]);
+        $order = self::order($request, $columns, $table);
+        $limit = self::limit($request, $columns, "sqlsrv");
+        /*-- general --*/
 
         /*-- query --*/
         $result = AutomaticForm::getDataSql($table, "{$condition} AND ({$filter}) {$order} {$limit}", $showColumn, [
@@ -64,16 +46,16 @@ class DataTable
 
         /*-- data --*/
         foreach ($result as $dKey => $dValue) foreach ($columns as $cValue) {
-            $string = (isset($cValue["as"]) ? $dValue[$cValue["as"]] : $dValue[explode(".", $cValue["db"])[$config["isJoin"] ? 1 : 0]]);
+            $db = explode(".", $cValue["db"]);
+            $x = $dValue[$cValue["as"] ?? $db[1] ?? $db[0]] ?? "undefined";
             if ($cValue["formatter"] ?? false) $data[$dKey][] = self::formatter(
-                $string,
+                $x,
                 $cValue["formatter"],
                 [
-                    $string,
-                    $dValue
+                    $x, $dValue
                 ]
             );
-            else $data[$dKey][] = $string;
+            else $data[$dKey][] = $x;
         }
         /*-- data --*/
 
@@ -96,7 +78,34 @@ class DataTable
         /*-- return --*/
     }
 
-    static function limit($r, $g)
+    static function columns($r, $c, $co)
+    {
+        return $co["columns"] !== false ? $co["columns"] : implode(", ", array_map(
+            function ($x) {
+                if ($x["db"] ?? false) return $x["db"] . " " . ($x["as"] ?? "");
+                else return "";
+            },
+            $c
+        ));
+    }
+
+    static function filter($r, $c, $s)
+    {
+        return str_replace(":filter", "'{$s}'", implode(" OR ", array_map(
+            function ($x) {
+                if ($x["db"] ?? false) return ($x["db"]) . " like :filter";
+                else return "";
+            },
+            $c
+        )));
+    }
+
+    static function order($r, $c, $t)
+    {
+        return "ORDER BY " . (strpos($t, " join ") === false ? "{$t}." : "") . "{$c[$r["order"][0]["column"]]["db"]} {$r["order"][0]["dir"]}";
+    }
+
+    static function limit($r, $c, $g)
     {
         return [
             "mysql" => "LIMIT {$r["start"]}, {$r["length"]}",

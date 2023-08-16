@@ -40,8 +40,10 @@ $("html").attr("lang", language);
 // config con async await
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 const loadConfig = async function () {
-    let phpLoadConfig = await fetch(`${location.origin}/${location.pathname.split("/")[1]}/config.php`);
-    let jsonLoadConfig = await fetch(`${location.origin}/${location.pathname.split("/")[1]}/config/config.json`);
+    const mainOrigin = `${location.origin}/${location.hostname == "localhost" ? `${location.pathname.split("/")[1]}/` : ""}`
+    console.log(mainOrigin);
+    let phpLoadConfig = await fetch(`${mainOrigin}/config.php`);
+    let jsonLoadConfig = await fetch(`${mainOrigin}/config/config.json`);
     return await jsonLoadConfig.json();
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -308,21 +310,19 @@ function isHTML(str) {
 }
 
 /**
- * @param {String|html} tag nombre de la etiqueta a crear o tambien recive una etiqueta y se puede editar
- * @param {String[]} [attrs=null] arreglo con los atributos de la etiqueta tambien
+ * @param {String|html} tag Nombre de la etiqueta a crear o tambien recive una etiqueta y se puede editar
+ * @param {String[]} [attrs=null] Arreglo con los atributos de la etiqueta
  * @returns {html} Retorna la nueva etiqueta con sus nuevos valores
 */
 function createElem(tag, attrs = null) {
     let newElement = (!isHTML(tag) ? document.createElement(tag) : tag); // valido si es un elemento html, si no es creo lo que envie y si no solo se asigna a la variable
-    if (null !== attrs) {
-        for (data in attrs) {
-            if ([`text`].includes(data)) {
-                newElement.textContent = attrs[data]; // html
-            } else {
-                newElement.setAttribute(data, attrs[data]); // atributos
-            }
-        }
-    }
+
+    if (null !== attrs) for (data in attrs)
+        if ([`text`].includes(data)) newElement.textContent = attrs[data]; // text
+        else if ([`html`].includes(data)) {
+            if (typeof attrs.html == "object") for (newCE in attrs.html)
+                newElement.append(createElem(Object.keys(attrs.html[newCE])[0], Object.values(attrs.html[newCE])[0])); // appendHtml
+        } else newElement.setAttribute(data, attrs[data]); // atributos
     return newElement;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -531,14 +531,14 @@ function ultimoDia(Año = new Date().toLocaleString(locale, $.extend(timezone, {
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 $(`#modalComments${new Date().getFullYear()}`).on('show.bs.modal', function (e) {
     // select  from 
-    var $this = $(this)
-    var $btn = $(e.relatedTarget)
-    var id = $btn.data('id')
-    var $timeline = $this.find(".modal-body .timeline")
+    const $this = $(this)
+    const $btn = $(e.relatedTarget)
+    const id = $btn.data('id')
+    const $timeline = $this.find(".modal-body .timeline")
 
     $timeline.html("")
 
-    var data = automaticForm("getDataSql", [
+    const data = automaticForm("getDataSql", [
         "Comentarios C inner join TipoComentario TC on C.idTipoComentario = TC.id",
         `C.id_reporte = '${id}' order by C.fechaRegistro desc`,
         "C.*, TC.icon",
@@ -589,3 +589,58 @@ $(`#modalComments${new Date().getFullYear()}`).on('show.bs.modal', function (e) 
 
     if (data.length) $timeline.append(`<div><i class="fas fa-clock bg-gray"></i></div>`);
 })
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+// Carga datos del directoio activo
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function ldapAutoComplete(arrayObject, event = "input", config = []) {
+    const random = "L" + Math.floor(Math.random() * new Date().getFullYear())
+    const c = $.extend({
+        limit: 20
+    }, config);
+
+    $(`router`).append(
+        createElem(`datalist`, {
+            "id": random
+        })
+    );
+
+    const $datalist = $(`datalist#${random}`);
+
+    $(Object.keys(arrayObject).join(", ")).attr("list", random).on(event, function () {
+        const $this = $(this);
+        var Result;
+        $datalist.html(``);
+        $.ajax(`../controller/search.ldap.php`, {
+            dataType: "JSON",
+            type: "POST",
+            data: {
+                attrs: Object.values(arrayObject),
+                search: $this.val()
+            },
+            success: function (response) {
+                if (typeof response === "object") {
+                    const count = response.count;
+                    delete response.count;
+
+                    response = response.slice(0, c.limit);
+
+                    if (count == 1) for (ldapSearch in arrayObject) if (response[0][arrayObject[ldapSearch]] ?? false) {
+                        Result = response[0][arrayObject[ldapSearch]][0];
+                        if (Result) $(ldapSearch).val(Result).html(Result)
+                    }
+
+                    if (count > 1) for (data in response) for (ldapSearch in arrayObject) if (response[data][arrayObject[ldapSearch]] ?? false) {
+                        Result = response[data][arrayObject[ldapSearch]][0];
+                        if (Result) $datalist.append(
+                            createElem("option", {
+                                value: Result
+                            })
+                        );
+                    }
+                }
+            }
+        });
+    })
+}

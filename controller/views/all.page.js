@@ -86,4 +86,17 @@ $(document).ready(function () {
     // knob
     //------------------------------------------------------------------------------------------------------------------------------------------------------
     $('.knob').knob()
+    //------------------------------------------------------------------------------------------------------------------------------------------------------
+    // load script
+    //------------------------------------------------------------------------------------------------------------------------------------------------------
+    if ($(`JSON-loadScript`).length) try {
+        $loadScript = $($(`JSON-loadScript`).get(0));
+        arrayScript = JSON.parse($loadScript.text());
+        for (ls in arrayScript) if (arrayScript[ls].length) $.getScript(arrayScript[ls]);
+        $loadScript.remove();
+    } catch (e) {
+        if (!(e instanceof Error)) e = new Error(e);
+        console.log(`Error: Script file not found -> ${e.message}`);
+    }
+
 })

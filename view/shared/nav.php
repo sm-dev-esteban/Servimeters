@@ -70,7 +70,7 @@
             </div>
         </div>
         <nav class="mt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
                 <?php if ($_SESSION["isAdmin"] ?? false == "Si") : ?>
                     <li class="nav-item">
                         <a href="#" class="nav-link">
@@ -175,6 +175,132 @@
                         <?php endif ?>
                     </ul>
                 </li>
+
+                <?php if (true) : ?>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-address-book"></i>
+                            <p>
+                                Solicitud Personal
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview" style="display: none;">
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>
+                                        Solicitud
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview" style="display: none;">
+                                    <li class="nav-item">
+                                        <a href="solicitudPersonal/solicitud/create" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p> Crear Solicitud </p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="solicitudPersonal/solicitud/solicitudesRechazadas" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p> Solicitudes Rechazadas </p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="solicitudPersonal/solicitud/candidatos" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p> visualizar Candidatos </p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="solicitudPersonal/solicitud/citarCandidatos" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p> Citar Candidatos a Entrevista </p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="solicitudPersonal/solicitud/candidatoSelecionado" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p> Candidato Seleccionado </p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p> Estado Solicitud </p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="solicitudPersonal/solicitud/solicitudes" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p> Mis Solicitudes </p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>
+                                        Aprobación jefe
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview" style="display: none;">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p> xxxxxxxxxxxx </p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p> xxxxxxxxxxxx </p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p> xxxxxxxxxxxx </p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>
+                                        Gestion Recursos Humanos
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview" style="display: none;">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p> xxxxxxxxxxxx </p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p> xxxxxxxxxxxx </p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p> xxxxxxxxxxxx </p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                <?php endif ?>
+
                 <?php if (false) : ?>
                     <li class="nav-item">
                         <a href="#" class="nav-link">
@@ -202,6 +328,7 @@
                         </ul>
                     </li>
                 <?php endif ?>
+
                 <li class="nav-item">
                     <a href="exit" class="nav-link text-danger">
                         <i class="nav-icon fas fa-times"></i>

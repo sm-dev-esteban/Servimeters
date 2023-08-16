@@ -31,10 +31,10 @@
                 <form id="login">
                     <div class="row gtr-uniform gtr-50">
                         <div class="col-12 col-12-xsmall">
-                            <input type="text" name="user" class="loginInput" id="user" required value="<?= getenv("USERNAME") ?>" placeholder="Nombre de Usuario" />
+                            <input type="text" name="user" class="loginInput" id="user" required placeholder="Nombre de Usuario" />
                         </div>
                         <div class="col-12 col-12-xsmall">
-                            <input type="password" name="pass" class="loginInput" id="pass" required value="" placeholder="Contraseña" />
+                            <input type="password" name="pass" class="loginInput" id="pass" required placeholder="Contraseña" />
                         </div>
                         <div class="col-12">
                             <ul class="actions">

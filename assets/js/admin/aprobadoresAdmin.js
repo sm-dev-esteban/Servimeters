@@ -5,7 +5,7 @@ $(document).ready(async function () {
         "processing": true,
         "serverSide": true,
         "order": [[0, `desc`]],
-        "ajax": `../controller/ssp.controller.php?ssp=aprobadores`
+        "ajax": `../controller/Datatable.controller.php?ssp=aprobadores`
     })).buttons().container().appendTo($('.col-sm-6:eq(0)'));
 
     $("#add").on("submit", function (e) {
@@ -59,22 +59,18 @@ $(document).ready(async function () {
                     count = response.count
                     delete response.count;
                     if (count == 1) {
-                        console.log("== 1");
-                        for (ident in direc) {
-                            getResult = response[0][direc[ident]][0] ?? false;
-                            if (getResult)
-                                $(ident).val(getResult);
+                        for (ident in direc) if (response[0][direc[ident]] ?? false) {
+                            getResult = response[0][direc[ident]][0];
+                            if (getResult) $(ident).val(getResult);
                         }
                     } else if (count > 1) {
-                        console.log("> 1");
                         for (data in response) {
-                            getResult = response[data][direc[`#${$this.attr("id")}`]][0] ?? false;
-                            if (getResult)
-                                $list.append(
-                                    createElem("option", {
-                                        value: getResult
-                                    })
-                                );
+                            getResult = response[data][direc[`#${$this.attr("id")}`]][0] || false;
+                            if (getResult) $list.append(
+                                createElem("option", {
+                                    value: getResult
+                                })
+                            );
                         }
                     }
                 }

@@ -12,8 +12,6 @@
     "PASS_EMAIL": "Sm-123456*",
     "PORT_EMAIL": "587",
     "FROM_EMAIL": "soportesm@servimeters.net",
-    "URL_SITE": "http:\/\/localhost\/Servimeters\/",
-    "FOLDER_SITE": "C:\\xampp\\htdocs\\Servimeters\\",
     "APROBADO": "1",
     "RECHAZO": "2",
     "APROBACION_JEFE": "3",
@@ -23,5 +21,7 @@
     "RECHAZO_RH": "8",
     "APROBACION_CONTABLE": "9",
     "RECHAZO_CONTABLE": "10",
-    "EDICION": "11"
+    "EDICION": "11",
+    "FOLDER_SITE": "C:\/xampp\/htdocs\/Servimeters\/",
+    "URL_SITE": "http:\/\/localhost\/Servimeters\/"
 }

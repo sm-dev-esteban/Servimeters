@@ -9,8 +9,8 @@ class ComposerStaticInitddc700470b6810dc90859bc182dbdada
     public static $files = array (
         'ad155f8f1cf0d418fe49e248db8c661b' => __DIR__ . '/..' . '/react/promise/src/functions_include.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
-        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
+        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '662a729f963d39afe703c9d9b7ab4a8c' => __DIR__ . '/..' . '/symfony/polyfill-php83/bootstrap.php',
     );
@@ -46,6 +46,10 @@ class ComposerStaticInitddc700470b6810dc90859bc182dbdada
         'G' => 
         array (
             'GuzzleHttp\\Psr7\\' => 16,
+        ),
+        'E' => 
+        array (
+            'Evenement\\' => 10,
         ),
     );
 
@@ -115,15 +119,9 @@ class ComposerStaticInitddc700470b6810dc90859bc182dbdada
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
         ),
-    );
-
-    public static $prefixesPsr0 = array (
-        'E' => 
+        'Evenement\\' => 
         array (
-            'Evenement' => 
-            array (
-                0 => __DIR__ . '/..' . '/evenement/evenement/src',
-            ),
+            0 => __DIR__ . '/..' . '/evenement/evenement/src',
         ),
     );
 
@@ -141,7 +139,6 @@ class ComposerStaticInitddc700470b6810dc90859bc182dbdada
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInitddc700470b6810dc90859bc182dbdada::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitddc700470b6810dc90859bc182dbdada::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitddc700470b6810dc90859bc182dbdada::$prefixesPsr0;
             $loader->classMap = ComposerStaticInitddc700470b6810dc90859bc182dbdada::$classMap;
 
         }, null, ClassLoader::class);

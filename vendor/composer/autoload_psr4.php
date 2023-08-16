@@ -22,4 +22,5 @@ return array(
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-factory/src', $vendorDir . '/psr/http-message/src'),
     'MyApp\\' => array($baseDir . '/sm'),
     'GuzzleHttp\\Psr7\\' => array($vendorDir . '/guzzlehttp/psr7/src'),
+    'Evenement\\' => array($vendorDir . '/evenement/evenement/src'),
 );

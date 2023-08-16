@@ -5,7 +5,7 @@ $(document).ready(async function () {
         "processing": true,
         "serverSide": true,
         "order": [[0, "desc"]],
-        "ajax": "../controller/ssp.controller.php?ssp=listEstadoHe"
+        "ajax": "../controller/Datatable.controller.php?ssp=listEstadoHe"
     })).buttons().container().appendTo($('.col-sm-6:eq(0)'));
 
     $(`[data-action="qrcode"]`).on("click", function () {
