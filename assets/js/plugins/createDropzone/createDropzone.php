@@ -34,7 +34,6 @@ switch (strtoupper($_GET["action"])) {
             ];
         }
 
-
         echo json_encode($return, JSON_UNESCAPED_UNICODE);
         break;
     default:
