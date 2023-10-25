@@ -1,10 +1,23 @@
 {
+    "name": "myfirstmvc/mvc",
     "autoload": {
         "psr-4": {
-            "MyApp\\": "sm"
+            "Main\\": "src/",
+            "Model\\": "Model/",
+            "PHPMailer\\PHPMailer\\": "vendor/phpmailer/phpmailer/src/",
+            "View\\": "View/",
+            "Controller\\": "Controller/"
         }
     },
+    "authors": [
+        {
+            "name": "Esteban Serna Palacios",
+            "email": "esteban.serna.p@gmail.com",
+            "role": "Dev Jr :)",
+            "homepage": "https://github.com/OscurloOriginal/"
+        }
+    ],
     "require": {
-        "cboden/ratchet": "^0.4.4"
+        "phpmailer/phpmailer": "^6.8"
     }
 }

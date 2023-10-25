@@ -3,13 +3,11 @@ session_start();
 
 require_once('automaticForm.php');
 
-$action = isset($_GET["action"]) ? $_GET["action"] : "";
+$action = $_GET["action"] ?? "";
 $params = isset($_POST["param"]) && is_array($_POST["param"]) ? $_POST["param"] : (isset($_POST["param"]) ? [$_POST["param"]] : []);
 
-define("ACTION", $action);
-
-if (array_filter(AutomaticForm::getClassMethods(), function ($x) {
-    return $x["name"] == ACTION;
+if (array_filter(AutomaticForm::getClassMethods(), function ($x) use ($action) {
+    return $x["name"] == $action;
 })) {
     echo json_encode(AutomaticForm::$action(...$params));
     exit();

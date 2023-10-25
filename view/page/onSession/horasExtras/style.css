@@ -1,0 +1,43 @@
+/*-- 2023-08-27 15:04:16 --*/
+
+[contenteditable] {
+    outline: none;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.isInvalid {
+    animation: isInvalid 1s linear;
+}
+
+
+@keyframes isInvalid {
+    0% {
+        outline: 0;
+        border: 0;
+    }
+
+    25% {
+        outline: 3px solid var(--danger);
+        border-color: var(--danger);
+    }
+
+    50% {
+        outline: 0;
+        border: 0;
+    }
+
+    75% {
+        outline: 3px solid var(--danger);
+        border-color: var(--danger);
+    }
+
+    100% {
+        outline: 0;
+        border: 0;
+    }
+}

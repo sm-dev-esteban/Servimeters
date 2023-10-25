@@ -1,0 +1,11 @@
+[
+    {
+        "title": "String",
+        "start": "date (ymd)",
+        "end": "date (y m-1 d)",
+        "backgroundColor": false,
+        "borderColor": false,
+        "allDay": false,
+        "url": false
+    }
+]

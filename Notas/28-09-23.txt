@@ -1,0 +1,36 @@
+# Notas 28/09/2023
+-- solictud de personal
+Sugerencias
+1. enviar un correo con la url de la solicitud que se realizo
+2. el jefe puede aprobar o rechazar la solicitud (si rechaza agregar el motivo)
+3. si la solictud no se aprueba se deve devolver con una notificacion de que no se aprobo con la url con el reporte y la sugerencias que registre.
+Una vez corregida que pueda reenviar la solicitud
+4. Una vez aprobado
+5. notificaciones en general
+
+agregar notificacion en el sistema de aprobaciones o solictudes pendientes
+
+
+hablar con Diana. Preguntarle si es necesario enviar un correo...
+
+PARA MAÑANA
+
+
+-- horas extras
+- copiar aprobacion de horas
+- copiar reportes
+
+
+
+
+adriana
+carolina
+
+
+
+
+
+Cuando se aprueba la solicitud que se pueda adjuntar la hojas de vida
+reporte contable
+reporte general 
+-----

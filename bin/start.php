@@ -11,16 +11,16 @@ $config = AutomaticForm::getConfig();
 $cmd = 'cd ' . $config->FOLDER_SITE . ' & composer update & php ' . __DIR__ . '\server.php';
 
 $check_bat = fopen("check.bat", "w");
-fwrite($check_bat, '
+$bat_Code = <<<BAT
 @echo off
 
 setlocal
 
 REM Puerto a verificar
-set "puerto=' . $config->WEBSOCKET . '"
+set "puerto={$config->WEBSOCKET}"
 
 REM Comando a ejecutar si encuentra el puerto
-set "comando=' . $cmd . '"
+set "comando={$cmd}"
 
 REM Verificar el puerto
 netstat -ano | findstr ":%puerto%" >nul
@@ -33,7 +33,9 @@ if %errorlevel% equ 0 (
 )
 
 endlocal
-');
+BAT;
+
+fwrite($check_bat, $bat_Code);
 fclose($check_bat);
 
 executeCMD('start cmd.exe @cmd /k "curl parrot.live"');

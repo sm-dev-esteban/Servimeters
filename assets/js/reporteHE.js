@@ -37,6 +37,7 @@ $(document).ready(async function () {
         ident: edit ? edit : ident,
         init: function () {
             var myDropzone = this;
+            console.log(this)
             $(this.element).on("submit", function (e) {
                 e.preventDefault();
                 $(`#formReporte button:submit`).html(`

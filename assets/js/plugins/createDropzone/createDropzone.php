@@ -24,17 +24,16 @@ switch (strtoupper($_GET["action"])) {
 
         $data = AutomaticForm::getValueSql($i, "@primary", $p, $t);
 
-        if (!empty($data)) {
-            foreach (explode($s, $data) as $key => $value) {
-                $v1 = str_replace($config->URL_SITE, $config->FOLDER_SITE, $value);
-                $v2 = $value;
-                $return[] = [
-                    "name" => basename($v1),
-                    "size" => filesize($v1),
-                    "dirname" => dirname($v2) . "/" . basename($v1)
-                ];
-            }
+        if (!empty($data)) foreach (explode($s, $data) as $key => $value) {
+            $v1 = str_replace($config->URL_SITE, $config->FOLDER_SITE, $value);
+            $v2 = $value;
+            $return[] = [
+                "name" => basename($v1),
+                "size" => filesize($v1),
+                "dirname" => dirname($v2) . "/" . basename($v1)
+            ];
         }
+
 
         echo json_encode($return, JSON_UNESCAPED_UNICODE);
         break;

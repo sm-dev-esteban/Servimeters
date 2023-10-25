@@ -36,16 +36,13 @@ class Servimeters implements MessageComponentInterface
         foreach ($this->clients as $client) {
             $msgC = json_decode($msg);
             $general = ($msgC->general ?? false == true);
-            if ($general ? true : $from !== $client) {
-                $client->send($msg);
-            }
+            if ($general ? true : $from !== $client) $client->send($msg);
         }
     }
 
     public function onClose(ConnectionInterface $conn)
     {
         $this->clients->detach($conn);
-
         echo "La conexión {$conn->resourceId} se desconecto \n";
     }
 
