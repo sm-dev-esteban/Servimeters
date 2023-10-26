@@ -55,12 +55,14 @@ switch ($action) {
                     $SERVER = SERVER_SIDE;
                     $res = [];
                     $id = base64_encode($d);
+
+                    $res[] = <<<HTML
+                        <button class="rounded btn-info m-1" type="button" data-mode="reportSP" data-toggle="modal" data-target="#modalMain" data-id="{$id}">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                    HTML;
+
                     if ($action == "ssp_solicitudes") {
-                        $res[] = <<<HTML
-                            <button class="rounded btn-info m-1" type="button" data-mode="reportSP" data-toggle="modal" data-target="#modalMain" data-id="{$id}">
-                                <i class="fa fa-eye"></i>
-                            </button>
-                        HTML;
                         if ($row["estado"] == "Aprobado jefe") $res[] = <<<HTML
                             <button class="rounded btn-info m-1" type="button" onclick="location.href = `{$SERVER}/solicitudPersonal/solicitud/cargarHojasDeVida?report={$id}`">
                                 <i class="fa fa-file"></i>
@@ -75,11 +77,6 @@ switch ($action) {
                         $res[] = <<<HTML
                             <button class="rounded btn-danger m-1" type="button" onclick="aprobar_rechazar('{$id}', 'rechazar')">
                                 <i class="fa fa-times"></i>
-                            </button>
-                        HTML;
-                        $res[] = <<<HTML
-                            <button class="rounded btn-info m-1" type="button" data-mode="reportSP" data-toggle="modal" data-target="#modalMain" data-id="{$id}">
-                                <i class="fa fa-eye"></i>
                             </button>
                         HTML;
                     }

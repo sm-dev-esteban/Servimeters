@@ -44,7 +44,7 @@ $(document).ready(async () => {
         "serverSide": true,
         "order": [[0, `desc`]],
         "ajax": `${GETCONFIG("SERVER_SIDE")}/View/page/onSession/solicitudPersonal/solicitud/backend.php?action=${$table.data("action")}`
-    })).buttons().container().appendTo($('.col-sm-6:eq(0)'))
+    })).buttons().container().appendTo($(".col-sm-6:eq(0)"))
 
     $(`[name="data[sueldo]"], [name="data[auxilioExtralegal]"]`).on("input", function () {
         const $this = $(this)
@@ -52,7 +52,7 @@ $(document).ready(async () => {
         const $show = $(typeof show === "object" ? show.join(", ") : show)
 
         if ($show.length) $show.html(new Intl.NumberFormat(GETCONFIG("LOCALE"), {
-            style: 'currency', currency: GETCONFIG("CURRENCY")
+            style: "currency", currency: GETCONFIG("CURRENCY")
         }).format($this.val()))
     })
 
@@ -127,6 +127,22 @@ $(document).ready(async () => {
         }
     })
 
+    $(`#btn-agregar-candidato`).on(`click`, function () {
+        const $table = $(`#table-agregar-candidato`)
+        const date = new Date().toLocaleDateString("es-CO")
+
+        $table.find(`tbody`).append(`
+            <tr>
+                <td><input type="text" class="form-control" value="${date}" readonly></td>
+                <td><input type="text" class="form-control"></td>
+                <td><button class="btn btn-danger" data-remove><i class="fa fa-times"></i></button></td>
+            </tr>
+        `)
+    })
+
+    $(`tbody`).on(`click`, `[data-remove]`, function () {
+        $(this).parent().parent().remove()
+    })
 })
 
 

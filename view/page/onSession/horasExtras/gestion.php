@@ -58,7 +58,7 @@ $routeM = new RouteModel;
                                 </thead>
                             </table>
                         </div>
-                        <pre><?= json_encode($_SESSION, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) ?></pre>
+                        <!-- <pre><?= json_encode($_SESSION, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) ?></pre> -->
                     </div>
                 </div>
             </div>
