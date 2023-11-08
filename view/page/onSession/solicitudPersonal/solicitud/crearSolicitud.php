@@ -83,10 +83,7 @@ SQL);
                         </div>
                         <div class="col-12 mb-3">
                             <label>* Ciudad</label>
-                            <input type="text" name="data[ciudad]" class="form-control" required list="list-ciudad">
-                            <datalist id="list-ciudad">
-                                <option value="guacamole">
-                            </datalist>
+                            <input type="text" name="data[ciudad]" class="form-control" required>
                         </div>
                         <div class="col-12 col-xl-12 mb-3">
                             <label>* Descripción de actividades, principales:</label>
@@ -97,14 +94,7 @@ SQL);
                         </div>
                         <div class="col-12 col-xl-12 mb-3">
                             <label>* Código:</label>
-                            <input type="text" name="data[codigo]" class="form-control" list="list-codigo" required>
-                            <datalist id="list-codigo">
-                                <option value="Chocolate">
-                                <option value="Coconut">
-                                <option value="Mint">
-                                <option value="Strawberry">
-                                <option value="Vanilla">
-                            </datalist>
+                            <input type="text" name="data[codigo]" class="form-control" required>
                         </div>
                         <div class="col-12 col-xl-6 mb-3">
                             <label>* Tipo de contrato:</label>

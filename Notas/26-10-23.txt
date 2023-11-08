@@ -11,3 +11,9 @@
         }
     }
 ]
+
+
+
+--------------------------------------------------
+-- MVC
+-- crear archivos javascript diferentes para cada vista

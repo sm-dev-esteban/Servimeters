@@ -5,9 +5,9 @@ use Controller\AutomaticForm;
 use Model\DataTable;
 use Model\ProcessData;
 
-include_once "C:/xampp/htdocs/MVC/vendor/autoload.php";
-include "C:/xampp/htdocs/MVC/Config.php";
-include "C:/xampp/htdocs/MVC/conn.php";
+include_once "C:/xampp/htdocs/servimeters/vendor/autoload.php";
+include "C:/xampp/htdocs/servimeters/Config.php";
+include "C:/xampp/htdocs/servimeters/conn.php";
 
 // ini_set('upload_max_filesize', MAX_SIZE);
 // ini_set('post_max_size', MAX_SIZE);
@@ -125,22 +125,31 @@ switch ($_REQUEST["action"] ?? false) {
                 <b class="text-danger">No Registra</b>
                 HTML
             ], [
-                "db" => "E.nombre",
+                "db" => "E.nombre", "as" => "Estado"
             ], [
-                "db" => "RHE.id", "formatter" => function ($d) {
+                "db" => "RHE.id", "formatter" => function ($d, $row) {
                     $SERVER_SIDE = SERVER_SIDE;
                     $idE = base64_encode($d);
-                    return <<<HTML
+                    $Estado = $row["Estado"];
+
+                    $btn = [];
+
+                    if (in_array($Estado, ["RECHAZO", "EDICION"])) $btn[] = <<<HTML
                         <button class="rounded btn-primary m-1" onclick="location.href='{$SERVER_SIDE}/horasExtras/editarHoras?report={$idE}'" type="button">
                             <i class="fa fa-pen"></i>
                         </button>
+                    HTML;
+                    $btn[] = <<<HTML
                         <button class="rounded btn-warning m-1" type="button">
                             <i class="fa fa-history"></i>
                         </button>
+                    HTML;
+                    $btn[] = <<<HTML
                         <button class="rounded btn-info m-1" type="button" data-mode="reportHE" data-toggle="modal" data-target="#modalMain" data-id="{$idE}">
                             <i class="fa fa-eye"></i>
                         </button>
                     HTML;
+                    return implode("\n", $btn);
                 }
             ]
         ];
@@ -166,7 +175,7 @@ switch ($_REQUEST["action"] ?? false) {
         $table[] = "INNER JOIN Clase C on CECO.id_clase = C.id";
 
         $config["columns"] = "RHE.*, E.nombre estado, C.titulo clase, CECO.titulo centroCosto";
-        $config["condition"] = "RHE.id_aprobador = '{$_SESSION["id"]}'";
+        $config["condition"] = "RHE.id_aprobador = '{$_SESSION["id"]}' and (RHE.id_estado != 1 and RHE.id_estado != 2 and RHE.id_estado != 10)";
 
         $columns = [
             [
@@ -422,6 +431,27 @@ switch ($_REQUEST["action"] ?? false) {
             ":FI" => $fechaI,
             ":FF" => $fechaF
         ]));
+        break;
+    case 'getSystemConfig':
+        echo json_encode($db->executeQuery("SELECT * FROM Config"), JSON_UNESCAPED_UNICODE);
+        break;
+    case 'autoComplete':
+        $limit = $_POST["limit"] ?? false;
+        $filter = $_POST["filter"] ?? [];
+        $search = $_POST["search"] ?? false;
+
+        $columns = implode(", ", $filter);
+        $search = str_replace("*", "%", $search);
+
+        $newFilter = implode(" OR ", array_map(function ($f) use ($search) {
+            return "{$f} LIKE '{$search}'";
+        }, $filter));
+
+        $query = trim(<<<SQL
+            SELECT TOP ({$limit}) {$columns} FROM ReportesHE WHERE {$newFilter}
+        SQL);
+
+        echo json_encode($db->executeQuery($query));
         break;
     default:
         echo json_encode(["error" => "action is undefined"]);

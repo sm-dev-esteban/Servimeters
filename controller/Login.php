@@ -12,6 +12,13 @@ class Login
     {
         try {
             $LDAP = new LDAP();
+
+            $dn = "SERVIMETERSSA";
+
+            $LDAP->uri = "servimeterssa.com";
+            $LDAP->dn = "{$dn}\\";
+            $LDAP->base = "DC={$dn},DC=COM";
+
             $ldap_result = $LDAP->connect($user, $pass, "*{$user}*", ["name", "mail", "SAMAccountName", "cn", "distinguishedname", "samaccountname"]);
 
             $_SESSION["infoUsuario"] = $ldap_result;
@@ -41,7 +48,7 @@ class Login
 
     static function isApprover(): Bool
     {
-        include "C:/xampp/htdocs/MVC/conn.php";
+        include "C:/xampp/htdocs/Servimeters/conn.php";
 
         $email = $_SESSION["email"] ?? false;
         $dataA = $db->executeQuery(<<<SQL

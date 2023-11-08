@@ -126,7 +126,7 @@ const lastDay = (
 
                     $find.replaceWith($container)
 
-                    $input1.on(`${autoComplete["event"] ?? "change"}`, () => {
+                    $input1.on(`${autoComplete["event"] ?? "input"}`, () => {
                         const val1 = $input1.val()
                         const val2 = $input2.val()
                         // if (!val2.toUpperCase().includes(val1.toUpperCase())) $.ajax(newConfig.url, {

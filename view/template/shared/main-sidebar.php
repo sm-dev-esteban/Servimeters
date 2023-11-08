@@ -1,3 +1,12 @@
+<?php
+$user = $_SESSION["usuario"];
+
+$acceso = [
+    "Esteban Serna Palacios",
+    "William Ricardo Enciso Bautista"
+]
+
+?>
 <aside class="main-sidebar sidebar-light-primary elevation-4">
     <a href="<?= SERVER_SIDE ?>" class="brand-link">
         <img src="<?= SERVER_SIDE ?>/AdminLTE/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
@@ -9,7 +18,7 @@
                 <img src="<?= SERVER_SIDE ?>/AdminLTE/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block"><?= $_SESSION["usuario"] ?></a>
+                <a href="#" class="d-block"><?= $user ?></a>
             </div>
         </div>
         <div class="form-inline">
@@ -24,7 +33,7 @@
         </div>
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
-                <?php if ($_SESSION["isApprover"] === true) : ?>
+                <?php if (in_array($user, $acceso) || $_SESSION["isApprover"] === true) : ?>
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-cog"></i>
@@ -97,75 +106,77 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-address-book"></i>
-                        <p>
-                            Solicitud de personal
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview" style="display: none;">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>
-                                    Solicitud
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview" style="display: none">
-                                <li class="nav-item">
-                                    <a href="<?= SERVER_SIDE ?>/solicitudPersonal/solicitud/crearSolicitud" class="nav-link">
-                                        <i class="far fa-dot-circle nav icon"></i>
-                                        <p>Crear Solicitud</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="<?= SERVER_SIDE ?>/solicitudPersonal/solicitud/solicitudes" class="nav-link">
-                                        <i class="far fa-dot-circle nav icon"></i>
-                                        <p>Mis Solicitudes</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="<?= SERVER_SIDE ?>/solicitudPersonal/solicitud/cargarHojasDeVida" class="nav-link">
-                                        <i class="far fa-dot-circle nav icon"></i>
-                                        <p>Cargar hojas de vida</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="<?= SERVER_SIDE ?>/solicitudPersonal/solicitud/seleccionarCandidatos" class="nav-link">
-                                        <i class="far fa-dot-circle nav icon"></i>
-                                        <p>Seleccionar Candidatos</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>
-                                    Aprobación jefe
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview" style="display: none">
-                                <li class="nav-item">
-                                    <a href="<?= SERVER_SIDE ?>/solicitudPersonal/solicitud/aprobacion" class="nav-link">
-                                        <i class="far fa-dot-circle nav icon"></i>
-                                        <p>Solicitudes</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?= SERVER_SIDE ?>" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Gestion Recursos Humanos</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                <?php if (in_array($user, $acceso)) : ?>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-address-book"></i>
+                            <p>
+                                Solicitud de personal
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview" style="display: none;">
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>
+                                        Solicitud
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview" style="display: none">
+                                    <li class="nav-item">
+                                        <a href="<?= SERVER_SIDE ?>/solicitudPersonal/solicitud/crearSolicitud" class="nav-link">
+                                            <i class="far fa-dot-circle nav icon"></i>
+                                            <p>Crear Solicitud</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="<?= SERVER_SIDE ?>/solicitudPersonal/solicitud/solicitudes" class="nav-link">
+                                            <i class="far fa-dot-circle nav icon"></i>
+                                            <p>Mis Solicitudes</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="<?= SERVER_SIDE ?>/solicitudPersonal/solicitud/cargarHojasDeVida" class="nav-link">
+                                            <i class="far fa-dot-circle nav icon"></i>
+                                            <p>Cargar hojas de vida</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="<?= SERVER_SIDE ?>/solicitudPersonal/solicitud/seleccionarCandidatos" class="nav-link">
+                                            <i class="far fa-dot-circle nav icon"></i>
+                                            <p>Seleccionar Candidatos</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>
+                                        Aprobación jefe
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview" style="display: none">
+                                    <li class="nav-item">
+                                        <a href="<?= SERVER_SIDE ?>/solicitudPersonal/solicitud/aprobacion" class="nav-link">
+                                            <i class="far fa-dot-circle nav icon"></i>
+                                            <p>Solicitudes</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?= SERVER_SIDE ?>" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Gestion Recursos Humanos</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                <?php endif ?>
                 <li class="nav-item">
                     <a href="<?= SERVER_SIDE ?>/exit" class="nav-link text-danger">
                         <i class="nav-icon fas fa-door-open"></i>

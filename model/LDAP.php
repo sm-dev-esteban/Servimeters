@@ -14,7 +14,7 @@ class LDAP
         "&", "|", "!"
     ];
 
-    public $defaultConfig = [
+    private $defaultConfig = [
         "operator" => "|"
     ];
 

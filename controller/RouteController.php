@@ -61,7 +61,10 @@ class RouteController
 
                 # css
                 // foreach (self::folder_to_server(glob($folder . "/*.css")) as $key => $value) echo '<link rel="stylesheet" href="' . $value . '">';
-                echo '<LOAD-CSS style="display: none !important">', json_encode(self::folder_to_server(glob($folder . "/*.css")), JSON_UNESCAPED_UNICODE), "</LOAD-CSS>";
+                // echo '<LOAD-CSS style="display: none !important">', json_encode(self::folder_to_server(glob($folder . "/*.css")), JSON_UNESCAPED_UNICODE), "</LOAD-CSS>";
+                echo implode("\n", array_map(function ($css) {
+                    return "<link rel=\"stylesheet\" href=\"{$css}\">";
+                }, self::folder_to_server(glob($folder . "/*.css"))));
 
                 # content
                 include $this->page;

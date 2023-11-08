@@ -102,7 +102,7 @@ $id = $_REQUEST["report"] ?? false;
                         </div>
                         <div class="col-12 mb-3">
                             <div class="table-responsive">
-                                <table class="table" id="tableDatail">
+                                <table class="table table-bordered" id="tableDatail">
                                     <thead class="shadow">
                                         <tr>
                                             <th><b class="text-danger">*</b> Fecha</th>

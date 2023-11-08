@@ -3,8 +3,8 @@
 use Controller\AutomaticForm;
 use Model\DataTable;
 
-include "C:/xampp/htdocs/MVC/Config.php";
-include_once "C:/xampp/htdocs/MVC/vendor/autoload.php";
+include "C:/xampp/htdocs/servimeters/Config.php";
+include_once "C:/xampp/htdocs/servimeters/vendor/autoload.php";
 
 $automatic = new AutomaticForm();
 

@@ -17,6 +17,21 @@ $(document).ready(async () => {
         }
     ])
 
+    ldapAutoComplete([
+        {
+            element: `[name="data[ciudad]"]`,
+            event: `input`,
+            search: `ciudad`
+        }, {
+            element: `[name="data[codigo]"]`,
+            event: `input`,
+            search: `codigo`
+        }
+    ], {
+        url: `${GETCONFIG("SERVER_SIDE")}/View/page/onSession/solicitudPersonal/solicitud/backend.php?action=autoComplete`,
+        dataForLDAP: false
+    })
+
     $(`#formAdjuntos`).createDropzone({
         table: "requisicion_hojas_de_vida"
     })
@@ -26,12 +41,12 @@ $(document).ready(async () => {
         e.preventDefault()
         const $this = $(this)
         $.ajax(`${GETCONFIG("SERVER_SIDE")}/View/page/onSession/solicitudPersonal/solicitud/backend.php?action=${$this.data("action")}`, {
+            type: "POST",
+            dataType: "JSON",
+            data: new FormData(this),
             cache: false,
             processData: false,
             contentType: false,
-            dataType: "JSON",
-            type: "POST",
-            data: new FormData(this),
             success: (response) => {
                 console.log(response)
             }
@@ -129,19 +144,135 @@ $(document).ready(async () => {
 
     $(`#btn-agregar-candidato`).on(`click`, function () {
         const $table = $(`#table-agregar-candidato`)
-        const date = new Date().toLocaleDateString("es-CO")
+        const $requisicion = $(`#requisicion`)
 
-        $table.find(`tbody`).append(`
-            <tr>
-                <td><input type="text" class="form-control" value="${date}" readonly></td>
-                <td><input type="text" class="form-control"></td>
-                <td><button class="btn btn-danger" data-remove><i class="fa fa-times"></i></button></td>
-            </tr>
-        `)
+        $.ajax(`${GETCONFIG("SERVER_SIDE")}/View/page/onSession/solicitudPersonal/solicitud/backend.php?action=agregarCandidato`, {
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                requisicion: $requisicion.val()
+            },
+            success: (response) => {
+                if (response[0] ?? false) {
+                    data = response[0]
+                    const formatDate = new Date(data.fechaRegistro)
+                    const date = new Intl.DateTimeFormat('es-CO', {
+                        month: '2-digit',
+                        day: '2-digit',
+                        year: 'numeric',
+                        hour: 'numeric',
+                        minute: 'numeric'
+                    }).format(formatDate)
+
+                    $table.find(`tbody`).append(`
+                        <tr data-id="${data.id}">
+                            <td><input type="text" class="form-control" value="${date}" readonly></td>
+                            <td><input type="text" class="form-control" value="${data.nombreCompleto}"></td>
+                            <td>
+                                <button class="rounded btn-success m-1" type="button" onclick="aprobarCandidato(${data.id})">
+                                    <i class=" fa fa-check"></i>
+                                </button>
+                                <button class="rounded btn-danger m-1" type="button" onclick="rechazarCandidato(${data.id})">
+                                    <i class=" fa fa-times"></i>
+                                </button>
+                                <div class="form-group m-1">
+                                    <div class="custom-control custom-checkbox">
+                                        <input class="custom-control-input" type="checkbox" id="customCheckbox1" value="option1">
+                                        <label for="customCheckbox1" class="custom-control-label">¿El candidato fue citado?</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    `)
+                }
+            }
+        })
     })
 
     $(`tbody`).on(`click`, `[data-remove]`, function () {
         $(this).parent().parent().remove()
+    })
+
+    $(`#card-search form`).on(`submit`, async function (e) {
+        e.preventDefault()
+        const formData = new FormData(this)
+        const $card_search = $(`#card-search`)
+        const $card_candidates = $(`#card-candidates`)
+        const $card_report = $(`#card-report`)
+        const $overlay = $(`<div class="overlay"><i class="fas fa-2x fa-sync fa-spin"></i></div>`)
+        const $table = $(`#table-agregar-candidato`)
+
+        const id = formData.get(`requisicion`)
+
+        request = await fetch(`${GETCONFIG("SERVER_SIDE")}/View/page/onSession/solicitudPersonal/solicitud/backend.php?action=validarRequisicion&requisicion=${id}`)
+        response = await request.json()
+
+        if (response.status === true) {
+            $(`.overlay`).remove()
+            // candidatos
+            $.ajax(`${GETCONFIG("SERVER_SIDE")}/View/page/onSession/solicitudPersonal/solicitud/backend.php?action=buscarCandidatos`, {
+                type: "POST",
+                dataType: "JSON",
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: (response) => {
+                    response.forEach((data) => {
+                        const formatDate = new Date(data.fechaRegistro)
+                        const date = new Intl.DateTimeFormat('es-CO', {
+                            month: '2-digit',
+                            day: '2-digit',
+                            year: 'numeric',
+                            hour: 'numeric',
+                            minute: 'numeric'
+                        }).format(formatDate).toLocaleUpperCase()
+                        $table.find(`tbody`).append(`
+                            <tr data-id="${data.id}">
+                                <td><input type="text" class="form-control" value="${date}" readonly></td>
+                                <td><input type="text" class="form-control" value="${data.nombreCompleto}"></td>
+                                <td>
+                                    <button class="rounded btn-success m-1" type="button" onclick="aprobarCandidato(${data.id})">
+                                        <i class=" fa fa-check"></i>
+                                    </button>
+                                    <button class="rounded btn-danger m-1" type="button" onclick="rechazarCandidato(${data.id})">
+                                        <i class=" fa fa-times"></i>
+                                    </button>
+                                    <div class="form-group m-1">
+                                        <div class="custom-control custom-checkbox">
+                                            <input class="custom-control-input" type="checkbox" id="customCheckbox1" value="option1">
+                                            <label for="customCheckbox1" class="custom-control-label">¿El candidato fue citado?</label>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        `)
+                    });
+                }
+            })
+            // reporte
+            $.ajax(`${GETCONFIG("SERVER_SIDE")}/View/page/onSession/solicitudPersonal/solicitud/backend.php?action=buscarReporte`, {
+                type: "POST",
+                dataType: "HTML",
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: (response) => {
+                    const $report = $(response)
+                    $report.attr(`id`, `card-report`)
+                    $report.prepend($card_report.find(`.card-header`))
+                    $card_report.replaceWith($report)
+                }
+            })
+        } else {
+            $(`#card-candidates, #card-report`).append($overlay)
+            alerts({
+                title: "Registro no encontrado",
+                icon: "info"
+            })
+        }
+
     })
 })
 
@@ -173,4 +304,9 @@ const aprobar_rechazar = async (i, type) => {
             }
         }
     })
+}, aprobarCandidato = (i) => {
+    console.log(i)
+}
+rechazarCandidato = (i) => {
+    console.log(i)
 }

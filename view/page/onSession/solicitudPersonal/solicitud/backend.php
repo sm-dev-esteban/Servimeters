@@ -2,12 +2,13 @@
 /*-- 2023-09-22 09:16:22 --*/
 
 use Controller\AutomaticForm;
+use Controller\SeeApplicationReport;
 use Model\DataTable;
 use Model\Email;
 
-include_once "C:/xampp/htdocs/MVC/vendor/autoload.php";
-include "C:/xampp/htdocs/MVC/Config.php";
-include "C:/xampp/htdocs/MVC/conn.php";
+include_once "C:/xampp/htdocs/servimeters/vendor/autoload.php";
+include "C:/xampp/htdocs/servimeters/Config.php";
+include "C:/xampp/htdocs/servimeters/conn.php";
 
 date_default_timezone_set(TIMEZONE);
 
@@ -112,6 +113,58 @@ switch ($action) {
                 ":ESTADO" => $estado
             ])
         ], JSON_UNESCAPED_UNICODE);
+        break;
+    case 'autoComplete':
+        $limit = $_POST["limit"] ?? false;
+        $filter = $_POST["filter"] ?? [];
+        $search = $_POST["search"] ?? false;
+
+        $columns = implode(", ", $filter);
+        $search = str_replace("*", "%", $search);
+
+        $newFilter = implode(" OR ", array_map(function ($f) use ($search) {
+            return "{$f} LIKE '{$search}'";
+        }, $filter));
+
+        $query = trim(<<<SQL
+            SELECT TOP ({$limit}) {$columns} FROM solicitudPersonal WHERE {$newFilter}
+        SQL);
+
+        echo json_encode($db->executeQuery($query));
+        break;
+    case 'agregarCandidato':
+        $id = $_POST["requisicion"] ?? 0;
+        $res = $af->insert("requisicion_candidatos", [
+            "data" => [
+                "nombreCompleto" => "",
+                "id_requisicion" => $id
+            ]
+        ]);
+        if ($res["status"] === true) {
+            echo json_encode($db->executeQuery(trim(<<<SQL
+                SELECT * FROM requisicion_candidatos where id = {$res["id"]}
+            SQL)));
+        }
+        break;
+    case 'validarRequisicion':
+        $id = $_GET["requisicion"] ?? 0;
+
+        $res = $db->executeQuery(trim(<<<SQL
+            SELECT count(*) count FROM solicitudPersonal where id = {$id}
+        SQL));
+
+        echo json_encode(["status" => !empty($res[0]["count"])]);
+        break;
+    case 'buscarCandidatos':
+        $id = $_POST["requisicion"] ?? 0;
+
+        echo json_encode($db->executeQuery(trim(<<<SQL
+            SELECT * FROM requisicion_candidatos where id_requisicion = {$id}
+        SQL)));
+        break;
+    case 'buscarReporte':
+        $id = $_POST["requisicion"] ?? 0;
+        echo SeeApplicationReport::viewApplicationReport(base64_encode($id));
         break;
     default:
         echo json_encode(["error" => "action is undefined"]);

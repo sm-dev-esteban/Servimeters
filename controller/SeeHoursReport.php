@@ -102,18 +102,20 @@ class SeeHoursReport
     {
         $tbody = "";
         foreach ($dataRHE as $data) {
+            $Total_Ext_Noc_Ord = $data["Total_Ext_Noc_Ord"] ?? "no hay nara";
+            $Total_Ext_Noc = $data["Total_Ext_Noc"] ?? "no hay nara";
             $tbody .= <<<HTML
                 <tr data-widget="expandable-table" aria-expanded="false">
                     <td>{$data["Total_descuento"]}</td>
                     <td>{$data["Total_Ext_Diu_Ord"]}</td>
-                    <td>{$data["Total_Ext_Noc_Ord"]}</td>
+                    <td>{$Total_Ext_Noc_Ord}</td>
                     <td>{$data["Total_Ext_Diu_Fes"]}</td>
                     <td>{$data["Total_Ext_Noc_Fes"]}</td>
-                    <td>{$data["Total_Ext_Noc"]}</td>
-                    <td>{$data["Total_Ext_Noc"]}</td>
-                    <td>{$data["Total_Ext_Noc"]}</td>
-                    <td>{$data["Total_Ext_Noc"]}</td>
-                    <td>{$data["Total_Ext_Noc"]}</td>
+                    <td>{$Total_Ext_Noc}</td>
+                    <td>{$Total_Ext_Noc}</td>
+                    <td>{$Total_Ext_Noc}</td>
+                    <td>{$Total_Ext_Noc}</td>
+                    <td>{$Total_Ext_Noc}</td>
                 </tr>
                 <tr class="expandable-body">
                     <td colspan="10">

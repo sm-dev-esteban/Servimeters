@@ -7,17 +7,40 @@ $(document).ready(async () => {
         }
     ])
 
+    ldapAutoComplete([
+        {
+            element: `[name="data[CC]"]`,
+            event: `input`,
+            search: `CC`
+        }, {
+            element: `[name="data[cargo]"]`,
+            event: `input`,
+            search: `cargo`
+        }, {
+            element: `[name="data[proyecto]"]`,
+            event: `input`,
+            search: `proyecto`
+        }
+    ], {
+        url: `${GETCONFIG("SERVER_SIDE")}/View/page/onSession/horasExtras/backend.php?action=autoComplete`,
+        dataForLDAP: false
+    })
+
     bsCustomFileInput.init()
 
     $(`[data-toggle="popover"]`).popover({
         container: 'body'
     })
 
+    var systemConfig = await getSystemConfig()
+
     const $form = $(`form[data-mode]`)
     if ($form.data("mode") === "UPDATE") loadData($(`#report`).val())
 
-    $form.on("submit", function (e) {
+    $form.on("submit", async function (e) {
         e.preventDefault()
+
+
         const $this = $(this)
 
         let send = true
@@ -26,8 +49,10 @@ $(document).ready(async () => {
         const $cEditableRequired = $this.find(`[contenteditable][name][required]`)
         const $btnSubmit = $this.find(`button:submit:eq(0)`)
         const btnHTML = $btnSubmit.html()
+        const $tableDatail = $(`#tableDatail`)
 
-        const $cERequired = $cEditableRequired.filter(function () {
+
+        const $cERequired = $cEditableRequired.filter(() => {
             return $(this).text().trim() === ''
         })
 
@@ -35,6 +60,7 @@ $(document).ready(async () => {
             send = false
 
             $cERequired.addClass("isInvalid")
+
             $('html, body').animate({
                 scrollTop: $cERequired.eq(0).offset().top
             }, 1000, () => {
@@ -42,7 +68,17 @@ $(document).ready(async () => {
             })
         }
 
-        if (send) {
+        const $Total_Extras = $(`[name="data[Total_Extras]"]`)
+        const Total_Extras = Number($Total_Extras.text())
+        const Limit_Extras = Number(systemConfig[0].LIMIT_HE)
+
+        if (Total_Extras > Limit_Extras) {
+            alerts({
+                title: "Número de horas extras excedido",
+                text: `Maximo: ${Limit_Extras}`,
+                icon: "info"
+            })
+        } else if (send) {
             $cEditable.each(function () {
                 const $q = $(this)
                 $this.append(`<input type="hidden" name="${$q.attr(`name`)}" value="${$q.text()}" data-temporal-send-data>`)
@@ -63,8 +99,8 @@ $(document).ready(async () => {
                 },
                 success: (response) => {
                     if (response.status && response.status === true) {
-                        location.href = "http://localhost/MVC/horasExtras/misHoras"
-                    }
+                        window.location.href = `${GETCONFIG("SERVER_SIDE")}/horasExtras/misHoras`
+                    } data - mode
                 },
                 complete: () => {
                     $(`[data-temporal-send-data]`).remove()
@@ -72,7 +108,6 @@ $(document).ready(async () => {
                 }
             })
         }
-
     })
 
     const $table = $(`table[data-action]`)
@@ -309,7 +344,7 @@ $(document).ready(async () => {
 
 })
 //----------------------------------------------------------------------------------------------------------------//
-const add = () => {
+const add = async () => {
     const $tableDatail = $(`#tableDatail`)
     const $tbody = $tableDatail.find(`tbody`)
     const $tr = $tbody.find(`tr`).eq(0)
@@ -318,10 +353,10 @@ const add = () => {
     clone.find(`[contenteditable]`).text(``)
     clone.find(`[type="number"]`).text(`0`)
     clone.appendTo($tbody).find(`input, button`).val("").removeAttr(`disabled`)
-    addHours()
-}, remove = (e) => {
+    await addHours()
+}, remove = async (e) => {
     $(e.parentNode.parentNode).remove()
-    addHours()
+    await addHours()
 }, codes = () => {
     return [
         {
@@ -352,7 +387,7 @@ const add = () => {
             find: "Rec_Ord_Fes_Noc", code: "11504"
         },
     ]
-}, addHours = () => {
+}, addHours = async () => {
     cEditableNumber()
     const horas = []
     const arraySum = codes().forEach((x, i) => {
@@ -463,16 +498,16 @@ const add = () => {
         type: "POST",
         dataType: "JSON",
         data: { id: e },
-        success: function (response) {
-            response.forEach((x, i) => {
-                add()
+        success: async (response) => {
+            response.forEach(async (x, i) => {
+                await add()
                 for (data in x) {
                     $find = $(`[name="HorasExtra[${data}][]"]:eq(${i})`)
                     if ($find.length) $find.val(x[data]).html(x[data]).trigger("input").trigger("change")
                 }
             })
             dates()
-            addHours()
+            await addHours()
         }
     })
 }, approvedRequest = async (find = "") => {
@@ -651,4 +686,8 @@ const add = () => {
         }
         /*----APROBADORES----*/
     }
+}, getSystemConfig = async () => {
+    const request = await fetch(`${GETCONFIG("SERVER_SIDE")}/View/page/onSession/horasExtras/backend.php?action=getSystemConfig`)
+    const response = await request.json()
+    return response;
 }
