@@ -12,3 +12,5 @@ vendor
 formatos_referencia
 # vs
 .vscode
+# dependencias
+vendor
