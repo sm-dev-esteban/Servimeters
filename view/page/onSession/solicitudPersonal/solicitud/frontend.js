@@ -165,22 +165,22 @@ $(document).ready(async () => {
                     }).format(formatDate)
 
                     $table.find(`tbody`).append(`
-                        <tr data-id="${data.id}">
+                        <tr data-id=${data.id}>
                             <td><input type="text" class="form-control" value="${date}" readonly></td>
-                            <td><input type="text" class="form-control" value="${data.nombreCompleto}"></td>
+                            <td><input name="data[nombreCompleto]" data-id=${data.id} type="text" class="form-control" placeholder="Nombre Completo" value="${data.nombreCompleto}"></td>
                             <td>
-                                <button class="rounded btn-success m-1" type="button" onclick="aprobarCandidato(${data.id})">
-                                    <i class=" fa fa-check"></i>
-                                </button>
-                                <button class="rounded btn-danger m-1" type="button" onclick="rechazarCandidato(${data.id})">
-                                    <i class=" fa fa-times"></i>
-                                </button>
+                                <!-- <button class="rounded btn-danger m-1" onclick="eliminarCandidato(${data.id})" data-remove=${data.id}><i class="fa fa-trash"></i></button> -->
                                 <div class="form-group m-1">
                                     <div class="custom-control custom-checkbox">
-                                        <input class="custom-control-input" type="checkbox" id="customCheckbox1" value="option1">
-                                        <label for="customCheckbox1" class="custom-control-label">¿El candidato fue citado?</label>
+                                        <input name="data[candidatoCitado]" data-id=${data.id} class="custom-control-input" type="checkbox" id="customCheckbox${data.id}" ${data.candidatoCitado == "true" ? "checked" : ""}>
+                                        <label for="customCheckbox${data.id}" class="custom-control-label">¿El candidato fue citado?</label>
                                     </div>
                                 </div>
+                            </td>
+                        </tr>
+                        <tr data-id=${data.id}>
+                            <td colspan="3">
+                                <textarea name="data[observacionCandidato]" data-id=${data.id} class="form-control" placeholder="Nota u observaciones sobre el candidato">${data.observacionCandidato ?? ""}</textarea>
                             </td>
                         </tr>
                     `)
@@ -189,11 +189,59 @@ $(document).ready(async () => {
         })
     })
 
-    $(`tbody`).on(`click`, `[data-remove]`, function () {
-        $(this).parent().parent().remove()
+    $(`#table-agregar-candidato tbody`).on(`change`, `[name]`, function () {
+        const manages = localStorage.getItem("manages")
+
+        if (manages === "RH") {
+            const $this = $(this)
+            const data = {}
+
+            const $loadSpinner = $(`#load-spinner`)
+
+            data["id"] = $this.data(`id`)
+            data[$this.attr(`name`)] = () => {
+                const type = $this.attr(`type`)
+
+                if (type === "checkbox") return $this.get(0).checked
+                else if (type === "textarea") return ""
+                else return $this.val()
+            }
+
+            $.ajax(`${GETCONFIG("SERVER_SIDE")}/View/page/onSession/solicitudPersonal/solicitud/backend.php?action=actualizarCandidatos`, {
+                type: "POST",
+                dataType: "JSON",
+                data: data,
+                beforeSend: () => {
+                    $loadSpinner.show(`slow`)
+                },
+                success: (response) => {
+                    console.log(response);
+                },
+                complete: () => {
+                    setTimeout(() => {
+                        $loadSpinner.hide(`slow`)
+                    }, 1000);
+                }
+            })
+
+        }
     })
 
-    $(`#card-search form`).on(`submit`, async function (e) {
+    $(`tbody`).on(`click`, `td [data-remove]`, function () {
+        // $(this).closest(`tr`).remove()
+
+        const $this = $(this)
+        const ident = $this.data("remove")
+        const $find = $(`tr[data-id=${ident}]`)
+
+        if ($find.length) $find.hide("slow", () => {
+            $find.remove()
+        })
+    })
+
+    const $formSearch = $(`#card-search form`);
+
+    $formSearch.on(`submit`, async function (e) {
         e.preventDefault()
         const formData = new FormData(this)
         const $card_search = $(`#card-search`)
@@ -218,6 +266,10 @@ $(document).ready(async () => {
                 processData: false,
                 contentType: false,
                 success: (response) => {
+                    const manages = localStorage.getItem("manages")
+
+                    const $tbody = $table.find(`tbody`)
+                    $tbody.html(``)
                     response.forEach((data) => {
                         const formatDate = new Date(data.fechaRegistro)
                         const date = new Intl.DateTimeFormat('es-CO', {
@@ -227,27 +279,27 @@ $(document).ready(async () => {
                             hour: 'numeric',
                             minute: 'numeric'
                         }).format(formatDate).toLocaleUpperCase()
-                        $table.find(`tbody`).append(`
-                            <tr data-id="${data.id}">
+                        $tbody.append(`
+                            <tr data-id=${data.id}>
                                 <td><input type="text" class="form-control" value="${date}" readonly></td>
-                                <td><input type="text" class="form-control" value="${data.nombreCompleto}"></td>
+                                <td><input ${manages !== "RH" ? "disabled" : ""} name="data[nombreCompleto]" data-id=${data.id} type="text" class="form-control" placeholder="Nombre Completo" value="${data.nombreCompleto}"></td>
                                 <td>
-                                    <button class="rounded btn-success m-1" type="button" onclick="aprobarCandidato(${data.id})">
-                                        <i class=" fa fa-check"></i>
-                                    </button>
-                                    <button class="rounded btn-danger m-1" type="button" onclick="rechazarCandidato(${data.id})">
-                                        <i class=" fa fa-times"></i>
-                                    </button>
+                                    <!-- <button class="rounded btn-danger m-1" onclick="eliminarCandidato(${data.id})" data-remove=${data.id}><i class="fa fa-trash"></i></button> -->
                                     <div class="form-group m-1">
                                         <div class="custom-control custom-checkbox">
-                                            <input class="custom-control-input" type="checkbox" id="customCheckbox1" value="option1">
-                                            <label for="customCheckbox1" class="custom-control-label">¿El candidato fue citado?</label>
+                                            <input ${manages !== "RH" ? "disabled" : ""} name="data[candidatoCitado]" data-id=${data.id} class="custom-control-input" type="checkbox" id="customCheckbox${data.id}" ${data.candidatoCitado == "true" ? "checked" : ""}>
+                                            <label for="customCheckbox${data.id}" class="custom-control-label">¿El candidato fue citado?</label>
                                         </div>
                                     </div>
                                 </td>
                             </tr>
+                            <tr data-id=${data.id}>
+                                <td colspan="3">
+                                    <textarea ${manages !== "RH" ? "disabled" : ""} name="data[observacionCandidato]" data-id=${data.id} class="form-control" placeholder="Nota u observaciones sobre el candidato">${data.observacionCandidato ?? ""}</textarea>
+                                </td>
+                            </tr>
                         `)
-                    });
+                    })
                 }
             })
             // reporte
@@ -274,6 +326,11 @@ $(document).ready(async () => {
         }
 
     })
+
+    SearchValue = $formSearch.find(`#requisicion`).val()
+
+    if (SearchValue && SearchValue !== "")
+        $formSearch.find(`button[type="submit"]`).click()
 })
 
 
@@ -304,9 +361,6 @@ const aprobar_rechazar = async (i, type) => {
             }
         }
     })
-}, aprobarCandidato = (i) => {
-    console.log(i)
-}
-rechazarCandidato = (i) => {
-    console.log(i)
+}, eliminarCandidato = (i) => {
+    if (i) $.ajax(`${GETCONFIG("SERVER_SIDE")}/View/page/onSession/solicitudPersonal/solicitud/backend.php?action=eliminarCandidato&id=${i}`)
 }

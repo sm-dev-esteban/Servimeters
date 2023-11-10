@@ -69,6 +69,18 @@ switch ($action) {
                                 <i class="fa fa-file"></i>
                             </button>
                         HTML;
+
+                        if (!in_array($row["estado"], [
+                            "Pendiente",
+                            "Rechazo jefe",
+                            "Rechazado",
+                            "Cancelado"
+                        ])) $res[] = <<<HTML
+                            <button class="rounded btn-info m-1" type="button" onclick="location.href = `{$SERVER}/solicitudPersonal/solicitud/seleccionarCandidatos?report={$id}`">
+                                <i class="fa fa-user-plus"></i>
+                            </button>
+                        HTML;
+                        // http://localhost/Servimeters/solicitudPersonal/solicitud/seleccionarCandidatos
                     } else {
                         $res[] = <<<HTML
                             <button class="rounded btn-success m-1" type="button" onclick="aprobar_rechazar('{$id}', 'aprobar')">
@@ -165,6 +177,25 @@ switch ($action) {
     case 'buscarReporte':
         $id = $_POST["requisicion"] ?? 0;
         echo SeeApplicationReport::viewApplicationReport(base64_encode($id));
+        break;
+    case 'actualizarCandidatos':
+        $data = $_POST ?? [];
+        $id = $_POST["id"] ?? false;
+
+        $result = $af->update("requisicion_candidatos", $data, ["id" => $id]);
+
+        if (isset($data["data"]["candidatoCitado"])) $result["candidatoCitado"] = $data["data"]["candidatoCitado"];
+
+        unset($result["query"], $result["id"]);
+
+        echo json_encode($result, JSON_UNESCAPED_UNICODE);
+        break;
+    case 'eliminarCandidato':
+        $id = $_GET["id"] ?? 0;
+        echo json_encode($db->executeQuery(trim(<<<SQL
+            DELETE FROM requisicion_candidatos where id = {$id}
+        SQL)));
+
         break;
     default:
         echo json_encode(["error" => "action is undefined"]);

@@ -20,7 +20,6 @@ $(document).ready(async function () {
         localStorage.setItem("gestiona", session.gestiona ?? "NA");
         localStorage.setItem("usuario", session.usuario ?? "NA");
         localStorage.setItem("email", session.email ?? "NA");
-
     }
 
     server.onmessage = function (e) {

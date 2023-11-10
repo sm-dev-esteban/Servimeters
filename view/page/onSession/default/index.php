@@ -7,6 +7,21 @@ use Model\RouteModel;
 $routeM = new RouteModel;
 $rol = $_SESSION["rol"] ?? false;
 ?>
+
+<script>
+    <?php
+    $show = ["type", "manages", "usuario", "email"];
+    $storage = [];
+
+    foreach ($show as $key => $name)
+        if ($_SESSION[$name] ?? false)
+            $storage[] = trim(<<<JS
+                localStorage.setItem("{$name}", `{$_SESSION[$name]}`);
+            JS);
+    echo implode("\n", $storage);
+    ?>
+</script>
+
 <section class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">

@@ -1,10 +1,14 @@
 <?php
 $user = $_SESSION["usuario"];
 
-$acceso = [
+$acceso = array_map(function ($name) {
+    return strtoupper($name);
+}, [
     "Esteban Serna Palacios",
     "William Ricardo Enciso Bautista"
-]
+]);
+
+$accesoPremium = in_array(strtoupper($user), $acceso)
 
 ?>
 <aside class="main-sidebar sidebar-light-primary elevation-4">
@@ -33,7 +37,7 @@ $acceso = [
         </div>
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
-                <?php if (in_array($user, $acceso) || $_SESSION["isApprover"] === true) : ?>
+                <?php if ($accesoPremium || $_SESSION["isApprover"] === true) : ?>
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-cog"></i>
@@ -106,7 +110,7 @@ $acceso = [
                         </li>
                     </ul>
                 </li>
-                <?php if (in_array($user, $acceso)) : ?>
+                <?php if ($_SESSION["staffRequest"] === "SI" || $_SESSION["manages"] === "RH" || $accesoPremium) : ?>
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-address-book"></i>
@@ -141,6 +145,12 @@ $acceso = [
                                         <a href="<?= SERVER_SIDE ?>/solicitudPersonal/solicitud/cargarHojasDeVida" class="nav-link">
                                             <i class="far fa-dot-circle nav icon"></i>
                                             <p>Cargar hojas de vida</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="<?= SERVER_SIDE ?>/solicitudPersonal/solicitud/agregarCandidatos" class="nav-link">
+                                            <i class="far fa-dot-circle nav icon"></i>
+                                            <p>Agregar Candidatos</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
