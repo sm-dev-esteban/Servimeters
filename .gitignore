@@ -14,3 +14,4 @@ formatos_referencia
 .vscode
 # dependencias
 vendor
+composer.lock
