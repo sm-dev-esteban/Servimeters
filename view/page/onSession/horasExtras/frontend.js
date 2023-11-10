@@ -178,7 +178,7 @@ $(document).ready(async () => {
         const $id_estado = $(`[name="data[id_estado]"]`)
 
         $id_aprobador.val({
-            "GERENTES": function () {
+            "GERENTES": () => {
                 $id_estado.val(getStatusHE("nombre", "APROBACION_GERENTE")[0]["id"] ?? 0)
 
                 const $Jefes = $(`select#Jefes`)
@@ -189,7 +189,7 @@ $(document).ready(async () => {
                 $Gerentes.val(``)
                 return $Gerentes.val()
             },
-            "JEFES": function () {
+            "JEFES": () => {
                 $id_estado.val(getStatusHE("nombre", "APROBACION_JEFE")[0]["id"] ?? 0)
 
                 const $Gerentes = $(`select#Gerentes`)
@@ -200,13 +200,13 @@ $(document).ready(async () => {
                 $Jefes.val(``)
                 return $Jefes.val()
             },
-            "EDICIÓN": function () {
+            "EDICIÓN": () => {
                 $id_estado.val(getStatusHE("nombre", "EDICION")[0]["id"] ?? 0)
 
                 const $A = $(`select#Gerentes, select#Jefes`)
                 $A.attr(`disabled`, true)
                 $A.val(``)
-                return "N/A"
+                return "0"
             }
         }[$this.val().toUpperCase()] ?? "como eh posible ete suceso")
     })
