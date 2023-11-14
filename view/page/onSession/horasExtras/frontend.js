@@ -9,6 +9,15 @@ $(document).ready(async () => {
 
     ldapAutoComplete([
         {
+            event: `input`,
+            elements: [],
+            element: `[name="data[correoEmpleado]"]`,
+            search: `mail`
+        }
+    ])
+
+    ldapAutoComplete([
+        {
             element: `[name="data[CC]"]`,
             event: `input`,
             search: `CC`

@@ -99,7 +99,9 @@ switch ($_REQUEST["action"] ?? false) {
         $table[] = "ReportesHE RHE";
         $table[] = "INNER JOIN CentrosCosto CECO on CECO.id = RHE.id_ceco";
         $table[] = "INNER JOIN Clase C on C.id = CECO.id_clase";
+
         $table[] = "LEFT JOIN Aprobadores A on A.id = RHE.id_aprobador";
+
         $table[] = "INNER JOIN HorasExtras_Estados E on E.id = RHE.id_estado";
 
         $config = [];

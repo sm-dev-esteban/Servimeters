@@ -37,17 +37,24 @@ class SeeHoursReport
             if ($errorHE) $error[] = $errorHE;
 
             $arrayFiles = self::getFiles($ReportesHE[0]["adjuntos"] ?? "");
+
             $files = "";
 
             foreach ($arrayFiles as $dataFiles) {
                 $viewIcon = self::viewIcon($dataFiles);
                 $sizes = self::convertBytes($dataFiles["size"] ?? 0);
                 $href = $dataFiles["dirname"] . "/" . $dataFiles["basename"];
+                $arraybasename = explode(".", $dataFiles["basename"]);
+                $fileName = $arraybasename[0];
+                $extName = $arraybasename[1];
+
+                $basename = "..." . substr($fileName, -4) . ".{$extName}";
+
                 $files .= <<<HTML
                     <li>
                         {$viewIcon}
                         <div class="mailbox-attachment-info">
-                            <p style="color: white;mix-blend-mode: difference" class="mailbox-attachment-name"><i class="fas fa-paperclip"></i> {$dataFiles["basename"]}</p>
+                            <p style="color: white;mix-blend-mode: difference" class="mailbox-attachment-name"><i class="fas fa-paperclip"></i> {$basename}</p>
                             <span class="mailbox-attachment-size clearfix mt-1">
                                 <span>{$sizes}</span>
                                 <a href="{$href}" class="btn btn-default btn-sm float-right m-1" download><i class="fas fa-cloud-download-alt"></i></a>
@@ -60,6 +67,7 @@ class SeeHoursReport
 
             $showInfo = self::viewInfo([
                 "Cedula" => "CC",
+                "Correo" => "correoEmpleado",
                 "Mes reportado" => "mes",
                 "Cargo" => "cargo",
                 "Proyecto asociado" => "proyecto"
@@ -72,16 +80,18 @@ class SeeHoursReport
             return (empty(count($error))) ? <<<HTML
                 <div class="card card-primary card-outline">
                     <div class="card-body box-profile">
-                        <h3 class="profile-username text-center">{$ReportesHE[0]["correoEmpleado"]}</h3>
-                        <p class="text-muted text-center"><b>{$ReportesHE[0]["ceco"]}</b>: {$ReportesHE[0]["clase"]}</p>
+                        <h3 class="profile-username text-center">Reporte #{$ReportesHE[0]["id"]}</h3>
+                        <!-- <p class="text-muted text-center"><b>{$ReportesHE[0]["ceco"]}</b>: {$ReportesHE[0]["clase"]}</p> -->
+                        <p class="text-muted text-center"><b>Centro de Costo</b>: {$ReportesHE[0]["ceco"]}</p>
+                        <p class="text-muted text-center"><b>Clase</b>: {$ReportesHE[0]["clase"]}</p>
                         <div class="row">
                             {$showInfo}
                         </div>
                         <hr>
+                        {$horas}
                         <ul class="mailbox-attachments d-flex align-items-stretch clearfix table-responsive">
                             {$files}
                         </ul>
-                        {$horas}
                     </div>
                     <div class="card-footer">
                         <p><b>Reportado por: </b>{$ReportesHE[0]["reportador_por"]} - <b>Fecha de registro: </b>{$fechaR}</p> 
@@ -100,28 +110,64 @@ class SeeHoursReport
 
     static function getHours(array $dataHE, array $dataRHE): String
     {
-        $tbody = "";
+        $tbodyHE = "";
+        $i = 0;
+        foreach ($dataHE as $data) {
+            $i++;
+            $tbodyHE .= <<<HTML
+                <tr>
+                    <td>{$i}</td>
+                    <td>{$data["descuento"]}</td>
+                    <td>{$data["Ext_Diu_Ord"]}</td>
+                    <td>{$data["Ext_Noc_Ord"]}</td>
+                    <td>{$data["Ext_Diu_Fes"]}</td>
+                    <td>{$data["Ext_Noc_Fes"]}</td>
+                    <td>{$data["Rec_Noc"]}</td>
+                    <td>{$data["Rec_Fes_Diu"]}</td>
+                    <td>{$data["Rec_Fes_Noc"]}</td>
+                    <td>{$data["Rec_Ord_Fes_Noc"]}</td>
+                </tr>
+            HTML;
+        }
+
+
+        $tbodyRHE = "";
         foreach ($dataRHE as $data) {
-            $Total_Ext_Noc_Ord = $data["Total_Ext_Noc_Ord"] ?? "no hay nara";
-            $Total_Ext_Noc = $data["Total_Ext_Noc"] ?? "no hay nara";
-            $tbody .= <<<HTML
+            $tbodyRHE .= <<<HTML
                 <tr data-widget="expandable-table" aria-expanded="false">
                     <td>{$data["Total_descuento"]}</td>
                     <td>{$data["Total_Ext_Diu_Ord"]}</td>
-                    <td>{$Total_Ext_Noc_Ord}</td>
+                    <td>{$data["Total_Ext_Noc_Ord"]}</td>
                     <td>{$data["Total_Ext_Diu_Fes"]}</td>
                     <td>{$data["Total_Ext_Noc_Fes"]}</td>
-                    <td>{$Total_Ext_Noc}</td>
-                    <td>{$Total_Ext_Noc}</td>
-                    <td>{$Total_Ext_Noc}</td>
-                    <td>{$Total_Ext_Noc}</td>
-                    <td>{$Total_Ext_Noc}</td>
+                    <td>{$data["Total_Rec_Noc"]}</td>
+                    <td>{$data["Total_Rec_Fes_Diu"]}</td>
+                    <td>{$data["Total_Rec_Fes_Noc"]}</td>
+                    <td>{$data["Total_Rec_Ord_Fes_Noc"]}</td>
                 </tr>
-                <tr class="expandable-body">
-                    <td colspan="10">
-                        <p>
-                            locale_filter_matches
-                        </p>
+                <tr class="expandable-body d-none">
+                    <td colspan="9">
+                        <div>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>N°</th>
+                                        <th>Descuento</th>
+                                        <th>Extras Diurnas Ordinaria</th>
+                                        <th>Extras Nocturnas Ordinaria</th>
+                                        <th>Extras Diurnas Festivo</th>
+                                        <th>Extras Nocturnas Festivo</th>
+                                        <th>Recargo Nocturno </th>
+                                        <th>Recargo Festivo Diurno </th>
+                                        <th>Recargo Festivo Nocturno </th>
+                                        <th>Recargo Ordinarias Festivos Nocturno</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {$tbodyHE}
+                                </tbody>
+                            </table>
+                        </div>
                     </td>
                 </tr>
             HTML;
@@ -132,19 +178,18 @@ class SeeHoursReport
                     <thead>
                         <tr>
                             <th>Descuentos</th>
-                            <th>Extras diurnas ordinarias</th>
-                            <th>Extras nocturnas ordinarias</th>
-                            <th>Extras diurnas festivo</th>
-                            <th>Extras nocturnas festivo</th>
-                            <th>Extras nocturnas</th>
-                            <th>Recargo </th>
-                            <th>Recargo </th>
-                            <th>Recargo </th>
-                            <th>Recargo </th>
+                            <th>Extras Diurnas Ordinarias</th>
+                            <th>Extras Nocturnas Ordinarias</th>
+                            <th>Extras Diurnas Festivo</th>
+                            <th>Extras Nocturnas Festivo</th>
+                            <th>Recargo Nocturno </th>
+                            <th>Recargo Festivo Diurno </th>
+                            <th>Recargo Festivo Nocturno </th>
+                            <th>Recargo Ordinarias Festivos Nocturno</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {$tbody}
+                        {$tbodyRHE}
                     </tbody>
                 </table>
             </div>
@@ -156,11 +201,15 @@ class SeeHoursReport
         if (empty($adjuntos)) return [];
 
         try {
-            return array_map(function ($x) {
-                return array_merge(pathinfo($x), [
-                    "size" => filesize(str_replace(SERVER_SIDE, FOLDER_SIDE, $x))
+            return array_filter(array_map(function ($x) {
+                $pathFile = str_replace(SERVER_SIDE, FOLDER_SIDE, $x);
+                if (file_exists($pathFile)) return array_merge(pathinfo($x), [
+                    "size" => filesize($pathFile)
                 ]);
-            }, explode("|/|", $adjuntos ?? ""));
+                else return false;
+            }, explode("|/|", $adjuntos ?? "")), function ($filter) {
+                return !empty($filter);
+            });
         } catch (Exception $th) {
             return [];
         }
@@ -264,8 +313,7 @@ class SeeHoursReport
         $factor = 1024;
 
         foreach ($medidas as $unidad) {
-            if ($bytes < $factor)
-                return round($bytes, 2) . ' ' . $unidad;
+            if ($bytes < $factor) return round($bytes, 2) . ' ' . $unidad;
             $bytes /= $factor;
         }
 
