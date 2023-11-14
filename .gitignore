@@ -16,4 +16,4 @@ formatos_referencia
 vendor
 composer.lock
 # config
-config
+config.php
