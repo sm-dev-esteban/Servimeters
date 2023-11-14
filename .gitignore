@@ -3,7 +3,7 @@ prueba.php
 # carpeta donde se cargan los archivos
 files
 # carpeta prueba de respaldo
-respaldo
+respaldo.php
 # .bat que valida le puerto y corre el socket
 bin/check.bat
 # carpeta de depencias de composer
