@@ -15,3 +15,5 @@ formatos_referencia
 # dependencias
 vendor
 composer.lock
+# config
+config
