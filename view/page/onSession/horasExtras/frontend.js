@@ -49,7 +49,6 @@ $(document).ready(async () => {
     $form.on("submit", async function (e) {
         e.preventDefault()
 
-
         const $this = $(this)
 
         let send = true
@@ -61,7 +60,7 @@ $(document).ready(async () => {
         const $tableDatail = $(`#tableDatail`)
 
 
-        const $cERequired = $cEditableRequired.filter(() => {
+        const $cERequired = $cEditableRequired.filter(function () {
             return $(this).text().trim() === ''
         })
 
@@ -71,7 +70,7 @@ $(document).ready(async () => {
             $cERequired.addClass("isInvalid")
 
             $('html, body').animate({
-                scrollTop: $cERequired.eq(0).offset().top
+                scrollTop: $tableDatail.eq(0).offset().top
             }, 1000, () => {
                 $cEditableRequired.removeClass("isInvalid")
             })
@@ -117,6 +116,24 @@ $(document).ready(async () => {
                 }
             })
         }
+    })
+
+    $(`table#tableDatail`).on(`input`, `[contenteditable][step]`, function () {
+        const $this = $(this);
+        const val = parseFloat($this.text())
+        const step = parseFloat($this.attr(`step`))
+
+        if (!isNaN(val) && !isNaN(val) && step > 0 && (val % step != 0)) {
+            const round = Math.round(val / step) * step
+            $this.text(round).trigger(`input`)
+        }
+    })
+
+    $(`table#tableDatail`).on(`input`, `[contenteditable][type="number"]`, function () {
+        const $this = $(this);
+        const val = $this.text()
+
+        if (/[^0-9.]/.test(val)) $this.text(val.replace(/[^0-9.]/g, '')).trigger(`input`)
     })
 
     const $table = $(`table[data-action]`)
@@ -186,26 +203,34 @@ $(document).ready(async () => {
         const $id_aprobador = $(`[name="data[id_aprobador]"]`)
         const $id_estado = $(`[name="data[id_estado]"]`)
 
+        var $Jefes = $(`select#Jefes`)
+        var $Gerentes = $(`select#Gerentes`)
+
+
         $id_aprobador.val({
             "GERENTES": () => {
                 $id_estado.val(getStatusHE("nombre", "APROBACION_GERENTE")[0]["id"] ?? 0)
 
-                const $Jefes = $(`select#Jefes`)
-                const $Gerentes = $(`select#Gerentes`)
                 $Jefes.attr(`disabled`, true)
+                $Jefes.removeAttr(`required`)
                 $Jefes.val(``)
-                $Gerentes.removeAttr(`disabled`).attr(`required`, true)
+
+                $Gerentes.removeAttr(`disabled`)
+                $Gerentes.attr(`required`, true)
+
                 $Gerentes.val(``)
                 return $Gerentes.val()
             },
             "JEFES": () => {
                 $id_estado.val(getStatusHE("nombre", "APROBACION_JEFE")[0]["id"] ?? 0)
 
-                const $Gerentes = $(`select#Gerentes`)
-                const $Jefes = $(`select#Jefes`)
                 $Gerentes.attr(`disabled`, true)
+                $Gerentes.removeAttr(`required`)
                 $Gerentes.val(``)
-                $Jefes.removeAttr(`disabled`).attr(`required`, true)
+
+                $Jefes.removeAttr(`disabled`)
+                $Jefes.attr(`required`, true)
+
                 $Jefes.val(``)
                 return $Jefes.val()
             },
@@ -214,6 +239,7 @@ $(document).ready(async () => {
 
                 const $A = $(`select#Gerentes, select#Jefes`)
                 $A.attr(`disabled`, true)
+                $A.removeAttr(`requires`)
                 $A.val(``)
                 return "0"
             }
@@ -230,18 +256,26 @@ $(document).ready(async () => {
     const $id_aprobador = $(`[name="data[id_aprobador]"]`)
     $id_aprobador.on(`change`, function () {
         const $this = $(this)
-        $(
-            $(`select#Gerentes, select#Jefes`)
-                .find(`[value="${$this.val()}"]`)
-                .get(0).parentNode
-        ).val($this.val()).removeAttr(`disabled`).attr(`required`, true)
+
+        // const $selectA = $(`[value="${$this.val()}"]`).parent()
+
+        $selectA = $($(`select#Gerentes, select#Jefes`)
+            .find(`[value="${$this.val()}"]`)
+            .get(0).parentNode
+        ).val($this.val());
+
+        console.log($selectA);
+
+
+        $selectA.removeAttr(`disabled`)
+        $selectA.attr(`required`, true)
     })
 
 
     $("#rechazar, #aprobar").on("click", async function () {
         const $this = $(this)
         const action = $this.data("action")
-        console.log(action)
+
         if (action == "aprobar_horas") aprueba(action)
         else if (action == "rechazar_horas") rechaza(action)
     })
@@ -397,7 +431,6 @@ const add = async () => {
         },
     ]
 }, addHours = async () => {
-    cEditableNumber()
     const horas = []
     const arraySum = codes().forEach((x, i) => {
         horas.push({
@@ -405,9 +438,11 @@ const add = async () => {
             suma: 0,
             codigo: x.code
         })
+
         $(`[name="HorasExtra[${x.find}][]"]`).each(function () {
             horas[i]["suma"] += Number($(this).text())
         })
+
         $(`[name="data[Total_${x.find}]"]`).text(horas[i]["suma"])
     })
     //----descuentos----//
@@ -424,7 +459,7 @@ const add = async () => {
     }).forEach((q) => { total_Ext += q.suma })
     $(`[name="data[Total_Extras]"]`).text(total_Ext)
 
-    //----Recauds----//
+    //----Recaudos----//
     total_Rec = 0
     horas.filter((x) => {
         return x.element.includes("Rec_")
@@ -440,13 +475,6 @@ const add = async () => {
 
     //----Total----//
     $(`[name="data[Total_Horas]"]`).text(Number(total_des + total_Ext + total_Rec))
-}, cEditableNumber = () => {
-    const $this = $(`[contenteditable][type="number"]`)
-    $this.each(function (i) {
-        const $this = $(this)
-        const $all = $this.find("*")
-        if (/[^0-9.]/.test($this.text())) $this.text($this.text().replace(/[^0-9.]/g, '')).append($all)
-    })
 }, getDates = () => {
     let MesR = $('#mes').val().split("-")
     if (MesR.length != 2)
@@ -509,7 +537,7 @@ const add = async () => {
         data: { id: e },
         success: async (response) => {
             response.forEach(async (x, i) => {
-                await add()
+                if (i !== 0) await add()
                 for (data in x) {
                     $find = $(`[name="HorasExtra[${data}][]"]:eq(${i})`)
                     if ($find.length) $find.val(x[data]).html(x[data]).trigger("input").trigger("change")
@@ -556,24 +584,22 @@ const add = async () => {
     const aprobadores = {}
 
     /*----APROBADORES----*/
-    if (response.filter((q) => {
+    if (response.filter((q) => { // JEFE
         return q.estado == "APROBACION_JEFE" || q.estado == "RECHAZO_GERENTE"
     }).length) aprobadores[":GERENTE"] = await approvedRequest("GERENTE")
     // --------------------------------------------------------------------
-    if (response.filter((q) => {
+    if (response.filter((q) => { // GERENTE
         return q.estado == "APROBACION_GERENTE" || q.estado == "RECHAZO_RH" || q.estado == "RECHAZO_CONTABLE"
     }).length) aprobadores[":RH"] = await approvedRequest("RH")
     // --------------------------------------------------------------------
-    if (response.filter((q) => {
+    if (response.filter((q) => { // RH
         return q.estado == "APROBACION_RH"
     }).length) aprobadores[":CONTABLE"] = await approvedRequest("CONTABLE")
     // --------------------------------------------------------------------
-    if (response.filter((q) => {
+    if (response.filter((q) => { // CONTABLE
         return q.estado == "APROBACION_CONTABLE"
     }).length) aprobadores[":APROBADO"] = "?"
     /*----APROBADORES----*/
-
-    console.log(aprobadores.length)
 
     $.ajax(`${GETCONFIG("SERVER_SIDE")}/View/page/onSession/horasExtras/backend.php?action=${action}`, {
         dataType: "JSON",

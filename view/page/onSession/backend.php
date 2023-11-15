@@ -43,6 +43,13 @@ switch (strtoupper($_REQUEST["action"] ?? false)) {
         ];
         try {
             $LDAP = new LDAP();
+
+            $dn = "SERVIMETERSSA";
+
+            $LDAP->uri = "servimeterssa.com";
+            $LDAP->dn = "{$dn}\\";
+            $LDAP->base = "DC={$dn},DC=COM";
+
             $response = $LDAP->connect(...$data);
             unset($response["count"]); // >:(
             echo json_encode($response, JSON_UNESCAPED_UNICODE);

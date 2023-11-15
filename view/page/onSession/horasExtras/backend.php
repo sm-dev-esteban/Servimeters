@@ -228,8 +228,7 @@ switch ($_REQUEST["action"] ?? false) {
                 WHEN id_aprobador_checked = 0 THEN {$_SESSION["id"]}
                 WHEN id_aprobador_checked = {$_SESSION["id"]} THEN 0
                 ELSE {$_SESSION["id"]}
-            END
-            WHERE id = :ID;
+            END WHERE id = :ID;
             -- chatgpt
         SQL, [
             ":ID" => base64_decode($_POST["report"])
@@ -237,34 +236,13 @@ switch ($_REQUEST["action"] ?? false) {
         break;
     case 'seleccionar_horas':
     case 'deseleccionar_horas':
-        $estados = $db->executeQuery(<<<SQL
-            select * from HorasExtras_Estados
-        SQL);
-
-        $whereType = [
-            "JEFE" => filter($estados, "nombre", "APROBACION_JEFE"),
-            "GERENTE" => filter($estados, "nombre", "APROBACION_GERENTE")
-        ][$_SESSION["type"]] ?? false;
-
-        $whereManages = [
-            "RH" => filter($estados, "nombre", "APROBACION_RH"),
-            "CONTABLE" => filter($estados, "nombre", "APROBACION_CONTABLE")
-        ][$_SESSION["manages"]] ?? false;
-
-        $where = implode(" or ", array_map(function ($x) {
-            return "id_estado = '{$x}'";
-        }, [
-            $whereType[0]["id"],
-            $whereManages[0]["id"]
-        ]));
-
         $update = [
             "seleccionar_horas" => "id_aprobador_checked = {$_SESSION["id"]}",
             "deseleccionar_horas" => "id_aprobador_checked = 0",
         ][$_GET["action"]];
 
         $query = <<<SQL
-            UPDATE ReportesHE SET {$update} where id_aprobador = {$_SESSION["id"]} and ({$where})
+            UPDATE ReportesHE SET {$update} where id_aprobador = '{$_SESSION["id"]}' and (id_estado != 1 and id_estado != 2 and id_estado != 10)
         SQL;
 
         echo json_encode([
@@ -414,6 +392,10 @@ switch ($_REQUEST["action"] ?? false) {
     case 'Excel2':
         $fechaI = $_POST["fechaInicio"] ?? "";
         $fechaF = $_POST["fechaFin"] ?? "";
+
+        $fechaI = date("Y-m-01", strtotime($fechaI));
+        $fechaF = date("Y-m-t", strtotime($fechaF));
+
         $query = <<<SQL
             SELECT
             RHE.*,

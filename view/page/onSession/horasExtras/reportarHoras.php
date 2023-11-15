@@ -123,15 +123,15 @@ $id = $_REQUEST["report"] ?? false;
                                         <tr>
                                             <td><input type="date" name="HorasExtra[fecha][]" class="form-control" required></td>
                                             <td contenteditable name="HorasExtra[novedad][]" required></td>
-                                            <td contenteditable name="HorasExtra[descuento][]" type="number" oninput="addHours()">0</td>
-                                            <td contenteditable name="HorasExtra[Ext_Diu_Ord][]" type="number" oninput="addHours()">0</td>
-                                            <td contenteditable name="HorasExtra[Ext_Noc_Ord][]" type="number" oninput="addHours()">0</td>
-                                            <td contenteditable name="HorasExtra[Ext_Diu_Fes][]" type="number" oninput="addHours()">0</td>
-                                            <td contenteditable name="HorasExtra[Ext_Noc_Fes][]" type="number" oninput="addHours()">0</td>
-                                            <td contenteditable name="HorasExtra[Rec_Noc][]" type="number" oninput="addHours()">0</td>
-                                            <td contenteditable name="HorasExtra[Rec_Fes_Diu][]" type="number" oninput="addHours()">0</td>
-                                            <td contenteditable name="HorasExtra[Rec_Fes_Noc][]" type="number" oninput="addHours()">0</td>
-                                            <td contenteditable name="HorasExtra[Rec_Ord_Fes_Noc][]" type="number" oninput="addHours()">0</td>
+                                            <td contenteditable name="HorasExtra[descuento][]" step="0.5" type="number" oninput="addHours()">0</td>
+                                            <td contenteditable name="HorasExtra[Ext_Diu_Ord][]" step="0.5" type="number" oninput="addHours()">0</td>
+                                            <td contenteditable name="HorasExtra[Ext_Noc_Ord][]" step="0.5" type="number" oninput="addHours()">0</td>
+                                            <td contenteditable name="HorasExtra[Ext_Diu_Fes][]" step="0.5" type="number" oninput="addHours()">0</td>
+                                            <td contenteditable name="HorasExtra[Ext_Noc_Fes][]" step="0.5" type="number" oninput="addHours()">0</td>
+                                            <td contenteditable name="HorasExtra[Rec_Noc][]" step="0.5" type="number" oninput="addHours()">0</td>
+                                            <td contenteditable name="HorasExtra[Rec_Fes_Diu][]" step="0.5" type="number" oninput="addHours()">0</td>
+                                            <td contenteditable name="HorasExtra[Rec_Fes_Noc][]" step="0.5" type="number" oninput="addHours()">0</td>
+                                            <td contenteditable name="HorasExtra[Rec_Ord_Fes_Noc][]" step="0.5" type="number" oninput="addHours()">0</td>
                                             <td>
                                                 <input type="hidden" name="HorasExtra[id][]" value="0">
                                                 <button type="button" class="btn btn-danger" disabled onclick="remove(this)"><i class="fa fa-times"></i></button>

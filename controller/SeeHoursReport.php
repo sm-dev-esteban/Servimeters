@@ -117,6 +117,8 @@ class SeeHoursReport
             $tbodyHE .= <<<HTML
                 <tr>
                     <td>{$i}</td>
+                    <td>{$data["fecha"]}</td>
+                    <td>{$data["novedad"]}</td>
                     <td>{$data["descuento"]}</td>
                     <td>{$data["Ext_Diu_Ord"]}</td>
                     <td>{$data["Ext_Noc_Ord"]}</td>
@@ -147,11 +149,13 @@ class SeeHoursReport
                 </tr>
                 <tr class="expandable-body d-none">
                     <td colspan="9">
-                        <div>
+                        <div style="display: none;">
                             <table class="table">
                                 <thead>
                                     <tr>
                                         <th>N°</th>
+                                        <th>Fecha</th>
+                                        <th>Actividad</th>
                                         <th>Descuento</th>
                                         <th>Extras Diurnas Ordinaria</th>
                                         <th>Extras Nocturnas Ordinaria</th>
