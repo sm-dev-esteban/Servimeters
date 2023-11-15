@@ -47,7 +47,6 @@ $routeM = new RouteModel;
                                     <tr>
                                         <th>#</th>
                                         <th>Documento</th>
-                                        <th>Año</th>
                                         <th>Mes</th>
                                         <th>Colaborador</th>
                                         <th>Estado</th>

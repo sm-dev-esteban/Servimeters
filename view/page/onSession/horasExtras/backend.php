@@ -186,10 +186,6 @@ switch ($_REQUEST["action"] ?? false) {
                 "db" => "RHE.CC"
             ], [
                 "db" => "RHE.mes", "formatter" => function ($d, $row) {
-                    return date("Y", strtotime($d));
-                }
-            ], [
-                "db" => "RHE.mes", "formatter" => function ($d, $row) {
                     return date("M", strtotime($d));
                 }
             ], [
