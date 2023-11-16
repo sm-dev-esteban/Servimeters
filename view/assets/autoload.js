@@ -1,10 +1,12 @@
 
 const LOADSCRIPT = () => {
     $scripts = $(`LOAD-SCRIPT`);
-    JSON.parse($scripts.text()).forEach(e => {
-        $.getScript(e)
-    });
-    $scripts.remove();
+    if ($scripts.length) {
+        JSON.parse($scripts.text()).forEach(e => {
+            $.getScript(e)
+        });
+        $scripts.remove();
+    }
 }, LOADCSS = () => {
     // $css = $(`LOAD-CSS`);
     // JSON.parse($css.text()).forEach(e => {
