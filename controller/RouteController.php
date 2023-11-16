@@ -77,10 +77,12 @@ class RouteController
             else {
                 $SERVER_SIDE = SERVER_SIDE;
                 echo <<<HTML
-                <h1 class="display-1 fw-bold">404</h1>
-                <p class="fs-3"> <span class="text-warnig">Opps!</span> Page not found.</p>
-                <p class="lead">{$route}</p>
-                <a href="{$SERVER_SIDE}" class="btn btn-primary">Regresar al Inicio</a>
+                <div class="text-center">
+                    <h1 class="display-1 fw-bold">404</h1>
+                    <p class="fs-3"> <span class="text-warning">Opps!</span> Page not found.</p>
+                    <p class="lead">{$route}</p>
+                    <a href="{$SERVER_SIDE}" class="btn btn-primary">Regresar al Inicio</a>
+                </div>
                 HTML;
             }
         } catch (Exception $th) { // no se como puede llegar hasta aqui,pero mejor prevenir
@@ -89,10 +91,12 @@ class RouteController
             else {
                 $SERVER_SIDE = SERVER_SIDE;
                 echo <<<HTML
-                <h1 class="display-1 fw-bold">404</h1>
-                <p class="fs-3"> <span class="text-danger">Error</p>
-                <p class="lead">{$route}</p>
-                <a href="{$SERVER_SIDE}" class="btn btn-primary">Regresar al Inicio</a>
+                <div class="text-center">
+                    <h1 class="display-1 fw-bold">404</h1>
+                    <p class="fs-3"> <span class="text-danger">Error</p>
+                    <p class="lead">{$route}</p>
+                    <a href="{$SERVER_SIDE}" class="btn btn-primary">Regresar al Inicio</a>
+                </div>
                 HTML;
             }
         }
