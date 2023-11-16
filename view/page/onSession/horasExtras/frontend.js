@@ -146,6 +146,7 @@ $(document).ready(async () => {
 
     const $tableGestion = $(`table#ssp_gestion`)
     $tableGestion.DataTable($.extend(GETCONFIG("DATATABLE"), {
+        "responsive": true,
         "processing": true,
         "serverSide": true,
         "order": [[0, `desc`]],
@@ -161,7 +162,7 @@ $(document).ready(async () => {
         })
     }).buttons().container().appendTo($('.col-sm-6:eq(0)'))
 
-    $tableGestion.find("tbody").on("click", "tr", function () {
+    $tableGestion.find("tbody").on("click", "tr.odd", function () {
         const $this = $(this)
         const id = $this.find(`[data-id]`).data("id")
         $.ajax(`${GETCONFIG("SERVER_SIDE")}/View/page/onSession/horasExtras/backend.php?action=gestion_checked`, {
@@ -171,7 +172,8 @@ $(document).ready(async () => {
                 report: id
             },
             success: (response) => {
-                if (response.status && response.status === true) updateDatatable()
+                if (response.status && response.status === true) $this.toggleClass("bg-primary")
+                // updateDatatable()
             }
         })
     })

@@ -52,6 +52,16 @@ $routeM = new RouteModel;
                                         <th>Estado</th>
                                         <th>Clase</th>
                                         <th>Ceco</th>
+                                        <th>Descuento</th>
+                                        <th>Extras Diurn Ordinaria</th>
+                                        <th>Total Extras Noct Ord</th>
+                                        <th>Total Extras Diurn Festivo</th>
+                                        <th>Total Extras Noct Festivo</th>
+                                        <th>Total Extras Noct</th>
+                                        <th>Total Rececargo Fes Diurn</th>
+                                        <th>Total Rececargo Festivo Noct</th>
+                                        <th>Total Rececargo Ord Festivo Noct</th>
+                                        <th>Total Rececargo Noct</th>
                                         <th>Ver Detalle</th>
                                     </tr>
                                 </thead>

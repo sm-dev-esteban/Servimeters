@@ -74,13 +74,27 @@ class RouteController
                 echo '<LOAD-SCRIPT style="display: none !important">', json_encode(self::folder_to_server(glob($folder . "/*.js")), JSON_UNESCAPED_UNICODE), "</LOAD-SCRIPT>";
             } else if ($this->array_folder_error["E404"] && file_exists($this->array_folder_error["E404"]))
                 include $this->array_folder_error["E404"];
-            else
-                echo $route, "<br>", "<h1>", 404, "</h1>";
+            else {
+                $SERVER_SIDE = SERVER_SIDE;
+                echo <<<HTML
+                <h1 class="display-1 fw-bold">404</h1>
+                <p class="fs-3"> <span class="text-warnig">Opps!</span> Page not found.</p>
+                <p class="lead">{$route}</p>
+                <a href="{$SERVER_SIDE}" class="btn btn-primary">Regresar al Inicio</a>
+                HTML;
+            }
         } catch (Exception $th) { // no se como puede llegar hasta aqui,pero mejor prevenir
             if ($this->array_folder_error["E500"] && file_exists($this->array_folder_error["E500"]))
                 include $this->array_folder_error["E500"];
-            else
-                echo $route, "<br>", "<h1>", 500, "</h1>";
+            else {
+                $SERVER_SIDE = SERVER_SIDE;
+                echo <<<HTML
+                <h1 class="display-1 fw-bold">404</h1>
+                <p class="fs-3"> <span class="text-danger">Error</p>
+                <p class="lead">{$route}</p>
+                <a href="{$SERVER_SIDE}" class="btn btn-primary">Regresar al Inicio</a>
+                HTML;
+            }
         }
     }
 

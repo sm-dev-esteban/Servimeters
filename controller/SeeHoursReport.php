@@ -108,15 +108,15 @@ class SeeHoursReport
         }
     }
 
-    static function getHours(array $dataHE, array $dataRHE): String
+    protected static function getHours(array $dataHE, array $dataRHE): String
     {
-        $tbodyHE = "";
-        $i = 0;
-        foreach ($dataHE as $data) {
-            $i++;
-            $tbodyHE .= <<<HTML
+        $border_bottom = "style=\"border-bottom: solid;\"";
+
+        $tbody = function () use ($dataHE) {
+            $content = [];
+            foreach ($dataHE as $data)
+                $content[] = <<<HTML
                 <tr>
-                    <td>{$i}</td>
                     <td>{$data["fecha"]}</td>
                     <td>{$data["novedad"]}</td>
                     <td>{$data["descuento"]}</td>
@@ -129,14 +129,16 @@ class SeeHoursReport
                     <td>{$data["Rec_Fes_Noc"]}</td>
                     <td>{$data["Rec_Ord_Fes_Noc"]}</td>
                 </tr>
-            HTML;
-        }
+                HTML;
+            return implode("\n", $content);
+        };
 
-
-        $tbodyRHE = "";
-        foreach ($dataRHE as $data) {
-            $tbodyRHE .= <<<HTML
-                <tr data-widget="expandable-table" aria-expanded="false">
+        $tfoot = function () use ($dataRHE, $border_bottom) {
+            $content = [];
+            foreach ($dataRHE as $data)
+                $content[] = <<<HTML
+                <tr {$border_bottom}>
+                    <td colspan=2></td>
                     <td>{$data["Total_descuento"]}</td>
                     <td>{$data["Total_Ext_Diu_Ord"]}</td>
                     <td>{$data["Total_Ext_Noc_Ord"]}</td>
@@ -144,59 +146,51 @@ class SeeHoursReport
                     <td>{$data["Total_Ext_Noc_Fes"]}</td>
                     <td>{$data["Total_Rec_Noc"]}</td>
                     <td>{$data["Total_Rec_Fes_Diu"]}</td>
-                    <td>{$data["Total_Rec_Fes_Noc"]}</td>
                     <td>{$data["Total_Rec_Ord_Fes_Noc"]}</td>
+                    <td>{$data["Total_Rec_Fes_Noc"]}</td>
                 </tr>
-                <tr class="expandable-body d-none">
-                    <td colspan="9">
-                        <div style="display: none;">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>N°</th>
-                                        <th>Fecha</th>
-                                        <th>Actividad</th>
-                                        <th>Descuento</th>
-                                        <th>Extras Diurnas Ordinaria</th>
-                                        <th>Extras Nocturnas Ordinaria</th>
-                                        <th>Extras Diurnas Festivo</th>
-                                        <th>Extras Nocturnas Festivo</th>
-                                        <th>Recargo Nocturno </th>
-                                        <th>Recargo Festivo Diurno </th>
-                                        <th>Recargo Festivo Nocturno </th>
-                                        <th>Recargo Ordinarias Festivos Nocturno</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {$tbodyHE}
-                                </tbody>
-                            </table>
-                        </div>
-                    </td>
+                <tr>
+                    <td colspan=10 align=right><b>Descuentos:</b></td>
+                    <td>{$data["Total_Descuentos"]}</td>
                 </tr>
-            HTML;
-        }
+                <tr>
+                    <td colspan=10 align=right><b>Horas Extras:</b></td>
+                    <td>{$data["Total_Extras"]}</td>
+                </tr>
+                <tr>
+                    <td colspan=10 align=right><b>Recargos:</b></td>
+                    <td>{$data["Total_Recargos"]}</td>
+                </tr>
+                <tr>
+                    <td colspan=10 align=right><b>Total:</b></td>
+                    <td>{$data["Total_Horas"]}</td>
+                </tr>
+                HTML;
+            return implode("\n", $content);
+        };
+
         return <<<HTML
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th>Descuentos</th>
-                            <th>Extras Diurnas Ordinarias</th>
-                            <th>Extras Nocturnas Ordinarias</th>
-                            <th>Extras Diurnas Festivo</th>
-                            <th>Extras Nocturnas Festivo</th>
-                            <th>Recargo Nocturno </th>
-                            <th>Recargo Festivo Diurno </th>
-                            <th>Recargo Festivo Nocturno </th>
-                            <th>Recargo Ordinarias Festivos Nocturno</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {$tbodyRHE}
-                    </tbody>
-                </table>
-            </div>
+        <div class=table-responsive>
+            <table class=table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Actividad</th>
+                        <th>Permisos Descuentos</th>
+                        <th>Extras Diurn Ordinaria</th>
+                        <th>Extras Noct Ordinaria</th>
+                        <th>Extras Diurn Fest Domin</th>
+                        <th>Extras Noct Fest Domin</th>
+                        <th>Recargo Nocturno</th>
+                        <th>Recargo Festivo Diurno</th>
+                        <th>Recargo Festivo Noctur</th>
+                        <th>Recargo Ord Fest Noct</th>
+                    </tr>
+                </thead>
+                <tbody {$border_bottom}>{$tbody()}</tbody>
+                <tfoot>{$tfoot()}</tfoot>
+            </table>
+        </div>
         HTML;
     }
 

@@ -108,27 +108,35 @@ switch ($_REQUEST["action"] ?? false) {
         $columns = [
             [
                 "db" => "RHE.id",
-            ], [
+            ],
+            [
                 "db" => "RHE.CC",
-            ], [
+            ],
+            [
                 "db" => "CECO.titulo", "as" => "centroCosto"
-            ], [
+            ],
+            [
                 "db" => "C.titulo", "as" => "clase"
-            ], [
+            ],
+            [
                 "db" => "RHE.mes", "formatter" => function ($d) {
                     return date("Y", strtotime($d));
                 }
-            ], [
+            ],
+            [
                 "db" => "RHE.mes", "formatter" => function ($d) {
                     return date("M", strtotime($d));
                 }
-            ], [
+            ],
+            [
                 "db" => "A.nombre", "as" => "aprobador", "failed" => <<<HTML
                 <b class="text-danger">No Registra</b>
                 HTML
-            ], [
+            ],
+            [
                 "db" => "E.nombre", "as" => "Estado"
-            ], [
+            ],
+            [
                 "db" => "RHE.id", "formatter" => function ($d, $row) {
                     $SERVER_SIDE = SERVER_SIDE;
                     $idE = base64_encode($d);
@@ -182,15 +190,19 @@ switch ($_REQUEST["action"] ?? false) {
         $columns = [
             [
                 "db" => "RHE.id"
-            ], [
+            ],
+            [
                 "db" => "RHE.CC"
-            ], [
+            ],
+            [
                 "db" => "RHE.mes", "formatter" => function ($d, $row) {
                     return date("M", strtotime($d));
                 }
-            ], [
+            ],
+            [
                 "db" => "RHE.reportador_por"
-            ], [
+            ],
+            [
                 "db" => "E.nombre", "as" => "estado", "formatter" => function ($d, $row) {
                     $checked = $row["id_aprobador_checked"];
                     $checked = ($checked == $_SESSION["id"] ? "true" : "false");
@@ -198,11 +210,44 @@ switch ($_REQUEST["action"] ?? false) {
                         <span data-check={$checked}>{$d}</span>
                     HTML;
                 }
-            ], [
+            ],
+            [
                 "db" => "C.titulo", "as" => "clase"
-            ], [
+            ],
+            [
                 "db" => "CECO.titulo", "as" => "centroCosto"
-            ], [
+            ],
+            [
+                "db" => "RHE.Total_descuento", "failed" => 0
+            ],
+            [
+                "db" => "RHE.Total_Ext_Diu_Ord", "failed" => 0
+            ],
+            [
+                "db" => "RHE.Total_Ext_Noc_Ord", "failed" => 0
+            ],
+            [
+                "db" => "RHE.Total_Ext_Diu_Fes", "failed" => 0
+            ],
+            [
+                "db" => "RHE.Total_Ext_Noc_Fes", "failed" => 0
+            ],
+            [
+                "db" => "RHE.Total_Ext_Noc", "failed" => 0
+            ],
+            [
+                "db" => "RHE.Total_Rec_Fes_Diu", "failed" => 0
+            ],
+            [
+                "db" => "RHE.Total_Rec_Fes_Noc", "failed" => 0
+            ],
+            [
+                "db" => "RHE.Total_Rec_Ord_Fes_Noc", "failed" => 0
+            ],
+            [
+                "db" => "RHE.Total_Rec_Noc", "failed" => 0
+            ],
+            [
                 "db" => "RHE.id", "formatter" => function ($d, $row) {
                     $idE = base64_encode($d);
                     return <<<HTML
