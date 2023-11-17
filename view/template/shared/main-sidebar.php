@@ -161,29 +161,25 @@ $accesoPremium = in_array(strtoupper($user), $acceso)
                                     </li>
                                 </ul>
                             </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>
-                                        Aprobación jefe
-                                        <i class="right fas fa-angle-left"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview" style="display: none">
-                                    <li class="nav-item">
-                                        <a href="<?= SERVER_SIDE ?>/solicitudPersonal/solicitud/aprobacion" class="nav-link">
-                                            <i class="far fa-dot-circle nav icon"></i>
-                                            <p>Solicitudes</p>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="nav-item">
-                                <a href="<?= SERVER_SIDE ?>" class="nav-link">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>Gestion Recursos Humanos</p>
-                                </a>
-                            </li>
+                            <?php if ($_SESSION["staffRequest"] === "SI") : ?>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>
+                                            Aprobación jefe
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview" style="display: none">
+                                        <li class="nav-item">
+                                            <a href="<?= SERVER_SIDE ?>/solicitudPersonal/solicitud/aprobacion" class="nav-link">
+                                                <i class="far fa-dot-circle nav icon"></i>
+                                                <p>Solicitudes</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            <?php endif ?>
                         </ul>
                     </li>
                 <?php endif ?>
