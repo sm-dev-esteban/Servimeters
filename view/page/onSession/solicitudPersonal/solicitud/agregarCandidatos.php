@@ -6,7 +6,8 @@ $routeM = new RouteModel;
 
 $user = $_SESSION;
 
-$report = base64_decode($_GET["report"] ?? false);
+$report = $_GET["report"] ?? false;
+if ($report) $report = base64_decode($report);
 
 $overlay = <<<HTML
 <div class="overlay">
@@ -19,7 +20,7 @@ HTML;
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Seleccionar Candidatos</h1>
+                <h1>Agregar Candidatos</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -32,26 +33,28 @@ HTML;
 <section class="content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-12 mb-3">
-                <div class="card" id="card-search">
-                    <div class="card-header border-0">
-                        <h3 class="card-title">
-                            <i class="far fa-list-alt"></i>
-                            N° Requisición
-                        </h3>
-                    </div>
-                    <div class="card-body pt-0">
-                        <form>
-                            <div class="mb-3">
-                                <input type="text" name="requisicion" id="requisicion" class="form-control" value="<?= $report ?>">
-                            </div>
-                            <div class="mb-3">
-                                <button type="submit" class="btn btn-success">Buscar</button>
-                            </div>
-                        </form>
+            <?php if ($report === false) : ?>
+                <div class="col-12 mb-3">
+                    <div class="card" id="card-search">
+                        <div class="card-header border-0">
+                            <h3 class="card-title">
+                                <i class="far fa-list-alt"></i>
+                                N° Requisición
+                            </h3>
+                        </div>
+                        <div class="card-body pt-0">
+                            <form data-mode="agregarCandidatos">
+                                <div class="mb-3">
+                                    <input type="number" name="requisicion" id="requisicion" class="form-control" value="<?= $report ?>">
+                                </div>
+                                <div class="mb-3">
+                                    <button type="submit" class="btn btn-success">Buscar</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
+            <?php endif ?>
             <div class="col-12 mb-3">
                 <div class="card" id="card-candidates">
                     <?= $overlay ?>

@@ -32,7 +32,8 @@ $(document).ready(async () => {
         dataForLDAP: false
     })
 
-    $(`#formAdjuntos`).createDropzone({
+    const $formAdjuntos = $(`#formAdjuntos`)
+    if ($formAdjuntos.length) $formAdjuntos.createDropzone({
         table: "requisicion_hojas_de_vida"
     })
 
@@ -152,40 +153,7 @@ $(document).ready(async () => {
             data: {
                 requisicion: $requisicion.val()
             },
-            success: (response) => {
-                if (response[0] ?? false) {
-                    data = response[0]
-                    const formatDate = new Date(data.fechaRegistro)
-                    const date = new Intl.DateTimeFormat('es-CO', {
-                        month: '2-digit',
-                        day: '2-digit',
-                        year: 'numeric',
-                        hour: 'numeric',
-                        minute: 'numeric'
-                    }).format(formatDate)
-
-                    $table.find(`tbody`).append(`
-                        <tr data-id=${data.id}>
-                            <td><input type="text" class="form-control" value="${date}" readonly></td>
-                            <td><input name="data[nombreCompleto]" data-id=${data.id} type="text" class="form-control" placeholder="Nombre Completo" value="${data.nombreCompleto}"></td>
-                            <td>
-                                <!-- <button class="rounded btn-danger m-1" onclick="eliminarCandidato(${data.id})" data-remove=${data.id}><i class="fa fa-trash"></i></button> -->
-                                <div class="form-group m-1">
-                                    <div class="custom-control custom-checkbox">
-                                        <input name="data[candidatoCitado]" data-id=${data.id} class="custom-control-input" type="checkbox" id="customCheckbox${data.id}" ${data.candidatoCitado == "true" ? "checked" : ""}>
-                                        <label for="customCheckbox${data.id}" class="custom-control-label">¿El candidato fue citado?</label>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-id=${data.id}>
-                            <td colspan="3">
-                                <textarea name="data[observacionCandidato]" data-id=${data.id} class="form-control" placeholder="Nota u observaciones sobre el candidato">${data.observacionCandidato ?? ""}</textarea>
-                            </td>
-                        </tr>
-                    `)
-                }
-            }
+            success: (response) => $table.find(`tbody`).append(templateCandidato(response[0], 1))
         })
     })
 
@@ -214,13 +182,10 @@ $(document).ready(async () => {
                 beforeSend: () => {
                     $loadSpinner.show(`slow`)
                 },
-                success: (response) => {
-                    console.log(response);
-                },
                 complete: () => {
                     setTimeout(() => {
                         $loadSpinner.hide(`slow`)
-                    }, 1000);
+                    }, 1000)
                 }
             })
 
@@ -239,98 +204,45 @@ $(document).ready(async () => {
         })
     })
 
-    const $formSearch = $(`#card-search form`);
+    const $formSearchAdd = $(`#card-search form[data-mode="agregarCandidatos"]`)
 
-    $formSearch.on(`submit`, async function (e) {
+    if ($formSearchAdd.length) $formSearchAdd.on(`submit`, async function (e) {
         e.preventDefault()
         const formData = new FormData(this)
-        const $card_search = $(`#card-search`)
-        const $card_candidates = $(`#card-candidates`)
-        const $card_report = $(`#card-report`)
-        const $overlay = $(`<div class="overlay"><i class="fas fa-2x fa-sync fa-spin"></i></div>`)
-        const $table = $(`#table-agregar-candidato`)
-
-        const id = formData.get(`requisicion`)
-
-        request = await fetch(`${GETCONFIG("SERVER_SIDE")}/View/page/onSession/solicitudPersonal/solicitud/backend.php?action=validarRequisicion&requisicion=${id}`)
-        response = await request.json()
-
-        if (response.status === true) {
-            $(`.overlay`).remove()
-            // candidatos
-            $.ajax(`${GETCONFIG("SERVER_SIDE")}/View/page/onSession/solicitudPersonal/solicitud/backend.php?action=buscarCandidatos`, {
-                type: "POST",
-                dataType: "JSON",
-                data: formData,
-                cache: false,
-                processData: false,
-                contentType: false,
-                success: (response) => {
-                    const manages = localStorage.getItem("manages")
-
-                    const $tbody = $table.find(`tbody`)
-                    $tbody.html(``)
-                    response.forEach((data) => {
-                        const formatDate = new Date(data.fechaRegistro)
-                        const date = new Intl.DateTimeFormat('es-CO', {
-                            month: '2-digit',
-                            day: '2-digit',
-                            year: 'numeric',
-                            hour: 'numeric',
-                            minute: 'numeric'
-                        }).format(formatDate).toLocaleUpperCase()
-                        $tbody.append(`
-                            <tr data-id=${data.id}>
-                                <td><input type="text" class="form-control" value="${date}" readonly></td>
-                                <td><input ${manages !== "RH" ? "disabled" : ""} name="data[nombreCompleto]" data-id=${data.id} type="text" class="form-control" placeholder="Nombre Completo" value="${data.nombreCompleto}"></td>
-                                <td>
-                                    <!-- <button class="rounded btn-danger m-1" onclick="eliminarCandidato(${data.id})" data-remove=${data.id}><i class="fa fa-trash"></i></button> -->
-                                    <div class="form-group m-1">
-                                        <div class="custom-control custom-checkbox">
-                                            <input ${manages !== "RH" ? "disabled" : ""} name="data[candidatoCitado]" data-id=${data.id} class="custom-control-input" type="checkbox" id="customCheckbox${data.id}" ${data.candidatoCitado == "true" ? "checked" : ""}>
-                                            <label for="customCheckbox${data.id}" class="custom-control-label">¿El candidato fue citado?</label>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr data-id=${data.id}>
-                                <td colspan="3">
-                                    <textarea ${manages !== "RH" ? "disabled" : ""} name="data[observacionCandidato]" data-id=${data.id} class="form-control" placeholder="Nota u observaciones sobre el candidato">${data.observacionCandidato ?? ""}</textarea>
-                                </td>
-                            </tr>
-                        `)
-                    })
-                }
-            })
-            // reporte
-            $.ajax(`${GETCONFIG("SERVER_SIDE")}/View/page/onSession/solicitudPersonal/solicitud/backend.php?action=buscarReporte`, {
-                type: "POST",
-                dataType: "HTML",
-                data: formData,
-                cache: false,
-                processData: false,
-                contentType: false,
-                success: (response) => {
-                    const $report = $(response)
-                    $report.attr(`id`, `card-report`)
-                    $report.prepend($card_report.find(`.card-header`))
-                    $card_report.replaceWith($report)
-                }
-            })
-        } else {
-            $(`#card-candidates, #card-report`).append($overlay)
-            alerts({
-                title: "Registro no encontrado",
-                icon: "info"
-            })
-        }
-
+        await buscarCandidato(formData)
     })
+    else {
+        const get = gets()
+        const report = get.report ?? false
+        if (report) {
+            const formData = new FormData()
+            formData.append("requisicion", window.atob(report))
+            await buscarCandidato(formData)
+        }
+    }
 
-    SearchValue = $formSearch.find(`#requisicion`).val()
+    const $formSearchSelect = $(`#card-search form[data-mode="seleccionarCandidatos"]`)
 
-    if (SearchValue && SearchValue !== "")
-        $formSearch.find(`button[type="submit"]`).click()
+    if ($formSearchSelect.length) $formSearchSelect.on(`submit`, async function (e) {
+        e.preventDefault()
+        const formData = new FormData(this)
+        await buscarCandidatoCitados(formData)
+        console.log(`Selecionar candidatos`)
+    })
+    else {
+        const get = gets()
+        const report = get.report ?? false
+        if (report) {
+            const formData = new FormData()
+            formData.append("requisicion", window.atob(report))
+            await buscarCandidatoCitados(formData)
+            console.log(`Selecionar candidatos`)
+        }
+    }
+
+    formSearch = $.extend($formSearchAdd, $formSearchSelect)
+    SearchValue = formSearch.find(`#requisicion`).val()
+    if (SearchValue && SearchValue !== "") formSearch.find(`button[type="submit"]`).click()
 })
 
 
@@ -363,4 +275,147 @@ const aprobar_rechazar = async (i, type) => {
     })
 }, eliminarCandidato = (i) => {
     if (i) $.ajax(`${GETCONFIG("SERVER_SIDE")}/View/page/onSession/solicitudPersonal/solicitud/backend.php?action=eliminarCandidato&id=${i}`)
+}, buscarCandidato = async (formData) => {
+    if (formData instanceof FormData) {
+        const $card_report = $(`#card-report`)
+        const $overlay = $(`<div class="overlay"><i class="fas fa-2x fa-sync fa-spin"></i></div>`)
+        const $table = $(`#table-agregar-candidato`)
+
+        const id = formData.get(`requisicion`)
+
+        request = await fetch(`${GETCONFIG("SERVER_SIDE")}/View/page/onSession/solicitudPersonal/solicitud/backend.php?action=validarRequisicion&requisicion=${id}`)
+        response = await request.json()
+
+        const $tbody = $table.find(`tbody`)
+        $tbody.html(``)
+
+        if (response.status === true) {
+            $(`.overlay`).remove()
+            // candidatos
+            $.ajax(`${GETCONFIG("SERVER_SIDE")}/View/page/onSession/solicitudPersonal/solicitud/backend.php?action=buscarCandidatos`, {
+                type: "POST",
+                dataType: "JSON",
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: (response) => response.forEach((data) => $tbody.append(templateCandidato(data, 1)))
+            })
+            // reporte
+            $.ajax(`${GETCONFIG("SERVER_SIDE")}/View/page/onSession/solicitudPersonal/solicitud/backend.php?action=buscarReporte`, {
+                type: "POST",
+                dataType: "HTML",
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: (response) => {
+                    const $report = $(response)
+                    $report.attr(`id`, `card-report`)
+                    $report.prepend($card_report.find(`.card-header`))
+                    $card_report.replaceWith($report)
+                }
+            })
+        } else {
+            $(`#card-candidates, #card-report`).append($overlay)
+            alerts({
+                title: "Registro no encontrado",
+                icon: "info"
+            })
+        }
+    }
+}, buscarCandidatoCitados = async (formData) => {
+    if (formData instanceof FormData) {
+        const $card_candidatos = $(`#card-candidates`)
+        const $card_body = $card_candidatos.find(`.card-body`).html(``)
+
+        const id = formData.get(`requisicion`)
+
+        request = await fetch(`${GETCONFIG("SERVER_SIDE")}/View/page/onSession/solicitudPersonal/solicitud/backend.php?action=validarRequisicion&requisicion=${id}`)
+        response = await request.json()
+
+        if (response.status === true) {
+            $.ajax(`${GETCONFIG("SERVER_SIDE")}/View/page/onSession/solicitudPersonal/solicitud/backend.php?action=buscarCandidatosCitados`, {
+                type: "POST",
+                dataType: "JSON",
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: (response) => response.forEach((data) => $card_body.append(templateCandidato(data, 2)))
+            })
+        } else {
+            alerts({
+                title: "Registro no encontrado",
+                icon: "info"
+            })
+        }
+    }
+}, gets = () => {
+    const url = new URL(location.href)
+    const array_gets = {}
+
+    url.searchParams.forEach((v, k) => {
+        array_gets[k] = v
+    })
+
+    return array_gets
+}, templateCandidato = (data, type = 1) => {
+    if (typeof data === "object" && typeof type === "number") {
+        const manages = localStorage.getItem("manages")
+        const COMPANY = GETCONFIG("COMPANY")
+
+        const fechaRegistro = new Intl.DateTimeFormat('es-CO', {
+            month: '2-digit',
+            day: '2-digit',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric'
+        }).format(new Date(data.fechaRegistro))
+
+        const fechaCitacion = new Intl.DateTimeFormat('es-CO', {
+            month: '2-digit',
+            day: '2-digit',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric'
+        }).format(new Date(data.fechaCitacion))
+
+        const disabled = manages !== "RH" ? "disabled" : ""
+
+        return type === 1 ? `
+        <tr data-id=${data.id}>
+            <td><input type="text" class="form-control" value="${fechaRegistro}" readonly></td>
+            <td><input ${disabled} name="data[nombreCompleto]" data-id=${data.id} type="text" class="form-control" placeholder="Nombre Completo" value="${data.nombreCompleto}"></td>
+            <td>
+                <!-- <button class="rounded btn-danger m-1" onclick="eliminarCandidato(${data.id})" data-remove=${data.id}><i class="fa fa-trash"></i></button> -->
+                <div class="form-group m-1">
+                    <div class="custom-control custom-checkbox">
+                        <input ${disabled} name="data[candidatoCitado]" data-id=${data.id} class="custom-control-input" type="checkbox" id="customCheckbox${data.id}" ${data.candidatoCitado == "true" ? "checked" : ""}>
+                        <label for="customCheckbox${data.id}" class="custom-control-label">¿El candidato fue citado?</label>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr data-id=${data.id}>
+            <td colspan="3">
+                <textarea ${disabled} name="data[observacionCandidato]" data-id=${data.id} class="form-control" placeholder="Nota u observaciones sobre el candidato">${data.observacionCandidato ?? ""}</textarea>
+            </td>
+        </tr>
+        ` : `
+        <div class="post">
+            <div class="user-block">
+                <img class="img-circle img-bordered-sm" src="${COMPANY["LOGO"]}" alt="User Image">
+                <span class="username">
+                    <a href="#" style="pointer-events: none">${data.nombreCompleto}</a>
+                    <!-- <a href="#" class="float-right btn-tool"><i class="fas fa-times"></i></a> -->
+                </span>
+                <span class="description">Registrado El: ${fechaRegistro} - Citado El: ${fechaCitacion}</span>
+            </div>
+            <p>${data.observacionCandidato}</p>
+            <p><a href="#" class="link-black text-sm mr-2"><i class="fas fa-file-contract"></i> Contratar</a></p>
+        </div>
+        `
+    }
+
 }

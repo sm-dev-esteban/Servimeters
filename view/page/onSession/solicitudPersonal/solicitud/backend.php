@@ -76,7 +76,7 @@ switch ($action) {
                             "Rechazado",
                             "Cancelado"
                         ])) $res[] = <<<HTML
-                            <button class="rounded btn-info m-1" type="button" onclick="location.href = `{$SERVER}/solicitudPersonal/solicitud/seleccionarCandidatos?report={$id}`">
+                            <button class="rounded btn-info m-1" type="button" onclick="location.href = `{$SERVER}/solicitudPersonal/solicitud/agregarCandidatos?report={$id}`">
                                 <i class="fa fa-user-plus"></i>
                             </button>
                         HTML;
@@ -168,10 +168,14 @@ switch ($action) {
         echo json_encode(["status" => !empty($res[0]["count"])]);
         break;
     case 'buscarCandidatos':
+    case 'buscarCandidatosCitados':
+        $condicion = "1 = 1";
+        if ($action === "buscarCandidatosCitados") $condicion = "candidatoCitado = 'true'";
+
         $id = $_POST["requisicion"] ?? 0;
 
         echo json_encode($db->executeQuery(trim(<<<SQL
-            SELECT * FROM requisicion_candidatos where id_requisicion = {$id}
+            SELECT * FROM requisicion_candidatos where id_requisicion = {$id} and {$condicion}
         SQL)));
         break;
     case 'buscarReporte':
@@ -182,9 +186,9 @@ switch ($action) {
         $data = $_POST ?? [];
         $id = $_POST["id"] ?? false;
 
-        $result = $af->update("requisicion_candidatos", $data, ["id" => $id]);
+        if (isset($data["data"]["candidatoCitado"]) && (bool)$data["data"]["candidatoCitado"] == true) $data["data"]["fechaCitacion"] = date("Y-m-d H:i:s.v");
 
-        if (isset($data["data"]["candidatoCitado"])) $result["candidatoCitado"] = $data["data"]["candidatoCitado"];
+        $result = $af->update("requisicion_candidatos", $data, ["id" => $id]);
 
         unset($result["query"], $result["id"]);
 
