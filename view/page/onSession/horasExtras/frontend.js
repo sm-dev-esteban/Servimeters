@@ -146,7 +146,7 @@ $(document).ready(async () => {
 
     const $tableGestion = $(`table#ssp_gestion`)
     $tableGestion.DataTable($.extend(GETCONFIG("DATATABLE"), {
-        "responsive": true,
+        "responsive": false,
         "processing": true,
         "serverSide": true,
         "order": [[0, `desc`]],
