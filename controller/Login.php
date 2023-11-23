@@ -48,7 +48,7 @@ class Login
 
     static function isApprover(): Bool
     {
-        include "C:/xampp/htdocs/Servimeters/conn.php";
+        include "{$_SESSION["FOLDER_SIDE"]}/conn.php";
 
         $email = $_SESSION["email"] ?? false;
         $dataA = $db->executeQuery(<<<SQL
