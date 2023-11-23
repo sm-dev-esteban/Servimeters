@@ -6,9 +6,9 @@ use Controller\SeeApplicationReport;
 use Model\DataTable;
 use Model\Email;
 
-include_once "C:/xampp/htdocs/servimeters/vendor/autoload.php";
-include "C:/xampp/htdocs/servimeters/Config.php";
-include "C:/xampp/htdocs/servimeters/conn.php";
+include_once "{$_SESSION["FOLDER_SIDE"]}/vendor/autoload.php";
+include "{$_SESSION["FOLDER_SIDE"]}/Config.php";
+include "{$_SESSION["FOLDER_SIDE"]}/conn.php";
 
 date_default_timezone_set(TIMEZONE);
 
@@ -200,6 +200,19 @@ switch ($action) {
             DELETE FROM requisicion_candidatos where id = {$id}
         SQL)));
 
+        break;
+    case 'contratarEmpleado':
+        $id = $_POST["id"] ?? 0;
+        $result = $af->update("requisicion_candidatos", [
+            "data" => [
+                "contratado" => true,
+                "fechaContrato" => date("Y-m-d H:i:s.v")
+            ]
+        ], ["id" => $id]);
+
+        unset($result["query"]);
+
+        echo json_encode($result, JSON_UNESCAPED_UNICODE);
         break;
     default:
         echo json_encode(["error" => "action is undefined"]);

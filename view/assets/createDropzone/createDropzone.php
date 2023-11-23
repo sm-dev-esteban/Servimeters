@@ -1,10 +1,10 @@
-<?php
+<?php session_start();
 
 use Controller\AutomaticForm;
 
-include_once "C:/xampp/htdocs/servimeters/vendor/autoload.php";
-include "C:/xampp/htdocs/servimeters/Config.php";
-include "C:/xampp/htdocs/servimeters/conn.php";
+include_once "{$_SESSION["FOLDER_SIDE"]}/vendor/autoload.php";
+include "{$_SESSION["FOLDER_SIDE"]}/Config.php";
+include "{$_SESSION["FOLDER_SIDE"]}/conn.php";
 
 $action = $_GET["action"] ?? false;
 

@@ -1,7 +1,7 @@
 <?php session_start();
 
-include "C:/xampp/htdocs/servimeters/Config.php";
-include_once "C:/xampp/htdocs/servimeters/vendor/autoload.php";
+include "{$_SESSION["FOLDER_SIDE"]}/Config.php";
+include_once "{$_SESSION["FOLDER_SIDE"]}/vendor/autoload.php";
 
 use Controller\Login;
 

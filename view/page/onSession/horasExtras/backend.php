@@ -5,9 +5,9 @@ use Controller\AutomaticForm;
 use Model\DataTable;
 use Model\ProcessData;
 
-include_once "C:/xampp/htdocs/servimeters/vendor/autoload.php";
-include "C:/xampp/htdocs/servimeters/Config.php";
-include "C:/xampp/htdocs/servimeters/conn.php";
+include_once "{$_SESSION["FOLDER_SIDE"]}/vendor/autoload.php";
+include "{$_SESSION["FOLDER_SIDE"]}/Config.php";
+include "{$_SESSION["FOLDER_SIDE"]}/conn.php";
 
 // ini_set('upload_max_filesize', MAX_SIZE);
 // ini_set('post_max_size', MAX_SIZE);

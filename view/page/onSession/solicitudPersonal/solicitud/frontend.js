@@ -405,17 +405,29 @@ const aprobar_rechazar = async (i, type) => {
         ` : `
         <div class="post">
             <div class="user-block">
-                <img class="img-circle img-bordered-sm" src="${COMPANY["LOGO"]}" alt="User Image">
-                <span class="username">
+                ${data.contratado ? `<img class="img-circle img-bordered-sm" src="${COMPANY["LOGO"]}" alt="User Image">` : ""}
+                <span style="${!data.contratado ? "margin-left: 0" : ""}" class="username">
                     <a href="#" style="pointer-events: none">${data.nombreCompleto}</a>
                     <!-- <a href="#" class="float-right btn-tool"><i class="fas fa-times"></i></a> -->
                 </span>
-                <span class="description">Registrado El: ${fechaRegistro} - Citado El: ${fechaCitacion}</span>
+                <span style="${!data.contratado ? "margin-left: 0" : ""}" class="description">Registrado El: ${fechaRegistro} - Citado El: ${fechaCitacion}</span>
             </div>
             <p>${data.observacionCandidato}</p>
-            <p><a href="#" class="link-black text-sm mr-2"><i class="fas fa-file-contract"></i> Contratar</a></p>
+            <p class="${data.contratado ? "d-none" : ""}"><a onclick="contratarEmpleado(${data.id})" class="link-black text-sm mr-2" style="cursor: pointer"><i class="fas fa-file-contract"></i> Contratar</a></p>
         </div>
         `
     }
 
+}, contratarEmpleado = (i) => {
+    if (i) $.ajax(`${GETCONFIG("SERVER_SIDE")}/View/page/onSession/solicitudPersonal/solicitud/backend.php?action=contratarEmpleado`, {
+        type: "POST",
+        dataType: "JSON",
+        data: {
+            id: i
+        },
+        success: (response) => {
+            if (response && response.status) alerts({ title: "Candidato aprobado", icon: "success" })
+            else alerts({ title: "Ah ocurrido un error inesperado", icon: "info" })
+        }
+    })
 }

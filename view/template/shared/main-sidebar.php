@@ -110,6 +110,23 @@ $accesoPremium = in_array(strtoupper($user), $acceso)
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-clock"></i>
+                        <p>
+                            Solicitud de permisos
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?= SERVER_SIDE ?>/SolicitudPermisos/registro" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>registro</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <?php if ($_SESSION["staffRequest"] === "SI" || $_SESSION["manages"] === "RH" || $accesoPremium) : ?>
                     <li class="nav-item">
                         <a href="#" class="nav-link">
