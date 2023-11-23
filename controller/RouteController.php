@@ -92,9 +92,9 @@ class RouteController
                 $SERVER_SIDE = SERVER_SIDE;
                 echo <<<HTML
                 <div class="text-center">
-                    <h1 class="display-1 fw-bold">404</h1>
+                    <h1 class="display-1 fw-bold">500</h1>
                     <p class="fs-3"> <span class="text-danger">Error</p>
-                    <p class="lead">{$route}</p>
+                    <p class="lead">{$th->getMessage()}</p>
                     <a href="{$SERVER_SIDE}" class="btn btn-primary">Regresar al Inicio</a>
                 </div>
                 HTML;

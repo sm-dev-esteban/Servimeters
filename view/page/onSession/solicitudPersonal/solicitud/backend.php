@@ -201,6 +201,19 @@ switch ($action) {
         SQL)));
 
         break;
+    case 'contratarEmpleado':
+        $id = $_POST["id"] ?? 0;
+        $result = $af->update("requisicion_candidatos", [
+            "data" => [
+                "contratado" => true,
+                "fechaContrato" => date("Y-m-d H:i:s.v")
+            ]
+        ], ["id" => $id]);
+
+        unset($result["query"]);
+
+        echo json_encode($result, JSON_UNESCAPED_UNICODE);
+        break;
     default:
         echo json_encode(["error" => "action is undefined"]);
         break;
