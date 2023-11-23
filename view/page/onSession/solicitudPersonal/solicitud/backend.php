@@ -6,9 +6,9 @@ use Controller\SeeApplicationReport;
 use Model\DataTable;
 use Model\Email;
 
-include_once "C:/xampp/htdocs/servimeters/vendor/autoload.php";
-include "C:/xampp/htdocs/servimeters/Config.php";
-include "C:/xampp/htdocs/servimeters/conn.php";
+include_once "{$_SESSION["FOLDER_SIDE"]}/vendor/autoload.php";
+include "{$_SESSION["FOLDER_SIDE"]}/Config.php";
+include "{$_SESSION["FOLDER_SIDE"]}/conn.php";
 
 date_default_timezone_set(TIMEZONE);
 

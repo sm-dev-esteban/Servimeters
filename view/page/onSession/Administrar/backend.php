@@ -1,10 +1,10 @@
-<?php
+<?php session_start();
 
 use Controller\AutomaticForm;
 use Model\DataTable;
 
-include "C:/xampp/htdocs/servimeters/Config.php";
-include_once "C:/xampp/htdocs/servimeters/vendor/autoload.php";
+include "{$_SESSION["FOLDER_SIDE"]}/Config.php";
+include_once "{$_SESSION["FOLDER_SIDE"]}/vendor/autoload.php";
 
 $automatic = new AutomaticForm();
 

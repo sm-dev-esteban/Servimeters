@@ -50,13 +50,13 @@ class RouteModel
                     </div>
                 </section>
                 HTML,
-                "BACKEND" => <<<HTML
+                "BACKEND" => <<<'HTML'
                 <?php+
                 /*-- {$date} --*/
 
-                include_once "{$ඞ}/vendor/autoload.php";
-                include "{$ඞ}/Config.php";
-                include "{$ඞ}/conn.php";
+                include_once "{$_SESSION["FOLDER_SIDE"]}/vendor/autoload.php";
+                include "{$_SESSION["FOLDER_SIDE"]}/Config.php";
+                include "{$_SESSION["FOLDER_SIDE"]}/conn.php";
 
                 date_default_timezone_set(TIMEZONE);
                 
@@ -76,7 +76,7 @@ class RouteModel
                 "FRONTEND" => <<<HTML
                 <!-- {$date} -->
                 HTML,
-                "BACKEND" => <<<HTML
+                "BACKEND" => <<<'HTML'
                 <!-- {$date} -->
                 HTML,
                 "CSS" => <<<CSS
