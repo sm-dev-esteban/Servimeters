@@ -95,6 +95,8 @@ class RouteController
                     <h1 class="display-1 fw-bold">500</h1>
                     <p class="fs-3"> <span class="text-danger">Error</p>
                     <p class="lead">{$th->getMessage()}</p>
+                    <p class="lead">File: {$th->getFile()}</p>
+                    <p class="lead">Line: {$th->getLine()}</p>
                     <a href="{$SERVER_SIDE}" class="btn btn-primary">Regresar al Inicio</a>
                 </div>
                 HTML;
