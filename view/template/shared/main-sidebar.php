@@ -120,9 +120,9 @@ $accesoPremium = in_array(strtoupper($user), $acceso)
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="<?= SERVER_SIDE ?>/SolicitudPermisos/registro" class="nav-link">
+                            <a href="<?= SERVER_SIDE ?>/SolicitudPermisos/formularioSolicitud" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>registro</p>
+                                <p>Formulario Solicitud</p>
                             </a>
                         </li>
                     </ul>
