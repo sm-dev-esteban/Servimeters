@@ -8,7 +8,11 @@ $acceso = array_map(function ($name) {
     "William Ricardo Enciso Bautista"
 ]);
 
-$accesoPremium = in_array(strtoupper($user), $acceso)
+$accesoPremium = in_array(strtoupper($user), $acceso);
+
+$isApprover = $_SESSION["isApprover"] ?? false;
+$staffRequest = $_SESSION["staffRequest"] ?? false;
+$manages = $_SESSION["manages"] ?? false;
 
 ?>
 <aside class="main-sidebar sidebar-light-primary elevation-4">
@@ -37,7 +41,7 @@ $accesoPremium = in_array(strtoupper($user), $acceso)
         </div>
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
-                <?php if ($accesoPremium || $_SESSION["isApprover"] === true) : ?>
+                <?php if ($accesoPremium || $isApprover === true) : ?>
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-cog"></i>
@@ -127,7 +131,7 @@ $accesoPremium = in_array(strtoupper($user), $acceso)
                         </li>
                     </ul>
                 </li>
-                <?php if ($_SESSION["staffRequest"] === "SI" || $_SESSION["manages"] === "RH" || $accesoPremium) : ?>
+                <?php if ($staffRequest === "SI" || $manages === "RH" || $accesoPremium) : ?>
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-address-book"></i>
@@ -178,7 +182,7 @@ $accesoPremium = in_array(strtoupper($user), $acceso)
                                     </li>
                                 </ul>
                             </li>
-                            <?php if ($_SESSION["staffRequest"] === "SI") : ?>
+                            <?php if ($staffRequest === "SI") : ?>
                                 <li class="nav-item">
                                     <a href="#" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
