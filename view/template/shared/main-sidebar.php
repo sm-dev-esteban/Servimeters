@@ -129,6 +129,12 @@ $manages = $_SESSION["manages"] ?? false;
                                 <p>Formulario Solicitud</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="<?= SERVER_SIDE ?>/SolicitudPermisos/mostrarSolicitud" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Mostrar Solicitudes</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <?php if ($staffRequest === "SI" || $manages === "RH" || $accesoPremium) : ?>

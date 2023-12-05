@@ -27,13 +27,13 @@ $routeM = new RouteModel;
             </div>
             <div class="card-body">
                 <!--Formulario de solicitud de permisos-->
-                <form>
+                <form data-action="I_Solicitud">
                     <div class="row">
                         <!--Columna funcionario-->
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Funcionario:</label>
-                                <select class="form-control">
+                                <select name="data[funcionario]" class="form-control">
                                     <option>option 1</option>
                                     <option>option 2</option>
                                 </select>
@@ -44,7 +44,7 @@ $routeM = new RouteModel;
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Tipo de Permiso:</label>
-                                <select class="form-control">
+                                <select name="data[tipoPermiso]" class="form-control">
                                     <option>option 1</option>
                                     <option>option 2</option>
                                 </select>
@@ -62,21 +62,17 @@ $routeM = new RouteModel;
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar"></i></span>
                                     </div>
-                                    <input type="text" class="form-control float-right" id="reservation">
+                                    <input name="data[fechaInicioFin]" type="text" class="form-control float-right" id="reservation">
                                 </div>
                                 <!-- /.input group -->
                             </div>
-                            <!-- <div class="form-group">
-                                <label>Fecha inicio-fin:</label>
-                                <input type="date" class="form-control" id="reservation">
-                            </div> -->
                         </div>
 
                         <!--Columna número de horas-->
                         <div class="col-sm-3">
                             <div class="form-group">
                                 <label for="exampleInputText">Número de Horas:</label>
-                                <input type="number" class="form-control" id="exampleInputText">
+                                <input name="data[Nhoras]" type="number" class="form-control" id="exampleInputText">
                             </div>
                         </div>
 
@@ -84,7 +80,7 @@ $routeM = new RouteModel;
                         <div class="col-sm-12">
                             <div class="form-group">
                                 <label>Observaciones</label>
-                                <textarea class="form-control"></textarea>
+                                <textarea name="data[observacion]" class="form-control"></textarea>
                             </div>
                         </div>
                     </div>
@@ -94,7 +90,7 @@ $routeM = new RouteModel;
                         <div class="col-sm-3">
                             <div class="form-group">
                                 <label>Reposición</label>
-                                <select class="form-control">
+                                <select name="data[reposicion]" class="form-control">
                                     <option>Sí</option>
                                     <option>No</option>
                                 </select>
@@ -105,7 +101,7 @@ $routeM = new RouteModel;
                         <div class="col-sm-3">
                             <div class="form-group">
                                 <label>Fecha de Reposición:</label>
-                                <input type="date" class="form-control">
+                                <input name="data[fechaReposicion]" type="date" class="form-control">
                             </div>
                         </div>
 
@@ -113,7 +109,7 @@ $routeM = new RouteModel;
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Jefe que Aprueba:</label>
-                                <select class="form-control">
+                                <select name="data[aprovador]" class="form-control">
                                     <option>jefe 1</option>
                                     <option>jefe 2</option>
                                 </select>
