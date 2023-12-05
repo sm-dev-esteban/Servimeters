@@ -60,7 +60,7 @@ $routeM = new RouteModel;
 
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="far fa-clock"></i></span>
+                                        <span class="input-group-text"><i class="far fa-calendar"></i></span>
                                     </div>
                                     <input type="text" class="form-control float-right" id="reservation">
                                 </div>
