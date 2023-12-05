@@ -121,9 +121,7 @@ $routeM = new RouteModel;
                 </div>
               </div>
             </div>
-                <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
-                </div>
+                <button class="col-12 btn btn-outline-primary"><i class="fa fa-check-circle"></i>Enviar Solicitud</button>
             </form>
         </div>
     </div>
