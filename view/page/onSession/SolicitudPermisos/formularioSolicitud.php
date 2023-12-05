@@ -26,103 +26,102 @@ $routeM = new RouteModel;
                 <h3 class="card-title">Formulario</h3>
             </div>
             <div class="card-body">
-            <!--Formulario de solicitud de permisos-->
-            <form>
-            <div class="row">
-              <!--Columna funcionario-->  
-              <div class="col-sm-6">
-                <div class="form-group">
-                    <label>Funcionario:</label>
-                    <select class="form-control">
-                      <option>option 1</option>
-                      <option>option 2</option>
-                    </select>
-                </div>
-              </div>
-              
-              <!--Columna permisos-->  
-              <div class="col-sm-6">
-                <div class="form-group">
-                  <label>Tipo de Permiso:</label>
-                  <select class="form-control">
-                    <option>option 1</option>
-                    <option>option 2</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            
-            <div class="row">
-              <!--Columna fecha inicio y fin-->  
-              <div class="col-sm-3">
-                <div class="form-group">
-                  <label>Fecha inicio-fin:</label>
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">
-                        <i class="far fa-calendar-alt"></i>
-                      </span>
-                    </div>
-                    <input type="text" class="form-control float-right" id="reservation">
-                  </div>
-                </div>
-              </div>
-              
-              <!--Columna número de horas-->  
-              <div class="col-sm-3">
-                <div class="form-group">
-                  <label for="exampleInputText">Número de Horas:</label>
-                  <input type="text" class="form-control" id="exampleInputText">
-                </div>
-              </div>
+                <!--Formulario de solicitud de permisos-->
+                <form>
+                    <div class="row">
+                        <!--Columna funcionario-->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Funcionario:</label>
+                                <select class="form-control">
+                                    <option>option 1</option>
+                                    <option>option 2</option>
+                                </select>
+                            </div>
+                        </div>
 
-              <!--Columna observaciones-->  
-              <div class="col-sm-6">
-                <div class="form-group">
-                  <label>Observaciones</label>
-                  <input type="text" class="form-control">
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <!--Columna reposición-->  
-              <div class="col-sm-3">
-                <div class="form-group">
-                  <label>Reposición</label>
-                  <select class="form-control">
-                    <option>Sí</option>
-                    <option>No</option>
-                  </select>
-                </div>
-              </div>
-
-              <!--Columna fecha de reposición-->  
-              <div class="col-sm-3">
-              <div class="form-group">
-                  <label>Fecha de Reposición:</label>
-                    <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                        <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate"/>
-                        <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        <!--Columna permisos-->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Tipo de Permiso:</label>
+                                <select class="form-control">
+                                    <option>option 1</option>
+                                    <option>option 2</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                </div>
-              </div>
 
-              <!--Columna jefe aprobación-->
-              <div class="col-sm-6">
-                <div class="form-group">
-                    <label>Jefe que Aprueba:</label>
-                    <select class="form-control">
-                      <option>jefe 1</option>
-                      <option>jefe 2</option>
-                    </select>
-                </div>
-              </div>
+                    <div class="row">
+                        <!--Columna fecha inicio y fin-->
+                        <div class="col-sm-9">
+                            <div class="form-group">
+                                <label>Fecha inicio-fin:</label>
+
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="far fa-clock"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control float-right" id="reservation">
+                                </div>
+                                <!-- /.input group -->
+                            </div>
+                            <!-- <div class="form-group">
+                                <label>Fecha inicio-fin:</label>
+                                <input type="date" class="form-control" id="reservation">
+                            </div> -->
+                        </div>
+
+                        <!--Columna número de horas-->
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="exampleInputText">Número de Horas:</label>
+                                <input type="number" class="form-control" id="exampleInputText">
+                            </div>
+                        </div>
+
+                        <!--Columna observaciones-->
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Observaciones</label>
+                                <textarea class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!--Columna reposición-->
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>Reposición</label>
+                                <select class="form-control">
+                                    <option>Sí</option>
+                                    <option>No</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!--Columna fecha de reposición-->
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>Fecha de Reposición:</label>
+                                <input type="date" class="form-control">
+                            </div>
+                        </div>
+
+                        <!--Columna jefe aprobación-->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Jefe que Aprueba:</label>
+                                <select class="form-control">
+                                    <option>jefe 1</option>
+                                    <option>jefe 2</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="col-12 btn btn-outline-primary"><i class="fa fa-check-circle"></i>Enviar Solicitud</button>
+                </form>
             </div>
-                <button class="col-12 btn btn-outline-primary"><i class="fa fa-check-circle"></i>Enviar Solicitud</button>
-            </form>
         </div>
-    </div>
 </section>
