@@ -27,8 +27,8 @@ switch ($action) {
     case 'ssp_Solicitud':
         echo json_encode($datatable->serverSide($_REQUEST, $table, [
             ["db" => "id"],
-            ["db" => "fechaRegistro"],
             ["db" => "funcionario"],
+            ["db" => "fechaRegistro"],
             ["db" => "tipoPermiso"],
             ["db" => "fechaInicioFin"],
             ["db" => "Nhoras"],

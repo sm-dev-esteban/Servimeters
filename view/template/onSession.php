@@ -54,7 +54,7 @@ $route = new RouteController(FOLDER_VIEW);
     <!-- <script src="<?= SERVER_SIDE ?>/View/assets/websocket.js"></script> -->
 </head>
 
-<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
+<body class="sidebar-mini layout-fixed layout-navbar-fixed sidebar-collapse">
     <div class="wrapper">
         <?php include(__DIR__ . "/shared/menu.php") ?>
         <div class="content-wrapper" data-router>

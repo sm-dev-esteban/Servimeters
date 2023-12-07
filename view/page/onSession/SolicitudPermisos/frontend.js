@@ -21,16 +21,70 @@ $(document).ready(async () => {
             type: "POST",
             data: new FormData(this),
             success: (response) => {
-                console.log(response);
+                console.log(response)
             }
         })
     })
 
-    const $table = $(`table[data-action]`)
-    if ($table.length) $table.DataTable($.extend(GETCONFIG("DATATABLE"), {
-        "processing": true,
-        "serverSide": true,
-        "order": [[0, `desc`]],
-        "ajax": `${GETCONFIG("SERVER_SIDE")}/View/page/onSession/SolicitudPermisos/backend.php?action=${$table.data("action")}`
-    })).buttons().container().appendTo($('.col-sm-6:eq(0)'))
+    const $table = $(`table[data-action]`);
+
+    if ($table.length) {
+        const defaultParams = GETCONFIG("DATATABLE");
+        const newParams = {
+            processing: true,
+            serverSide: true,
+            order: [[0, `desc`]],
+            language: $.extend(defaultParams.language, {
+                paginate: {
+                    previous: "<i class=\"fas fa-chevron-left\"></i>",
+                    next: "<i class=\"fas fa-chevron-right\"></i>",
+                }
+            }),
+            ajax: {
+                url: `${GETCONFIG("SERVER_SIDE")}/View/page/onSession/SolicitudPermisos/backend.php?action=${$table.data("action")}`,
+                type: 'POST',
+                data: function (data) {
+                    $('tfoot input').each(function () {
+                        const $input = $(this)
+
+                        const value = $input.val()
+                        const position = $input.parent().index();
+
+                        data.columns[position].search.value = value;
+                        data.columns[position].search.position = position;
+                    });
+                }
+            },
+            footerCallback: function (tfoot, data, start, end, display) {
+                const $tfoot = $(tfoot);
+
+                if (!$tfoot.data("filter")) {
+                    $tfoot.data("filter", true);
+
+                    const api = this.api();
+
+                    const handleEventInput = (e) => api.column($(e.target).parent().index()).search(e.target.value).draw();
+
+                    $tfoot.find('input').on("input", handleEventInput);
+                }
+            }
+        };
+
+        const params = $.extend(defaultParams, newParams);
+
+        const dataTable = $table.DataTable(params);
+
+        $('.dataTables_filter').remove();
+
+        $(`.content .card .card-header input`).on('input', function () {
+            dataTable.search(this.value).draw();
+        });
+
+        $(`[data-action="refresh"]`).on("click", function () {
+            dataTable.ajax.reload(null, false);
+        });
+
+        dataTable.buttons().container().prependTo($('.content .col-sm-12:eq(0)'));
+    }
+
 })

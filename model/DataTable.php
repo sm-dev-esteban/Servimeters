@@ -33,8 +33,10 @@ class DataTable
         $dataError = [];
         $error = "";
 
+        $booleadCondition = "1 = 1"; # true
+
         $search = [":filter" => "%{$request["search"]["value"]}%"];
-        $condition = $config["condition"] ?? "1 = 1";
+        $condition = $config["condition"] ?? $booleadCondition;
 
         /*-- table --*/
         $mainTable = $table;
@@ -42,14 +44,15 @@ class DataTable
         /*-- columns --*/
         $showColumn = self::columns($columns, $config);
         /*-- filter --*/
-        $filter = self::filter($columns, $search);
+        $filter = self::filter($columns, $search, $request);
+        $subFilter = self::subFilter($columns, $request) ?: $booleadCondition;
         /*-- order --*/
         $order = self::order($request, $columns, $mainTable);
         /*-- limit --*/
         $limit = self::limit($request, $DB->getParams("gestor"));
         /*-- query --*/
         $query = <<<SQL
-            SELECT $showColumn FROM $table WHERE $condition AND ($filter) $order $limit
+            SELECT $showColumn FROM $table WHERE $condition AND ($filter) and ($subFilter) $order $limit
         SQL;
 
         /*-- query --*/
@@ -90,7 +93,7 @@ class DataTable
         // SELECT count(*) total FROM $table WHERE {$condition} AND ({$filter})
         // SQL, $search)[0]["total"] ?? 0;
         $recordsFiltered = $DB->executeQuery(<<<SQL
-            SELECT count(*) total FROM {$table} WHERE {$condition} AND ({$filter})
+            SELECT count(*) total FROM {$table} WHERE {$condition} AND ({$filter}) AND ({$subFilter})
         SQL)[0]["total"] ?? 0;
 
         // $dataError[] = DB::getError($recordsTotal);
@@ -140,6 +143,7 @@ class DataTable
      */
     static function filter($c, $f): String
     {
+
         # no me dejo con las consultas preparadas porque no coincide el numero de columnas de los parametros tonces ni modo
         // return implode(" OR ", array_map(function ($x) {
         //     return ($x["db"] ?? false ? "{$x["db"]} LIKE :filter" : "");
@@ -151,15 +155,41 @@ class DataTable
     }
 
     /**
-     * @param Array $r request data
+     * Filtro posicional por si esta usando "footerCallback" o algo parecido
+     * Requiere de la posicion y el valor 
+     * * ["search"]["position"]
+     * * ["search"]["value"]
+     * 
+     * @param Array $c columns
+     * @param Array $request request data
+     * @return String filter
+     */
+    static function subFilter($c, $request): String
+    {
+        $filter = [];
+
+        foreach ($request["columns"] as $column) if (isset($column["search"]["position"]) && isset($column["search"]["value"]) && !empty($column["search"]["value"])) {
+            $position = $column["search"]["position"];
+            $value = $column["search"]["value"];
+
+            $columnFiter = $c[$position]["db"];
+
+            $filter[] = "{$columnFiter} LIKE '%{$value}%'";
+        }
+
+        return implode(" OR ", $filter);
+    }
+
+    /**
+     * @param Array $request request data
      * @param Array $c columns
      * @param String $t table
      * @return String order
      */
-    static function order($r, $c, $mt): String
+    static function order($request, $c, $mt): String
     {
-        $column = $c[$r["order"][0]["column"]]["db"];
-        $order = $r["order"][0]["dir"];
+        $column = $c[$request["order"][0]["column"]]["db"];
+        $order = $request["order"][0]["dir"];
 
         if (explode(".", $column)[1] ?? false) return "ORDER BY {$column} {$order}";
 
@@ -170,15 +200,15 @@ class DataTable
     }
 
     /**
-     * @param Array $r request data
+     * @param Array $request request data
      * @param String $g gestor DB
      * @return String limit by gestor
      */
-    static function limit($r, $g): String
+    static function limit($request, $g): String
     {
         return [
-            "MYSQL" => "LIMIT {$r["start"]}, {$r["length"]}",
-            "SQLSRV" => "OFFSET {$r["start"]} ROWS FETCH NEXT {$r["length"]} ROWS ONLY"
+            "MYSQL" => "LIMIT {$request["start"]}, {$request["length"]}",
+            "SQLSRV" => "OFFSET {$request["start"]} ROWS FETCH NEXT {$request["length"]} ROWS ONLY"
         ][strtoupper($g)] ?? false;
     }
 

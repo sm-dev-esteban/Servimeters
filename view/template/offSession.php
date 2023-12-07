@@ -28,7 +28,7 @@ $route = new RouteController(FOLDER_VIEW);
 <script src="<?= SERVER_SIDE ?>/AdminLTE/plugins/jquery/jquery.min.js"></script>
 
 <body class="hold-transition login-page" data-router style="--image: url('<?= SERVER_SIDE . "/Img/pic10.webp" ?>')">
-    <?php $route->showPage(!PRODUCTION) ?>
+    <?php $route->showPage(false) ?>
 </body>
 <script src="<?= SERVER_SIDE ?>/View/assets/autoload.js"></script>
 <script>
