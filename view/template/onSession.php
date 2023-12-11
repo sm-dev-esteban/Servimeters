@@ -96,6 +96,10 @@ $route = new RouteController(FOLDER_VIEW);
     <!-- SweetAlert2 -->
     <script src="<?= SERVER_SIDE ?>/AdminLTE/plugins/sweetalert2/sweetalert2.all.min.js"></script>
     <!-- <script src="<?= SERVER_SIDE ?>/AdminLTE/dist/js/demo.js"></script> -->
+
+    <!--Select2 AdminLTE3-->
+    <script src="<?= SERVER_SIDE ?>/AdminLTE/plugins/select2/js/buttonFilters.js"></script>
+
     <script>
         <?= $GETWITHJS ?>
 
