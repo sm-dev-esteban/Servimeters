@@ -157,8 +157,8 @@ class DataTable
     /**
      * Filtro posicional por si esta usando "footerCallback" o algo parecido
      * Requiere de la posicion y el valor 
-     * * ["search"]["position"]
-     * * ["search"]["value"]
+     * * $request[?]["search"]["position"]
+     * * $request[?]["search"]["value"]
      * 
      * @param Array $c columns
      * @param Array $request request data
@@ -177,7 +177,7 @@ class DataTable
             $filter[] = "{$columnFiter} LIKE '%{$value}%'";
         }
 
-        return implode(" OR ", $filter);
+        return implode(" AND ", $filter);
     }
 
     /**
