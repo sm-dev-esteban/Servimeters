@@ -45,7 +45,7 @@ $routeM = new RouteModel;
                             <table class="table table-hover" id="ssp_gestion">
                                 <thead class="shadow">
                                     <tr>
-                                        <th>#</th>
+                                        <th>Ver Detalle</th>
                                         <th>Documento</th>
                                         <th>Mes</th>
                                         <th>Colaborador</th>
@@ -61,7 +61,6 @@ $routeM = new RouteModel;
                                         <th>Total Recargo Fes_Diu</th>
                                         <th>Total Recargo Fes_Noc</th>
                                         <th>Total Recargo Ord_Fes_Noc</th>
-                                        <th>Ver Detalle</th>
                                     </tr>
                                 </thead>
                             </table>

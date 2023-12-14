@@ -162,7 +162,7 @@ $(document).ready(async () => {
         })
     }).buttons().container().appendTo($('.col-sm-6:eq(0)'))
 
-    $tableGestion.find("tbody").on("click", "tr.odd", function () {
+    $tableGestion.find("tbody").on("click", "tr.odd, tr.even", function () {
         const $this = $(this)
         const id = $this.find(`[data-id]`).data("id")
         $.ajax(`${GETCONFIG("SERVER_SIDE")}/View/page/onSession/horasExtras/backend.php?action=gestion_checked`, {

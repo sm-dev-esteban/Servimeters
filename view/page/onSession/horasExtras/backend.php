@@ -189,7 +189,14 @@ switch ($_REQUEST["action"] ?? false) {
 
         $columns = [
             [
-                "db" => "RHE.id"
+                "db" => "RHE.id", "formatter" => function ($d, $row) {
+                    $idE = base64_encode($d);
+                    return <<<HTML
+                        <button type="button" class="rounded btn-info m-1" data-mode="reportHE" data-toggle="modal" data-target="#modalMain" data-id="{$idE}">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                    HTML;
+                }
             ],
             [
                 "db" => "RHE.CC"
@@ -217,25 +224,15 @@ switch ($_REQUEST["action"] ?? false) {
             [
                 "db" => "CECO.titulo", "as" => "centroCosto"
             ],
-            ["db" => "RHE.Total_descuento"],
-            ["db" => "RHE.Total_Ext_Diu_Ord"],
-            ["db" => "RHE.Total_Ext_Noc_Ord"],
-            ["db" => "RHE.Total_Ext_Diu_Fes"],
-            ["db" => "RHE.Total_Ext_Noc_Fes"],
-            ["db" => "RHE.Total_Rec_Noc"],
-            ["db" => "RHE.Total_Rec_Fes_Diu"],
-            ["db" => "RHE.Total_Rec_Fes_Noc"],
-            ["db" => "RHE.Total_Rec_Ord_Fes_Noc"],
-            [
-                "db" => "RHE.id", "formatter" => function ($d, $row) {
-                    $idE = base64_encode($d);
-                    return <<<HTML
-                        <button type="button" class="rounded btn-info m-1" data-mode="reportHE" data-toggle="modal" data-target="#modalMain" data-id="{$idE}">
-                            <i class="fa fa-eye"></i>
-                        </button>
-                    HTML;
-                }
-            ]
+            ["db" => "RHE.Total_descuento", "failed" => 0],
+            ["db" => "RHE.Total_Ext_Diu_Ord", "failed" => 0],
+            ["db" => "RHE.Total_Ext_Noc_Ord", "failed" => 0],
+            ["db" => "RHE.Total_Ext_Diu_Fes", "failed" => 0],
+            ["db" => "RHE.Total_Ext_Noc_Fes", "failed" => 0],
+            ["db" => "RHE.Total_Rec_Noc", "failed" => 0],
+            ["db" => "RHE.Total_Rec_Fes_Diu", "failed" => 0],
+            ["db" => "RHE.Total_Rec_Fes_Noc", "failed" => 0],
+            ["db" => "RHE.Total_Rec_Ord_Fes_Noc", "failed" => 0]
         ];
         echo json_encode(DataTable::serverSide($_REQUEST, $table, $columns, $config));
         break;
