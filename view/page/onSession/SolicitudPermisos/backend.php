@@ -18,11 +18,13 @@ $datatable = new DataTable;
 $action = $_GET["action"] ?? false;
 
 $table = "solicitudPermisos";
+$tablePermiso = "tipoPermiso";
 
+$data = $_POST;
 
 switch ($action) {
     case 'I_Solicitud':
-        echo json_encode($automaticForm->insert($table, $_POST), JSON_UNESCAPED_UNICODE);
+        echo json_encode($automaticForm->insert($table, $data), JSON_UNESCAPED_UNICODE);
         break;
     case 'ssp_Solicitud':
         echo json_encode($datatable->serverSide($_REQUEST, $table, [
@@ -36,6 +38,21 @@ switch ($action) {
             ["db" => "reposicion"],
             ["db" => "fechaReposicion"],
             ["db" => "aprovador"]
+        ]), JSON_UNESCAPED_UNICODE);
+        break;
+    case 'I_Permiso':
+        echo json_encode($automaticForm->insert($tablePermiso, $data), JSON_UNESCAPED_UNICODE);
+        break;
+    case 'ssp_permiso':
+        echo json_encode($datatable->serverSide($_REQUEST, $tablePermiso, [
+            ["db" => "nombre"],
+            ["db" => "detalle"],
+            [
+                "db" => "id", "formatter" => fn ($d) => <<<HTML
+                <button type="button" data-edit="{$d}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>
+                <button type="button" data-delete="{$d}" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>
+                HTML
+            ]
         ]), JSON_UNESCAPED_UNICODE);
         break;
     default:

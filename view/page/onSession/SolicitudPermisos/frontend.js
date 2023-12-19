@@ -21,7 +21,12 @@ $(document).ready(async () => {
             type: "POST",
             data: new FormData(this),
             success: (response) => {
-                console.log(response)
+                if (response.status) {
+                    $(`.modal`).modal("hide")
+                    updateDatatable()
+
+                    alerts({ title: "Registrado con exito", icon: "success" })
+                } else alerts({ title: "Ha ocurrido un error al hacer el registro", icon: "error" })
             }
         })
     })
@@ -79,6 +84,9 @@ $(document).ready(async () => {
         $(`.content .card .card-header input`).on('input', function () {
             dataTable.search(this.value).draw();
         });
+
+        $(document).on("click", "[data-edit]", () => alerts({ title: "Edita en HD", icon: "success" }))
+        $(document).on("click", "[data-delete]", () => alerts({ title: "Borra en HD", icon: "success" }))
 
         $(`[data-action="refresh"]`).on("click", function () {
             dataTable.ajax.reload(null, false);
