@@ -1,31 +1,41 @@
 <?php
 
+use Config\Route;
 use Controller\HorasExtras;
 
 include_once explode("\\app\\", __DIR__)[0] . "/vendor/autoload.php";
 
-$action = $_GET["action"] ?? null;
-
-$horasExtras = new HorasExtras;
-
-$data = $_POST ?? [];
-
 try {
+    $action = $_GET["action"] ?? null;
+
+    $horasExtras = new HorasExtras;
+
+    $data = $_POST ?? [];
+
+    $href = fn (string $url, array $gets = []) => Route::href($url, $gets);
+    $encode = fn (string $string) => base64_encode($string);
+
+    $showBtnEdit = fn ($data) => in_array($data["estado"], ["EDICION"]) ? <<<HTML
+    <a href="{$href('horasExtras/editarReporte', ['report' =>$encode($data['id'])])}" class="btn btn-sm">
+        <i class="fas fa-pen text-primary"></i>
+    </a>
+    HTML : "";
+
     switch ($action) {
         case 'sspReport':
-            $response = $horasExtras::serverSideReport([
-                ["db" => "id"],
-                ["db" => "CC"],
-                ["db" => "id_ceco"],
-                ["db" => "id_ceco"],
-                ["db" => "mesReportado"],
-                ["db" => "mesReportado"],
-                ["db" => "id_aprobador"],
-                ["db" => "id_estado"],
+            $response = $horasExtras::sspReport([
+                ["db" => "RHE.id"],
+                ["db" => "RHE.CC"],
+                ["db" => "CC.nombre", "as" => "ceco"],
+                ["db" => "C.nombre", "as" => "clase"],
+                ["db" => "RHE.mesReportado", "formatter" => fn ($d): string => date("F", strtotime($d))],
+                ["db" => "A.nombre", "as" => "aprobador"],
+                ["db" => "S.nombre", "as" => "estado"],
                 [
-                    "db" => "id",
-                    "formatter" => fn ($d): string => <<<HTML
+                    "db" => "RHE.id",
+                    "formatter" => fn ($d, $row): string => <<<HTML
                         <div class="btn-group">
+                            {$showBtnEdit($row)}
                             <button class="btn btn-sm" data-id="{$d}" data-toggle="modal" data-target="#modal-timeline">
                                 <i class="fas fa-history text-warning"></i>
                             </button>
@@ -37,28 +47,14 @@ try {
                 ]
             ]);
             break;
-        case 'showTimeline':
-        case 'showReport':
-            $id = $data["id"] ?? 0;
-            $result = $action == "showTimeline" ? $horasExtras->showTimelineReport($id) : $horasExtras->showReport($id);
-
-            if ($result) echo str_replace(["class=\"invoice\""], ["class=\"invoice p-3 mb-3\""], $result);
-            else echo "<h3>¯\_(ツ)_/¯</h3>";
-
-            exit;
-            break;
-        case 'value':
-            $id = $data["id"] ?? 0;
-            echo $horasExtras->showReport($id);
-
-            exit;
-            break;
         default:
-            # code...
+            $response["error"] = "action is undefined";
             break;
     }
 } catch (Exception | Error $th) {
     $response["error"] = $th->getMessage();
+    $response["file"] = $th->getFile();
+    $response["line"] = $th->getLine();
 }
 
 echo json_encode($response, JSON_UNESCAPED_UNICODE);

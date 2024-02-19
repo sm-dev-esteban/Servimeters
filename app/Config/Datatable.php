@@ -70,7 +70,9 @@ class Datatable extends CRUD
         } catch (Exception $th) {
             # Log the error or handle it more gracefully
             return [
-                "error" => $th->getMessage()
+                "error" => $th->getMessage(),
+                "file" => $th->getFile(),
+                "line" => $th->getLine()
             ];
         }
     }

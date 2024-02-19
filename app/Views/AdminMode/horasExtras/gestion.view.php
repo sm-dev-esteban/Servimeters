@@ -3,14 +3,22 @@
 use Config\Bs4;
 
 $thead = [
-    "#",
+    "Ver Detalle",
     "Documento",
-    "Centro Costo",
-    "Clase",
-    "Mes Reportado",
-    "Aprobador",
+    "Mes",
+    "Colaborador",
     "Estado",
-    ""
+    "Clase",
+    "Ceco",
+    "Total descuento",
+    "Total Extras Diu_Ord",
+    "Total Extras Noc_Ord",
+    "Total Extras Diu_Fes",
+    "Total Extras Noc_Fes",
+    "Total Recargo Noc",
+    "Total Recargo Fes_Diu",
+    "Total Recargo Fes_Noc",
+    "Total Recargo Ord_Fes_Noc"
 ];
 
 $showTH = fn (array $array): string => implode("\n", array_map(function ($str) use ($array) {
@@ -25,12 +33,12 @@ $showTH = fn (array $array): string => implode("\n", array_map(function ($str) u
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Mis Horas</h1>
+                <h1 class="m-0">Aprobar Reportes</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item">horasExtras</li>
-                    <li class="breadcrumb-item active">misHoras</li>
+                    <li class="breadcrumb-item active">gestion</li>
                 </ol>
             </div>
         </div>
@@ -41,9 +49,9 @@ $showTH = fn (array $array): string => implode("\n", array_map(function ($str) u
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <div class="card mt-1">
+                <div class="card">
                     <div class="card-header">
-                        <h3 class=card-title>Mis Horas</h3>
+                        <h3 class=card-title>Reportes pendiente por aprobación</h3>
                         <div class="card-tools">
                             <div class="input-group input-group-sm">
                                 <input type="search" class="form-control" placeholder="Buscar">
@@ -52,7 +60,7 @@ $showTH = fn (array $array): string => implode("\n", array_map(function ($str) u
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table" data-action="sspReport">
+                            <table class="table" data-action="sspGestion">
                                 <thead>
                                     <tr>
                                         <?= $showTH($thead) ?>

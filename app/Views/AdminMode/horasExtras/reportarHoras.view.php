@@ -1,5 +1,9 @@
 <?php
 
+use Controller\HorasExtras;
+
+$horasExtras = new HorasExtras;
+
 $thead = [
     "<sup class=\"text-danger mr-1\">*</sup>Fecha",
     "<sup class=\"text-danger mr-1\">*</sup>Actividad",
@@ -31,12 +35,12 @@ $rand = rand();
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Reportar Horas</h1>
+                <h1 class="m-0"><?= $id ? "Editar Reporte" : "Reportar Horas" ?></h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item">horasExtras</li>
-                    <li class="breadcrumb-item active">reportarHoras</li>
+                    <li class="breadcrumb-item active"><?= $id ? "editarReporte" : "reportarHoras" ?></li>
                 </ol>
             </div>
         </div>
@@ -182,7 +186,7 @@ $rand = rand();
                                             <input type="radio" name="data[checkAprobador]" value="4" id="checkAprobadorJefes">
                                         </span>
                                     </div>
-                                    <select id="Jefes" disabled="disabled" class="form-control"></select>
+                                    <select id="Jefes" disabled="disabled" class="form-control" style="width: auto;"></select>
                                 </div>
                             </div>
                             <div class="col-12 col-xl-6 mb-3">
@@ -193,7 +197,7 @@ $rand = rand();
                                             <input type="radio" name="data[checkAprobador]" value="5" id="checkAprobadorGerentes">
                                         </span>
                                     </div>
-                                    <select id="Gerentes" disabled="disabled" class="form-control"></select>
+                                    <select id="Gerentes" disabled="disabled" class="form-control" style="width: auto;"></select>
                                 </div>
                             </div>
                             <div class="col-12 mb-3">

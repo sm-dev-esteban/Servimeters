@@ -91,7 +91,7 @@ class HorasExtras extends HorasExtrasModel
                 $col3 = $addressInfo([
                     "<b>Reporte #{$showData("id")}</b>",
                     "",
-                    "<b>Reportado Por:</b> @NOMBRE",
+                    "<b>Reportado Por:</b> {$showData("reportador_por")}",
                     "<b>Fecha Y Hora De registro:</b> {$date("d/m/Y H:i",$showData("fechaRegistro"))}"
                 ]);
 

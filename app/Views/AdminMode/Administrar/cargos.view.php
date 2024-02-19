@@ -7,7 +7,7 @@ $thead = [
     ""
 ];
 
-$showTH = fn(array $array): string => implode("\n", array_map(function ($str) use ($array) {
+$showTH = fn (array $array): string => implode("\n", array_map(function ($str) use ($array) {
     $countThead = count($array);
     $width = 100 / $countThead;
     return "<th style=\"width: {$width}%\">{$str}</th>";
@@ -41,8 +41,7 @@ $showTH = fn(array $array): string => implode("\n", array_map(function ($str) us
                     </div>
                     <div class="card-body p-0">
                         <div class="controls">
-                            <button type="button" class="btn btn-default btn-sm" data-toggle="modal"
-                                data-target="#modal-cargos">
+                            <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#modal-cargos">
                                 <i class="fas fa-plus"></i>
                                 Agregar
                             </button>
@@ -80,8 +79,7 @@ $showTH = fn(array $array): string => implode("\n", array_map(function ($str) us
             <div class="modal-body">
                 <div class="mb-3">
                     <label for="nombre">Nombre</label>
-                    <input type="text" name="data[nombre]" id="nombre" class="form-control" required
-                        placeholder="Nombre del cargo">
+                    <input type="text" name="data[nombre]" id="nombre" class="form-control" required placeholder="Nombre del cargo">
                 </div>
             </div>
             <div class="modal-footer justify-content-between">

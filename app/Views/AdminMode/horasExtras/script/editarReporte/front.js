@@ -11,7 +11,7 @@ $(document).ready(async () => {
     }
 
     const Config = CONFIG()
-    const URL_BACKEND = `${Config.BASE_SERVER}/app/Views/AdminMode/horasExtras/script/reportarHoras/back.php`
+    const URL_BACKEND = `${Config.BASE_SERVER}/app/Views/AdminMode/horasExtras/script/editarReporte/back.php`
 
     const $form = $(`form`)
     const formMode = $form.data("mode")

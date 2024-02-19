@@ -1,8 +1,5 @@
 <?php
 
-use Config\Select2;
-use Controller\HorasExtras;
-
 include_once explode("\\app\\", __DIR__)[0] . "/vendor/autoload.php";
 
 $response = [
@@ -13,18 +10,13 @@ $response = [
 try {
     $action = $_GET["action"] ?? null;
 
-    $select2 = new Select2;
-    $horasExtras = new HorasExtras;
-
     $data = [...$_POST, ...$_FILES];
 
     switch ($action) {
-        case 'INSERT':
-            $result = $horasExtras->registrarReporte($data);
-            $response["status"] = $result ? "success" : "error";
-            $response["message"] = $result ? "Reporte Agregado con exito" : "Ocurrio un error :/";
-
+        case 'UPDATE':
+            # code...
             break;
+
         default:
             $response["message"] = "Action is undefined";
             break;

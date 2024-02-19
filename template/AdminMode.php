@@ -100,8 +100,7 @@ $configForJs = json_encode([
     <title>
         <?= AppConfig::COMPANY["NAME"] ?>
     </title>
-    <link rel="icon" href="<?= ImageProcessor::correctImageURL(AppConfig::COMPANY['LOGO']) ?>" type="image/*"
-        sizes="16x16">
+    <link rel="icon" href="<?= ImageProcessor::correctImageURL(AppConfig::COMPANY['LOGO']) ?>" type="image/*" sizes="16x16">
     <?= Template::styles($style) ?>
     <base href="<?= trim(AppConfig::BASE_SERVER, "/") . "/" ?>">
 </head>
@@ -114,6 +113,7 @@ $configForJs = json_encode([
         </div>
         <aside class="control-sidebar control-sidebar-dark"></aside>
     </div>
+    <script type="module" src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs"></script>
     <script>
         const CONFIG = (find = null) => {
             const array = <?= $configForJs ?>;
