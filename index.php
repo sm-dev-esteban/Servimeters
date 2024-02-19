@@ -23,6 +23,5 @@ if (CACHE_CONTROL) {
         exit;
     }
 }
-# @chatgpt
 
 include __DIR__ . "/View/template/" . TEMPLATE_VIEW . ".php";
