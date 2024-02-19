@@ -1,0 +1,7 @@
+.controls {
+    padding: 5px;
+}
+
+[data-edit] {
+    display: none;
+}

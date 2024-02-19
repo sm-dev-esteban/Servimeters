@@ -1,18 +1,7 @@
-#código htaccess
-
-# @chatgpt
+# código htaccess
 RewriteEngine on
+
 RewriteCond $1 !^(index.php)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php?route=$1 [L,QSA]
-
-<Files .conf>
-Order allow,deny
-Deny from all
-</Files>
-<Files .settings>
-Order allow,deny
-Deny from all
-</Files>
-# @chatgpt

@@ -1,27 +1,54 @@
-<?php session_start();
+<?php
 
-include_once __DIR__ . "/vendor/autoload.php";
-include __DIR__ . "/Config.php";
 
-date_default_timezone_set(TIMEZONE);
-header("Content-type: text/html; charset=" . CHARSET);
+use System\Config\AppConfig;
 
-# @chatgpt
-if (CACHE_CONTROL) {
-    // Definir variables para controlar la caché
-    $lastModified = filemtime(__FILE__);
-    $etag = md5_file(__FILE__);
+# Manejo de errores
+set_error_handler(function ($severity, $message, $file, $line) {
+    # Este error no está incluido en error_reporting
+    if (!(error_reporting() & $severity))
+        return;
+    throw new ErrorException($message, 0, $severity, $file, $line);
+});
 
-    // Establecer cabeceras HTTP relacionadas con la caché
-    header("Last-Modified: " . gmdate("D, d M Y H:i:s", $lastModified) . " GMT");
-    header("Etag: $etag");
-    header("Cache-Control: public, max-age=3600"); // Controla el tiempo máximo de almacenamiento en caché en segundos
+set_exception_handler(function ($error) {
+    # Manejo de excepciones
+    echo "Error: {$error->getMessage()}", "<br>";
+    echo "File: {$error->getFile()}", "<br>";
+    echo "Line: {$error->getLine()}", "<br>";
+});
 
-    // Comprobar si el navegador ya tiene la versión en caché
-    if (@strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'] ?? false) == $lastModified || trim($_SERVER['HTTP_IF_NONE_MATCH'] ?? false) == $etag) {
-        header("HTTP/1.1 304 Not Modified");
-        exit;
+try {
+
+    include_once __DIR__ . "/vendor/autoload.php";
+
+    header("Content-type: text/html; charset=" . AppConfig::CHARSET);
+
+    if (AppConfig::CACHE_CONTROL) {
+        $lastModified = filemtime(__FILE__);
+        $etag = md5_file(__FILE__);
+
+        header("Last-Modified: " . gmdate("D, d M Y H:i:s", $lastModified) . " GMT");
+        header("Etag: {$etag}");
+        header("Cache-Control: public, max-age=3600");
+
+        $ifModifiedSince = $_SERVER["HTTP_IF_MODIFIED_SINCE"] ?? false;
+        $ifNoneMatch = trim($_SERVER["HTTP_IF_NONE_MATCH"] ?? false);
+
+        if (@strtotime($ifModifiedSince) == $lastModified || $ifNoneMatch == $etag) {
+            header("HTTP/1.1 304 Not Modified");
+            exit;
+        }
     }
-}
 
-include __DIR__ . "/View/template/" . TEMPLATE_VIEW . ".php";
+    # template for views
+    $pathView = __DIR__ . "/template/" . AppConfig::VIEW_MODE . ".php";
+
+    if (file_exists($pathView)) include $pathView;
+    else throw new Exception("failed to include template");
+} catch (Exception $e) {
+    # Manejo de excepciones generales
+    echo "Excepción: {$e->getMessage()}", "<br>";
+    echo "File: {$e->getFile()}", "<br>";
+    echo "Line: {$e->getLine()}", "<br>";
+}

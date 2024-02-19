@@ -1,23 +1,26 @@
 {
-    "name": "myfirstmvc/mvc",
+    "name": "oscurlo/mvc",
     "autoload": {
         "psr-4": {
-            "Main\\": "src/",
-            "Model\\": "Model/",
-            "PHPMailer\\PHPMailer\\": "vendor/phpmailer/phpmailer/src/",
-            "View\\": "View/",
-            "Controller\\": "Controller/"
+            "View\\": "app/Views/",
+            "Model\\": "app/Models/",
+            "Controller\\": "app/Controllers/",
+            "Config\\": "app/Config/",
+            "System\\Config\\": "./"
         }
     },
     "authors": [
         {
             "name": "Esteban Serna Palacios",
-            "email": "esteban.serna.p@gmail.com",
-            "role": "Dev Jr :)",
+            "role": "Dev jr",
             "homepage": "https://github.com/OscurloOriginal/"
         }
     ],
     "require": {
-        "phpmailer/phpmailer": "^6.8"
+        "vlucas/phpdotenv": "^5.5",
+        "intervention/image": "^2.7",
+        "cboden/ratchet": "^0.4.4",
+        "phpmailer/phpmailer": "^6.8",
+        "almasaeed2010/adminlte": "~3.1"
     }
 }

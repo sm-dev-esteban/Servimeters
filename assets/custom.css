@@ -1,0 +1,62 @@
+body {
+    color: var(--dark);
+    background-color: var(--background);
+}
+
+:root {
+    /* --blue: #6C9BCF; */
+    --blue: #0e71b1;
+    --red: #FF0060;
+    --green: #1B9C85;
+    --yellow: #F7D060;
+    --white: #fff;
+    --info-dark: #7d8da1;
+    --dark: #363949;
+    --light: rgba(132, 139, 200, 0.18);
+    --background: #f6f6f9;
+    --box-shadow: 0 2rem 3rem var(--light);
+}
+
+.dark-mode :root {
+    --background: #181a1e;
+    --white: #202528;
+    --dark: #edeffd;
+    --dark-variant: #a3bdcc;
+    --light: rgba(0, 0, 0, .4);
+    --box-shadow: 0 2rem 3rem var(--light);
+}
+
+/* Glassmorphism */
+.card,
+.modal,
+.popover,
+.main-header,
+.main-sidebar {
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    /* border-radius: 10px; */
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.CodeMirror-line-Exception {
+    text-decoration: var(--yellow) wavy underline;
+}
+
+.CodeMirror-line-Error {
+    text-decoration: var(--red) wavy underline;
+}
+
+[contenteditable=true] {
+    width: 100%;
+    height: calc(2.25rem + 2px);
+    padding: .375rem .75rem;
+    border-radius: .25rem;
+    outline: 2px dashed var(--secondary);
+}
+
+[contenteditable=true]:active,
+[contenteditable=true]:focus {
+    outline: 2px dashed var(--primary);
+}
