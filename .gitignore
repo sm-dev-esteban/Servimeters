@@ -1,19 +1,27 @@
 # archivo que uso para pruebas
 prueba.php
+
 # carpeta donde se cargan los archivos
-files
+file
+
 # carpeta prueba de respaldo
 respaldo.php
+
 # .bat que valida le puerto y corre el socket
 bin/check.bat
+
 # carpeta de depencias de composer
 vendor
+
 # documentos de referencia
 formatos_referencia
+
 # vs
 .vscode
+
 # dependencias
 vendor
 composer.lock
+
 # config
-config.php
+.env
