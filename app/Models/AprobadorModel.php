@@ -50,20 +50,20 @@ class AprobadorModel extends CentroCosto
     private function createTableApprover(): void
     {
         $this->tableManager->createTable(self::TABLE_APPROVER);
-        $this->tableManager->createColumn(self::TABLE_APPROVER, "nombre");
-        $this->tableManager->createColumn(self::TABLE_APPROVER, "email");
+        $this->tableManager->createColumn(self::TABLE_APPROVER, "[nombre]");
+        $this->tableManager->createColumn(self::TABLE_APPROVER, "[email]");
         # permisos
-        $this->tableManager->createColumn(self::TABLE_APPROVER, "admin", "BIT DEFAULT 'FALSE'");
-        $this->tableManager->createColumn(self::TABLE_APPROVER, "apruebaSolicitudPersonal", "BIT DEFAULT 'FALSE'");
-        $this->tableManager->createColumn(self::TABLE_APPROVER, "apruebaSolicitudPermisos", "BIT DEFAULT 'FALSE'");
+        $this->tableManager->createColumn(self::TABLE_APPROVER, "[admin]", "BIT DEFAULT 'FALSE'");
+        $this->tableManager->createColumn(self::TABLE_APPROVER, "[apruebaSolicitudPersonal]", "BIT DEFAULT 'FALSE'");
+        $this->tableManager->createColumn(self::TABLE_APPROVER, "[apruebaSolicitudPermisos]", "BIT DEFAULT 'FALSE'");
         # tipo
-        $this->tableManager->createColumn(self::TABLE_APPROVER, "id_tipo", "int default 1");
+        $this->tableManager->createColumn(self::TABLE_APPROVER, "[id_tipo]", "int default 1");
         $this->createTableType()->tableManager->addForeignKey(
             tables: [self::TABLE_APPROVER => self::TABLE_APPROVER_TYPE],
             columns: ["id_tipo" => "id"]
         );
         # gestion
-        $this->tableManager->createColumn(self::TABLE_APPROVER, "id_gestiona", "int default 1");
+        $this->tableManager->createColumn(self::TABLE_APPROVER, "[id_gestiona]", "int default 1");
         $this->createTablegestion()->tableManager->addForeignKey(
             tables: [self::TABLE_APPROVER => self::TABLE_APPROVER_MANAGES],
             columns: ["id_gestiona" => "id"]
@@ -73,6 +73,10 @@ class AprobadorModel extends CentroCosto
             [
                 "nombre" => "N/A",
                 "email" => "N/A"
+            ], [
+                "nombre" => "Esteban Serna Palacios",
+                "email" => "esteban.serna@servimeters.com",
+                "admin" => true
             ]
         ];
 

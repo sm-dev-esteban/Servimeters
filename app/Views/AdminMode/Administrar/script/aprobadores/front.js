@@ -40,4 +40,16 @@ $(document).ready(async () => {
 
     $(`.content .card-header input[type="search"]`).on(`input`, (e) => dataTable.search(e.target.value).draw())
     $(`button[data-action="refresh"]`).on(`click`, () => updateDatatable($table))
+
+    ldapAutoComplete([
+        {
+            element: `#nombre`,
+            event: `input`,
+            column: `name`
+        }, {
+            element: `#email`,
+            event: `input`,
+            column: `mail`
+        }
+    ])
 })

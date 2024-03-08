@@ -39,7 +39,7 @@ class CargosModel extends CRUD
     private function createTableCargo()
     {
         $this->tableManager->createTable(self::TABLE_CARGO);
-        $this->tableManager->createColumn(self::TABLE_CARGO, "nombre");
+        $this->tableManager->createColumn(self::TABLE_CARGO, "[nombre]");
     }
 
     static function serverSideCargo(array $columns, array $config = []): array

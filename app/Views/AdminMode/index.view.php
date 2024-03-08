@@ -71,7 +71,7 @@ $dataMonths = orderedMonths(false);
                     <div class="card-header">
                         <h3 class="card-title">
                             <i class="fas fa-chart-line mr-1"></i>
-                            Grafica
+                            Gráfica de horas extras aprobadas.
                         </h3>
                     </div>
                     <div class="card-body">
@@ -100,8 +100,6 @@ $dataMonths = orderedMonths(false);
                                 <tr>
                                     <th>Nombre</th>
                                     <th>Correo</th>
-                                    <th>Aprueba Solicitudes de personal</th>
-                                    <th>Aprueba Solicitudes de permisos</th>
                                 </tr>
                             </thead>
                         </table>
@@ -130,19 +128,20 @@ $dataMonths = orderedMonths(false);
 <script>
     const months = <?= json_encode($months) ?>
 
-    const rand = (i = 10) => Math.floor(Math.random() * i)
+    const rand = (n = 10) => Math.floor(Math.random() * n)
+    let i = rand(months.length)
 
     const data = {
         labels: months,
         datasets: [{
             label: 'Aprobado',
             borderColor: 'green',
-            data: [rand(), rand(), rand(), rand(), rand(), rand(), rand(), rand(), rand(), rand(), rand(), rand()],
+            data: [0, rand(i++), 4, rand(i--), 8, rand(i++), 12, rand(i--), 16, rand(i++), 20, rand(i--)],
             fill: false,
         }, {
-            label: 'Pendiente',
+            label: 'Otro estado',
             borderColor: 'red',
-            data: [rand(), rand(), rand(), rand(), rand(), rand(), rand(), rand(), rand(), rand(), rand(), rand()],
+            data: [rand(i--), 2, rand(i++), 6, rand(i--), 10, rand(i++), 14, rand(i--), 18, rand(i++), 22],
             fill: false,
         }]
     }

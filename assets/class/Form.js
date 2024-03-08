@@ -19,10 +19,56 @@ class Form {
         if (!this._form.length) throw new Error("Failed to find form element");
     }
 
-    getAjaxSettings() { return this.ajaxSettings }
-    setAjaxSettings(newSettings) { this.ajaxSettings = { ...this.ajaxSettings, ...newSettings } }
+    getUrlBack() { return this.urlBack }
+    setUrlBack(urlBack) { this.urlBack = urlBack; return this }
 
-    // preLoadData() { }
+    getAjaxSettings() { return this.ajaxSettings }
+    setAjaxSettings(newSettings) { this.ajaxSettings = { ...this.ajaxSettings, ...newSettings }; return this }
+
+    preLoadData(url = this.urlBack) {
+        const oldSettings = this.getAjaxSettings()
+        this.setAjaxSettings({
+            dataType: "JSON",
+            success: (response) => {
+                response.forEach(info => {
+                    for (const data in info) {
+                        const $find = $(`[name="data[${data}]"]`)
+                        const tagName = $find.prop(`tagName`)
+                        const type = $find.attr("type") || ""
+
+                        const value = info[data]
+
+                        if ($find.length) {
+                            if ((tagName === "INPUT" || tagName === "SELECT")) {
+                                if (["RADIO", "CHECKBOX"].includes(type.toUpperCase())) {
+                                    $find.removeAttr("checked")
+                                    $(`[name="data[${data}]"][value=${value}]`)
+                                        .prop("checked", true)
+                                        .trigger("input")
+                                        .trigger("change")
+                                } else {
+                                    $find
+                                        .val(value)
+                                        .trigger("input")
+                                        .trigger("change")
+                                }
+                            } else if (this.sendContentEditable === true) {
+                                $find
+                                    .html(value)
+                                    .trigger("input")
+                                    .trigger("change")
+                            }
+                        }
+                    }
+                })
+            }
+        })
+
+        this.requestAjax(url)
+        this.setAjaxSettings(oldSettings)
+
+        return this
+    }
 
     requestAjax(url = this.urlBack, settings = this.ajaxSettings) { $.ajax(url, settings) }
 
@@ -37,11 +83,14 @@ class Form {
     }
 
     async #appendToFormData($object) {
-        $object.each((i, el) => {
+        $object.each((_, el) => {
             const $el = $(el);
             const name = $el.attr("name") || $el.data("name");
-            const value = $el.val() || $el.text();
-            this.ajaxSettings.data.append(name, value);
+            const checked = el?.checked
+
+            const value = checked === false ? false : $el.val() || $el.text();
+
+            this.ajaxSettings.data.append(name, value ? value.trim() : value);
         });
     }
 

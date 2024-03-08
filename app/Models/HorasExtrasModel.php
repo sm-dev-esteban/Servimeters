@@ -15,6 +15,24 @@ class HorasExtrasModel extends Aprobador
     const TABLE_REPORT_LIMIT_HOURS = self::TABLE_REPORT . "_config";
     const TABLE_HOURS = "HorasExtra";
 
+    /**  
+     * Teóricamente, si todo sale bien, debería registrarse con estos, id.
+     * Confió en que la tabla y los registros la va a crear mi código,
+     * entonces no creo que pase nada ( ´･･)ﾉ(._.`).
+     */
+    const HOURS_STATUS = [
+        "EDICION"               => 1,
+        "APROBADO"              => 2,
+        "RECHAZO"               => 3,
+        "APROBACION_JEFE"       => 4,
+        "APROBACION_GERENTE"    => 5,
+        "RECHAZO_GERENTE"       => 6,
+        "APROBACION_RH"         => 7,
+        "RECHAZO_RH"            => 8,
+        "APROBACION_CONTABLE"   => 9,
+        "RECHAZO_CONTABLE"      => 10
+    ];
+
     public $timeline = null;
 
     public function __construct()
@@ -31,17 +49,10 @@ class HorasExtrasModel extends Aprobador
             $result = $this->prepare(self::TABLE_REPORT, $data)->insert();
             $id = $result["lastInsertId"] ?? null;
 
-            $HorasExtra = [];
-            if (isset($data["HorasExtra"])) foreach ($data["HorasExtra"] as $key => $Hours) {
-                $i = 0;
-                if (is_array($Hours)) foreach ($Hours as $value) {
-                    $HorasExtra[$i]["id_reporteHE"] = $id;
-                    $HorasExtra[$i][$key] = $value;
-                    $i++;
-                }
-            }
-
-            for ($i = 0; $i < count($HorasExtra); $i++) $this->prepare(self::TABLE_HOURS, ["data" => $HorasExtra[$i]])->insert();
+            self::createHours(
+                id: $id,
+                data: $data
+            );
 
             return $result;
         } catch (Exception $th) {
@@ -49,7 +60,23 @@ class HorasExtrasModel extends Aprobador
         }
     }
 
-    public function readReport(?string $condition = null, ?string $columns = null)
+    private function createHours(array $data, int $id): self
+    {
+        $HorasExtra = [];
+        if (isset($data["HorasExtra"])) foreach ($data["HorasExtra"] as $key => $Hours) {
+            $i = 0;
+            if (is_array($Hours)) foreach ($Hours as $value) {
+                $HorasExtra[$i]["id_reporteHE"] = $id;
+                $HorasExtra[$i][$key] = $value;
+                $i++;
+            }
+        }
+
+        for ($i = 0; $i < count($HorasExtra); $i++) $this->prepare(self::TABLE_HOURS, ["data" => $HorasExtra[$i]])->insert();
+        return $this;
+    }
+
+    public function readReport(?string $condition = null, ?string $columns = null): array
     {
         return ($this->read)(
             self::TABLE_REPORT . " RHE inner join " . self::TABLE_CECO . " CC on RHE.id_ceco = CC.id inner join " . self::TABLE_CLASS . " C on CC.id_clase = C.id",
@@ -67,8 +94,20 @@ class HorasExtrasModel extends Aprobador
         );
     }
 
-    public function updateReport()
+    public function updateReport(array $data, int $id): array
     {
+        try {
+            $result = $this->prepare(self::TABLE_REPORT, $data)->update(condition: "id = {$id}");
+            $this->conn->executeQuery("DELETE FROM HorasExtra WHERE id_reporteHE = {$id}");
+            self::createHours(
+                id: $id,
+                data: $data
+            );
+
+            return $result;
+        } catch (Exception $th) {
+            throw new Exception("Ocurrio un error al actualizar el reporte: {$th->getMessage()}");
+        }
     }
 
     public function deleteReport()
@@ -93,65 +132,61 @@ class HorasExtrasModel extends Aprobador
     private function createTableReport(): void
     {
         $this->tableManager->createTable(self::TABLE_REPORT);
-        $this->tableManager->createColumn(self::TABLE_REPORT, "CC", "Int DEFAULT null");
-        $this->tableManager->createColumn(self::TABLE_REPORT, "cargo");
-        $this->tableManager->createColumn(self::TABLE_REPORT, "mesReportado");
-        $this->tableManager->createColumn(self::TABLE_REPORT, "correoEmpleado");
-        $this->tableManager->createColumn(self::TABLE_REPORT, "proyecto");
-        $this->tableManager->createColumn(self::TABLE_REPORT, "enviaAdjuntos", "BIT DEFAULT 'FALSE'");
-        $this->tableManager->createColumn(self::TABLE_REPORT, "checkAprobador");
-        $this->tableManager->createColumn(self::TABLE_REPORT, "fecha_inicio", "Date DEFAULT null");
-        $this->tableManager->createColumn(self::TABLE_REPORT, "fecha_fin", "Date DEFAULT null");
-        $this->tableManager->createColumn(self::TABLE_REPORT, "reportador_por");
-        $this->tableManager->createColumn(self::TABLE_REPORT, "codigos");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[CC]", "Int DEFAULT null");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[cargo]");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[mesReportado]");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[correoEmpleado]");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[proyecto]");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[enviaAdjuntos]", "BIT DEFAULT 'FALSE'");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[checkAprobador]");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[fecha_inicio]", "Date DEFAULT null");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[fecha_fin]", "Date DEFAULT null");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[reportador_por]");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[codigos]");
+
         # Total
-        $this->tableManager->createColumn(self::TABLE_REPORT, "Total_Descuento", "Int DEFAULT 0");
-        $this->tableManager->createColumn(self::TABLE_REPORT, "Total_Ext_Diu_Ord", "Int DEFAULT 0");
-        $this->tableManager->createColumn(self::TABLE_REPORT, "Total_Ext_Noc_Ord", "Int DEFAULT 0");
-        $this->tableManager->createColumn(self::TABLE_REPORT, "Total_Ext_Diu_Fes", "Int DEFAULT 0");
-        $this->tableManager->createColumn(self::TABLE_REPORT, "Total_Ext_Noc_Fes", "Int DEFAULT 0");
-        $this->tableManager->createColumn(self::TABLE_REPORT, "Total_Rec_Noc", "Int DEFAULT 0");
-        $this->tableManager->createColumn(self::TABLE_REPORT, "Total_Rec_Fes_Diu", "Int DEFAULT 0");
-        $this->tableManager->createColumn(self::TABLE_REPORT, "Total_Rec_Fes_Noc", "Int DEFAULT 0");
-        $this->tableManager->createColumn(self::TABLE_REPORT, "Total_Rec_Ord_Fes_Noc", "Int DEFAULT 0");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[Total_Descuento]", "Int DEFAULT 0");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[Total_Ext_Diu_Ord]", "Int DEFAULT 0");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[Total_Ext_Noc_Ord]", "Int DEFAULT 0");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[Total_Ext_Diu_Fes]", "Int DEFAULT 0");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[Total_Ext_Noc_Fes]", "Int DEFAULT 0");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[Total_Rec_Noc]", "Int DEFAULT 0");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[Total_Rec_Fes_Diu]", "Int DEFAULT 0");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[Total_Rec_Fes_Noc]", "Int DEFAULT 0");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[Total_Rec_Ord_Fes_Noc]", "Int DEFAULT 0");
+
         # Suma Total
-        $this->tableManager->createColumn(self::TABLE_REPORT, "Suma_Total_Descuentos", "Int DEFAULT 0");
-        $this->tableManager->createColumn(self::TABLE_REPORT, "Suma_Total_Extras", "Int DEFAULT 0");
-        $this->tableManager->createColumn(self::TABLE_REPORT, "Suma_Total_Recargos", "Int DEFAULT 0");
-        $this->tableManager->createColumn(self::TABLE_REPORT, "Suma_Total_Horas", "Int DEFAULT 0");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[Suma_Total_Descuentos]", "Int DEFAULT 0");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[Suma_Total_Extras]", "Int DEFAULT 0");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[Suma_Total_Recargos]", "Int DEFAULT 0");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[Suma_Total_Horas]", "Int DEFAULT 0");
+
         # Ceco
-        $this->tableManager->createColumn(self::TABLE_REPORT, "id_ceco", "Int DEFAULT null");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[id_ceco]", "Int DEFAULT null");
         $this->tableManager->addForeignKey([self::TABLE_REPORT => self::TABLE_CECO], ["id_ceco" => "id"]);
+
         # Estado
-        $this->tableManager->createColumn(self::TABLE_REPORT, "id_estado", "Int DEFAULT 1");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[id_estado]", "Int DEFAULT 1");
         if (!$this->tableManager->checkTableExists(self::TABLE_REPORT_STATUS)) $this->createTableReportStatus();
         $this->tableManager->addForeignKey(
             [self::TABLE_REPORT => self::TABLE_REPORT_STATUS],
             ["id_estado"        => "id"]
         );
+
         # Aprobador
-        $this->tableManager->createColumn(self::TABLE_REPORT, "id_aprobador", "Int DEFAULT 1");
+        $this->tableManager->createColumn(self::TABLE_REPORT, "[id_aprobador]", "Int DEFAULT 1");
         $this->tableManager->addForeignKey([self::TABLE_REPORT => self::TABLE_APPROVER], ["id_aprobador" => "id"]);
+
         # Horas
         if ($this->tableManager->checkTableExists(self::TABLE_HOURS)) $this->createTableReportHours();
+
         # Config
         if (!$this->tableManager->checkTableExists(self::TABLE_HOURS))  $this->createTableReportHours();
     }
 
     private function createTableReportStatus(): self
     {
-        $initialData = [
-            ["nombre" => "EDICION"],
-            ["nombre" => "APROBADO"],
-            ["nombre" => "RECHAZO"],
-            ["nombre" => "APROBACION_JEFE"],
-            ["nombre" => "APROBACION_GERENTE"],
-            ["nombre" => "RECHAZO_GERENTE"],
-            ["nombre" => "APROBACION_RH"],
-            ["nombre" => "RECHAZO_RH"],
-            ["nombre" => "APROBACION_CONTABLE"],
-            ["nombre" => "RECHAZO_CONTABLE"]
-        ];
+        foreach (self::HOURS_STATUS as $name => $id) $initialData[] = ["nombre" => $name];
 
         return self::insertInitialData(self::TABLE_REPORT_STATUS, $initialData);
     }
@@ -161,13 +196,16 @@ class HorasExtrasModel extends Aprobador
         $this->tableManager->createTable(self::TABLE_HOURS);
         $this->tableManager->createColumn(self::TABLE_HOURS, "fecha", "Date DEFAULT null");
         $this->tableManager->createColumn(self::TABLE_HOURS, "novedad");
+
         # Descuentos
         $this->tableManager->createColumn(self::TABLE_HOURS, "Descuento", "Int DEFAULT 0");
+
         # Extras
         $this->tableManager->createColumn(self::TABLE_HOURS, "Ext_Diu_Ord", "Int DEFAULT 0");
         $this->tableManager->createColumn(self::TABLE_HOURS, "Ext_Noc_Ord", "Int DEFAULT 0");
         $this->tableManager->createColumn(self::TABLE_HOURS, "Ext_Diu_Fes", "Int DEFAULT 0");
         $this->tableManager->createColumn(self::TABLE_HOURS, "Ext_Noc_Fes", "Int DEFAULT 0");
+
         # Recargos
         $this->tableManager->createColumn(self::TABLE_HOURS, "Rec_Noc", "Int DEFAULT 0");
         $this->tableManager->createColumn(self::TABLE_HOURS, "Rec_Fes_Diu", "Int DEFAULT 0");

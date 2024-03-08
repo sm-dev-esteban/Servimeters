@@ -39,7 +39,7 @@ class ClaseModel extends CRUD
     private function createTableClass(): void
     {
         $this->tableManager->createTable(self::TABLE_CLASS);
-        $this->tableManager->createColumn(self::TABLE_CLASS, "nombre");
+        $this->tableManager->createColumn(self::TABLE_CLASS, "[nombre]");
     }
 
     static function serverSideClass(array $columns, array $config = []): array

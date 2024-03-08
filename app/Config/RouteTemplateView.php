@@ -185,8 +185,8 @@ class RouteTemplateView
     {
         $styles = glob("{$folder}/*.css");
 
-        $json_encode = fn($json) => json_encode($json, JSON_UNESCAPED_UNICODE);
-        $folder_to_server = fn($str) => str_replace(AppConfig::BASE_FOLDER, AppConfig::BASE_SERVER, $str);
+        $json_encode = fn ($json) => json_encode($json, JSON_UNESCAPED_UNICODE);
+        $folder_to_server = fn ($str) => str_replace(AppConfig::BASE_FOLDER, AppConfig::BASE_SERVER, $str);
 
         if (empty($styles))
             return null;
@@ -215,8 +215,8 @@ class RouteTemplateView
 
         $scripts = array_merge($uniqueScript, $generalScripts);
 
-        $json_encode = fn($json) => json_encode($json, JSON_UNESCAPED_UNICODE);
-        $folder_to_server = fn($str) => str_replace(AppConfig::BASE_FOLDER, AppConfig::BASE_SERVER, $str);
+        $json_encode = fn ($json) => json_encode($json, JSON_UNESCAPED_UNICODE);
+        $folder_to_server = fn ($str) => str_replace(AppConfig::BASE_FOLDER, AppConfig::BASE_SERVER, $str);
 
         if (empty($scripts))
             return null;

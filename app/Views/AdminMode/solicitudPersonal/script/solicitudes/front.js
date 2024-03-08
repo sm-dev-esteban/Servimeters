@@ -1,15 +1,12 @@
 $(document).ready(async () => {
+    // Funciones
+    // Variables
+    const alerts = new Alerts()
     const Config = CONFIG()
-    const URL_BACKEND = `${Config.BASE_SERVER}/app/Views/AdminMode/script/index/back.php`
+    const URL_BACKEND = `${Config.BASE_SERVER}/app/Views/AdminMode/solicitudPersonal/script/solicitudes/back.php`
 
-    const chartJS = new ChartJS("#line-chart")
-
-    chartJS.setLabels(data.labels || null)
-    chartJS.setDatasets(data.datasets || null)
-
-    chartJS.createChart("line")
-
-    const $table = $(`#table-users`)
+    const $table = $(`table[data-action]`)
+    const tableAction = $table.data("action")
 
     const dataTable = $table.DataTable($.extend(DATATABLE_ALL, {
         processing: true,
@@ -17,11 +14,11 @@ $(document).ready(async () => {
         responsive: true,
         lengthChange: false,
         autoWidth: false,
-        ajax: `${URL_BACKEND}?action=sspAprov`
+        ajax: `${URL_BACKEND}?action=${tableAction}`
     }))
 
-
     $('.dataTables_filter').remove();
-
+    // Ejecución
     $(`.content .card-header input[type="search"]`).on(`input`, (e) => dataTable.search(e.target.value).draw())
+
 })

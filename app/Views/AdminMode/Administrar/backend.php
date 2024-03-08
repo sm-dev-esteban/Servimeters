@@ -1,6 +1,6 @@
 <?php
 
-use Controller\CentroCosto;
+use Controller\Aprobador;
 
 include_once explode("\\app\\", __DIR__)[0] . "/vendor/autoload.php";
 
@@ -20,12 +20,14 @@ try {
     switch ($action) {
         case 'U_Clase':
         case 'U_Ceco':
+        case 'U_Aprobador':
             $main = [
                 "U_Clase" => ["class" => null, "method" => "editClass"],
-                "U_Ceco" => ["class" => null, "method" => "editCeco"]
+                "U_Ceco" => ["class" => null, "method" => "editCeco"],
+                "U_Aprobador" => ["class" => null, "method" => "editApprover"]
             ][$action] ?? null;
 
-            $class = new CentroCosto;
+            $class = new Aprobador;
             $method = $main['method'];
             $result = $class->$method($data, $id);
 

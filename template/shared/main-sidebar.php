@@ -138,28 +138,34 @@ $session = fn (string $name): mixed => $_SESSION[$name] ?? null;
                                 <p>Mis horas extras</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="<?= Route::href("horasExtras/gestion") ?>" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Gestionar horas extras</p>
-                            </a>
-                        </li>
-                        <li class="nav-header">Reportes</li>
-                        <li class="nav-item">
-                            <a href="<?= Route::href("horasExtras/reporte", ["type" => base64_encode(1)]) ?>" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Reporte Contable</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?= Route::href("horasExtras/reporte", ["type" => base64_encode(2)]) ?>" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Reporte de horas</p>
-                            </a>
-                        </li>
+                        <?php if ($session("isApprover")) : ?>
+                            <li class="nav-item">
+                                <a href="<?= Route::href("horasExtras/gestion") ?>" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Gestionar horas extras</p>
+                                </a>
+                            </li>
+                        <?php endif ?>
+                        <?php if ($session("isApprover")) : ?>
+                            <li class="nav-header">Reportes</li>
+                            <?php if ($session("id_gestiona") == 3) : ?>
+                                <li class="nav-item">
+                                    <a href="<?= Route::href("horasExtras/reporte", ["type" => base64_encode(1)]) ?>" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Reporte Contable</p>
+                                    </a>
+                                </li>
+                            <?php endif ?>
+                            <li class="nav-item">
+                                <a href="<?= Route::href("horasExtras/reporte", ["type" => base64_encode(2)]) ?>" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Reporte de horas</p>
+                                </a>
+                            </li>
+                        <?php endif ?>
                     </ul>
                 </li>
-                <?php if (false) : ?>
+                <?php if ($session("apruebaSolicitudPersonal") || $session("id_gestiona") == 2) : ?>
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-address-book"></i>
@@ -169,12 +175,28 @@ $session = fn (string $name): mixed => $_SESSION[$name] ?? null;
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="<?= Route::href("solicitudPersonal/crearSolicitud") ?>" class="nav-link">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>Crear Solicitud</p>
-                                </a>
-                            </li>
+                            <?php if ($session("id_gestiona") == 2) : ?>
+                                <li class="nav-item">
+                                    <a href="<?= Route::href("solicitudPersonal/crearSolicitud") ?>" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Crear Solicitud</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="<?= Route::href("solicitudPersonal/solicitudes") ?>" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Mis Solicitudes</p>
+                                    </a>
+                                </li>
+                            <?php endif ?>
+                            <?php if ($session("apruebaSolicitudPersonal")) : ?>
+                                <li class="nav-item">
+                                    <a href="<?= Route::href("solicitudPersonal/aprobarSolicitud") ?>" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Aprobar Solicitudes</p>
+                                    </a>
+                                </li>
+                            <?php endif ?>
                         </ul>
                     </li>
                 <?php endif ?>

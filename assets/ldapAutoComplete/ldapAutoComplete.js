@@ -69,7 +69,7 @@ const ldapAutoComplete = (array, config = {}) => {
                             top: 0,
                             left: 0,
                             outline: "none"
-                        }).removeAttr("name").removeAttr("required").removeAttr("id")
+                        }).removeAttr("name").removeAttr("required").removeAttr("id").removeAttr("placeholder")
 
                         $el.replaceWith($container)
 

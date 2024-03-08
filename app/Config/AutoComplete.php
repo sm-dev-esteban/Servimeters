@@ -16,7 +16,7 @@ class AutoComplete extends CRUD
     }
 
     # Establish LDAP connection and set options
-    private function bindLDAP(Int $limit): LDAP
+    private function bindLDAP(int $limit): LDAP
     {
         $user = $_SESSION["user"] ?? null;
         $pass = $_SESSION["pass"] ?? null;
@@ -29,13 +29,13 @@ class AutoComplete extends CRUD
 
     /**
      * Perform LDAP search based on the provided filter and column
-     * @param String $filter - The filter string
-     * @param String $column - The LDAP column to search
-     * @param Int $limit - The limit of results (default is 1)
+     * @param string $filter - The filter string
+     * @param string $column - The LDAP column to search
+     * @param int $limit - The limit of results (default is 1)
      * @return mixed - LDAP search results
      * @throws Exception - Throws an exception if LDAP search fails
      */
-    public function ldap(String $filter, String $column, Int $limit = 1)
+    public function ldap(?string $filter, string $column, int $limit = 1)
     {
         try {
             # Perform LDAP search
@@ -48,16 +48,20 @@ class AutoComplete extends CRUD
 
     /**
      * Perform SQL query based on the provided table, filter, column, and limit
-     * @param String $table - The SQL table to query
-     * @param String $filter - The filter string
-     * @param String $column - The SQL column to search
-     * @param Int $limit - The limit of results (default is 1)
+     * @param string $table - The SQL table to query
+     * @param string $filter - The filter string
+     * @param string $column - The SQL column to search
+     * @param int $limit - The limit of results (default is 1)
      * @return array - SQL query results
      * @throws Exception - Throws an exception if the SQL query fails
      */
-    public function sql(String $table, String $filter, String $column, Int $limit = 1): array
+    public function sql(string $table, ?string $filter = null, ?string $column = null, ?int $limit = 1): array
     {
         try {
+            $filter = $filter ?: $this->fullRequest["search"];
+            $column = $column ?: $this->fullRequest["column"];
+            $limit = $limit ?: $this->fullRequest["limit"];
+
             # Format the SQL query and execute it
             $query = self::formatQuery($table, $column, $limit);
             $prepare = [":FILTER" => "{$filter}%"];
@@ -71,11 +75,11 @@ class AutoComplete extends CRUD
 
     /**
      * Check if the specified table and column exist in the database
-     * @param String $table - The SQL table to check
-     * @param String $column - The SQL column to check
+     * @param string $table - The SQL table to check
+     * @param string $column - The SQL column to check
      * @throws Exception - Throws an exception if the table or column does not exist
      */
-    private function checkTableAndColumn(String $table, String $column): void
+    private function checkTableAndColumn(string $table, string $column): void
     {
         # Check if the table exists
         if (!$this->tableManager->checkTableExists($table)) throw new Exception("Error: Table does not exist: {$table}");
@@ -86,13 +90,13 @@ class AutoComplete extends CRUD
 
     /**
      * Format and return the SQL query based on the database management system
-     * @param String $table - The SQL table to query
-     * @param String $column - The SQL column to search
-     * @param Int $limit - The limit of results
-     * @return String - The formatted SQL query
+     * @param string $table - The SQL table to query
+     * @param string $column - The SQL column to search
+     * @param int $limit - The limit of results
+     * @return string - The formatted SQL query
      * @throws Exception - Throws an exception if the table or column does not exist
      */
-    private function formatQuery(String $table, String $column, Int $limit): String
+    private function formatQuery(string $table, string $column, int $limit): string
     {
         # Check if the table and column exist
         self::checkTableAndColumn($table, $column);

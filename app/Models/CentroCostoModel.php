@@ -39,8 +39,9 @@ class CentroCostoModel extends Clase
     private function createTableCeco(): void
     {
         $this->tableManager->createTable(self::TABLE_CECO);
-        $this->tableManager->createColumn(self::TABLE_CECO, "nombre");
-        $this->tableManager->createColumn(self::TABLE_CECO, "id_clase", "int default null");
+        $this->tableManager->createColumn(self::TABLE_CECO, "[nombre]");
+        $this->tableManager->createColumn(self::TABLE_CECO, "[codigo]", "int default null");
+        $this->tableManager->createColumn(self::TABLE_CECO, "[id_clase]", "int default null");
         $this->tableManager->addForeignKey([self::TABLE_CECO => self::TABLE_CLASS], ["id_clase" => "id"]);
     }
 

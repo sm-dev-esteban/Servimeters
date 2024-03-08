@@ -122,11 +122,6 @@ $rand = rand();
                                             <td contenteditable="true" step=".5" name="HorasExtra[Rec_Fes_Noc][]" type="number">0</td>
                                             <td contenteditable="true" step=".5" name="HorasExtra[Rec_Ord_Fes_Noc][]" type="number">0</td>
                                             <td contenteditable="false">
-                                                <?php if ($id) :
-                                                    print <<<HTML
-                                                    <input type="hidden" name="HorasExtra[id][]" value="0">
-                                                    HTML;
-                                                endif ?>
                                                 <button type="button" class="btn btn-danger" disabled data-action="borrar">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
@@ -140,15 +135,15 @@ $rand = rand();
                                                     <i class="fa fa-plus mr-1"></i>Agregar
                                                 </button>
                                             </td>
-                                            <td contenteditable="false" name="data[Total_Descuento]">0</td>
-                                            <td contenteditable="false" name="data[Total_Ext_Diu_Ord]">0</td>
-                                            <td contenteditable="false" name="data[Total_Ext_Noc_Ord]">0</td>
-                                            <td contenteditable="false" name="data[Total_Ext_Diu_Fes]">0</td>
-                                            <td contenteditable="false" name="data[Total_Ext_Noc_Fes]">0</td>
-                                            <td contenteditable="false" name="data[Total_Rec_Noc]">0</td>
-                                            <td contenteditable="false" name="data[Total_Rec_Fes_Diu]">0</td>
-                                            <td contenteditable="false" name="data[Total_Rec_Fes_Noc]">0</td>
-                                            <td contenteditable="false" name="data[Total_Rec_Ord_Fes_Noc]">0</td>
+                                            <td contenteditable="false" data-code="" name="data[Total_Descuento]">0</td>
+                                            <td contenteditable="false" data-code="11001" name="data[Total_Ext_Diu_Ord]">0</td>
+                                            <td contenteditable="false" data-code="11002" name="data[Total_Ext_Noc_Ord]">0</td>
+                                            <td contenteditable="false" data-code="11003" name="data[Total_Ext_Diu_Fes]">0</td>
+                                            <td contenteditable="false" data-code="11004" name="data[Total_Ext_Noc_Fes]">0</td>
+                                            <td contenteditable="false" data-code="11501" name="data[Total_Rec_Noc]">0</td>
+                                            <td contenteditable="false" data-code="11502" name="data[Total_Rec_Fes_Diu]">0</td>
+                                            <td contenteditable="false" data-code="11503" name="data[Total_Rec_Fes_Noc]">0</td>
+                                            <td contenteditable="false" data-code="11504" name="data[Total_Rec_Ord_Fes_Noc]">0</td>
                                             <td></td>
                                         </tr>
                                         <tr>

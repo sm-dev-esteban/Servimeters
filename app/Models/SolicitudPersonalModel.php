@@ -46,7 +46,7 @@ class SolicitudPersonalModel extends CRUD
         $this->tableManager->createTable(self::TABLE_SOLICITUD);
 
         # Proceso
-        $this->tableManager->createColumn(self::TABLE_SOLICITUD, "id_proceso", "int default null");
+        $this->tableManager->createColumn(self::TABLE_SOLICITUD, "[id_proceso]", "int default null");
         if (!$this->tableManager->checkTableExists(self::TABLE_SOLICITUD)) self::createTableSolicitud();
         $this->tableManager->addForeignKey(
             [self::TABLE_SOLICITUD  => self::TABLE_SOLICITUD_PROCESO],
@@ -62,7 +62,7 @@ class SolicitudPersonalModel extends CRUD
         ]);
 
         # Tipo Contrato
-        $this->tableManager->createColumn(self::TABLE_SOLICITUD, "id_tipo_contrato", "int default null");
+        $this->tableManager->createColumn(self::TABLE_SOLICITUD, "[id_tipo_contrato]", "int default null");
         if (!$this->tableManager->checkTableExists(self::TABLE_SOLICITUD)) self::createTableSolicitud();
         $this->tableManager->addForeignKey(
             [self::TABLE_SOLICITUD  => self::TABLE_SOLICITUD_TIPO_CONTRATO],
@@ -77,7 +77,7 @@ class SolicitudPersonalModel extends CRUD
         ]);
 
         # Horario
-        $this->tableManager->createColumn(self::TABLE_SOLICITUD, "id_horario", "int default null");
+        $this->tableManager->createColumn(self::TABLE_SOLICITUD, "[id_horario]", "int default null");
         if (!$this->tableManager->checkTableExists(self::TABLE_SOLICITUD)) self::createTableSolicitud();
         $this->tableManager->addForeignKey(
             [self::TABLE_SOLICITUD  => self::TABLE_SOLICITUD_HORARIO],
@@ -91,7 +91,7 @@ class SolicitudPersonalModel extends CRUD
         ]);
 
         # Motivo de requisición
-        $this->tableManager->createColumn(self::TABLE_SOLICITUD, "id_motivo_requisicion", "int default null");
+        $this->tableManager->createColumn(self::TABLE_SOLICITUD, "[id_motivo_requisicion]", "int default null");
         if (!$this->tableManager->checkTableExists(self::TABLE_SOLICITUD)) self::createTableSolicitud();
         $this->tableManager->addForeignKey(
             [self::TABLE_SOLICITUD  => self::TABLE_SOLICITUD_MOTIVO_REQUISICION],
@@ -107,7 +107,7 @@ class SolicitudPersonalModel extends CRUD
         ]);
 
         # Estado
-        $this->tableManager->createColumn(self::TABLE_SOLICITUD, "id_estado", "int default null");
+        $this->tableManager->createColumn(self::TABLE_SOLICITUD, "[id_estado]", "int default 1");
         if (!$this->tableManager->checkTableExists(self::TABLE_SOLICITUD)) self::createTableSolicitud();
         $this->tableManager->addForeignKey(
             [self::TABLE_SOLICITUD  => self::TABLE_SOLICITUD_ESTADO],
@@ -115,9 +115,12 @@ class SolicitudPersonalModel extends CRUD
         );
 
         self::insertInitialData(self::TABLE_SOLICITUD_ESTADO, [
-            ["nombre" => "pendiente"],
-            ["nombre" => "aprobada"],
-            ["nombre" => "rechazada"]
+            ["nombre" => 'Pendiente'],
+            ["nombre" => 'Aprobado jefe'],
+            ["nombre" => 'Rechazo jefe'],
+            ["nombre" => 'Rechazado'],
+            ["nombre" => 'Gestion Talento Humano'],
+            ["nombre" => 'Cancelado']
         ]);
     }
 
@@ -125,7 +128,19 @@ class SolicitudPersonalModel extends CRUD
     {
         $datatable = new Datatable;
 
-        return $datatable->serverSide($_REQUEST, self::TABLE_SOLICITUD, $columns, $config);
+        $const = fn ($name) => [
+            "TABLE_SOLICITUD" => self::TABLE_SOLICITUD,
+            "TABLE_SOLICITUD_PROCESO" => self::TABLE_SOLICITUD_PROCESO,
+            "TABLE_SOLICITUD_ESTADO" => self::TABLE_SOLICITUD_ESTADO,
+        ][$name];
+
+        $table = [];
+
+        $table[] = "{$const("TABLE_SOLICITUD")} SP";
+        $table[] = "inner join {$const("TABLE_SOLICITUD_PROCESO")} SPP on SP.id_proceso = SPP.id";
+        $table[] = "inner join {$const("TABLE_SOLICITUD_ESTADO")} SPE on SP.id_estado = SPE.id";
+
+        return $datatable->serverSide($_REQUEST, $table, $columns, $config);
     }
 
     /**
@@ -138,8 +153,7 @@ class SolicitudPersonalModel extends CRUD
     protected function insertInitialData(string $table, array $initialData = []): void
     {
         try {
-            foreach ($initialData as $data)
-                $this->prepare($table, ["data" => $data])->insert();
+            foreach ($initialData as $data) $this->prepare($table, ["data" => $data])->insert();
         } catch (Exception $th) {
             throw new Exception("Ocurrio un error creando la tabla {$table}: {$th->getMessage()}");
         }

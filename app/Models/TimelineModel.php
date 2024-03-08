@@ -39,14 +39,14 @@ class TimelineModel extends CRUD
         $this->tableManager->createTable(self::TABLE_TIMELINE);
 
         # Titulo y description
-        $this->tableManager->createColumn(self::TABLE_TIMELINE, "titulo");
-        $this->tableManager->createColumn(self::TABLE_TIMELINE, "descripcion");
-        $this->tableManager->createColumn(self::TABLE_TIMELINE, "pie_de_pagina");
+        $this->tableManager->createColumn(self::TABLE_TIMELINE, "[titulo]");
+        $this->tableManager->createColumn(self::TABLE_TIMELINE, "[descripcion]");
+        $this->tableManager->createColumn(self::TABLE_TIMELINE, "[pie_de_pagina]");
 
         # Clases para el icono por defecto un check ✔
-        $this->tableManager->createColumn(self::TABLE_TIMELINE, "icon_class", "text default \"fas fa-check bg-primary\"");
+        $this->tableManager->createColumn(self::TABLE_TIMELINE, "[icon_class]", "text default \"fas fa-check bg-primary\"");
 
         # Identificador: Como le quiero dar un uso en general para seguimiento o lo que sea este campo sera la clave para hacer las consultas
-        $this->tableManager->createColumn(self::TABLE_TIMELINE, "identificador", "text default null");
+        $this->tableManager->createColumn(self::TABLE_TIMELINE, "[identificador]", "text default null");
     }
 }

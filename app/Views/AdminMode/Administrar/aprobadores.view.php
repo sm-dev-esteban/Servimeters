@@ -4,7 +4,7 @@ use Config\USEFUL;
 use Controller\Aprobador;
 
 $useful = new USEFUL;
-$aprovador = new Aprobador;
+$aprobador = new Aprobador;
 
 $thead = [
     "Nombre",
@@ -33,12 +33,12 @@ $saltoDeLinea = fn (string $str): string => htmlspecialchars(implode("<br>", exp
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Aprovador</h1>
+                <h1 class="m-0">Aprobador</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item">Administrar</li>
-                    <li class="breadcrumb-item active">Aprovador</li>
+                    <li class="breadcrumb-item active">Aprobador</li>
                 </ol>
             </div>
         </div>
@@ -51,7 +51,7 @@ $saltoDeLinea = fn (string $str): string => htmlspecialchars(implode("<br>", exp
             <div class="col-md-12">
                 <div class="card mt-1">
                     <div class="card-header">
-                        <h3 class="card-title">Aprovadores</h3>
+                        <h3 class="card-title">Aprobadores</h3>
                         <div class="card-tools">
                             <div class="input-group input-group-sm">
                                 <input type="search" class="form-control" placeholder="Buscar">
@@ -60,7 +60,7 @@ $saltoDeLinea = fn (string $str): string => htmlspecialchars(implode("<br>", exp
                     </div>
                     <div class="card-body p-0">
                         <div class="controls">
-                            <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#modal-aprovador">
+                            <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#modal-aprobador">
                                 <i class="fas fa-plus"></i>
                                 Agregar
                             </button>
@@ -71,7 +71,7 @@ $saltoDeLinea = fn (string $str): string => htmlspecialchars(implode("<br>", exp
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="table" data-action="ssp_Aprovador">
+                            <table class="table" data-action="ssp_Aprobador">
                                 <thead>
                                     <tr>
                                         <?= $showTH($thead) ?>
@@ -86,11 +86,11 @@ $saltoDeLinea = fn (string $str): string => htmlspecialchars(implode("<br>", exp
     </div>
 </section>
 
-<div class="modal fade" id="modal-aprovador">
+<div class="modal fade" id="modal-aprobador">
     <div class="modal-dialog">
-        <form class="modal-content" data-action="I_Aprovador">
+        <form class="modal-content" data-action="I_Aprobador">
             <div class="modal-header">
-                <h4 class="modal-title">Aprovador</h4>
+                <h4 class="modal-title">Aprobador</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -99,11 +99,11 @@ $saltoDeLinea = fn (string $str): string => htmlspecialchars(implode("<br>", exp
                 <div class="row">
                     <div class="col-12 mb-3">
                         <label for="nombre">Nombre</label>
-                        <input type="text" name="data[nombre]" id="nombre" class="form-control" required placeholder="Nombre de la Aprovador">
+                        <input type="text" name="data[nombre]" id="nombre" class="form-control" required placeholder="Nombre del Aprobador">
                     </div>
                     <div class="col-12 mb-3">
                         <label for="email">E-mail</label>
-                        <input type="email" name="data[email]" id="email" class="form-control" required placeholder="Email de la Aprovador">
+                        <input type="email" name="data[email]" id="email" class="form-control" required placeholder="Email del Aprobador">
                     </div>
                     <div class="col-12 mb-3">
                         <div class="form-group">
@@ -124,12 +124,9 @@ $saltoDeLinea = fn (string $str): string => htmlspecialchars(implode("<br>", exp
                                 <input type="checkbox" name="data[apruebaSolicitudPersonal]" id="apruebaSolicitudPersonal" value="<?= true ?>" class="custom-control-input">
                                 <label for="apruebaSolicitudPersonal" class="custom-control-label">
                                     Aprueba Solicitud Personal<sup class="fa fa-info ml-1 text-info" data-toggle="popover" data-trigger="hover" title="Solicitud Personal" data-content="<?= $saltoDeLinea(<<<HTML
-                                        Acceso al modulo de 'Administrar'
+                                        <b>Acceso como aprobador.</b>
 
-                                        * Gestión Clases
-                                        * Gestión Centros de costo
-                                        * Gestión Cargos
-                                        * Gestión Aprobadores
+                                        * Aprobación de solicitud de personal.
                                         HTML) ?>"></sup>
                                 </label>
                             </div>
@@ -137,12 +134,9 @@ $saltoDeLinea = fn (string $str): string => htmlspecialchars(implode("<br>", exp
                                 <input type="checkbox" name="data[apruebaSolicitudPermisos]" id="apruebaSolicitudPermisos" value="<?= true ?>" class="custom-control-input">
                                 <label for="apruebaSolicitudPermisos" class="custom-control-label">
                                     Aprueba Solicitud Permisos<sup class="fa fa-info ml-1 text-info" data-toggle="popover" data-trigger="hover" title="Solicitud Permisos" data-content="<?= $saltoDeLinea(<<<HTML
-                                        Acceso al modulo de Administrar
+                                        <b>Acceso como aprobador.</b>
 
-                                        * Gestión Clases
-                                        * Gestión Centros de costo
-                                        * Gestión Cargos
-                                        * Gestión Aprobadores
+                                        * Aprobación solicitud de permiso.
                                         HTML) ?>"></sup>
                                 </label>
                             </div>
@@ -151,13 +145,13 @@ $saltoDeLinea = fn (string $str): string => htmlspecialchars(implode("<br>", exp
                     <div class="col-6 mb-3">
                         <label for="id_tipo">Tipo</label>
                         <select name="data[id_tipo]" id="id_tipo" class="form-control" required>
-                            <?= ($useful->options)($aprovador->getApproverType(), "id", "nombre") ?>
+                            <?= ($useful->options)($aprobador->getApproverType(), "id", "nombre") ?>
                         </select>
                     </div>
                     <div class="col-6 mb-3">
                         <label for="id_gestiona">Gestiona</label>
                         <select name="data[id_gestiona]" id="id_gestiona" class="form-control" required>
-                            <?= ($useful->options)($aprovador->getApproverManages(), "id", "nombre") ?>
+                            <?= ($useful->options)($aprobador->getApproverManages(), "id", "nombre") ?>
                         </select>
                     </div>
                 </div>

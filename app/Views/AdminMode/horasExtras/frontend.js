@@ -1,8 +1,68 @@
 $(document).ready(async () => {
-    const inArray = (needle, haystack) => haystack.includes(needle)
+    const inArray = (needle, haystack) => haystack.includes(needle), showTimeline = (e) => {
+        const $modal = $(e.target)
+        const $btn = $(e.relatedTarget)
+        const id = $btn.data("id")
+        $.ajax(`${URL_BACKEND}?action=showTimeline`, {
+            type: "POST",
+            dataType: "HTML",
+            data: { id: id },
+            success: (response) => $modal.find(".modal-body").html(response)
+        })
+    }, showReport = (e) => {
+        const $modal = $(e.target)
+        const $btn = $(e.relatedTarget)
+        const id = $btn.data("id")
+        $.ajax(`${URL_BACKEND}?action=showReport`, {
+            type: "POST",
+            dataType: "HTML",
+            data: { id: id },
+            success: (response) => $modal.find(".modal-body").html(response)
+        })
+    }, printModal = (e) => {
+        const content = $(e.target).closest(".modal-content").find(".modal-body").html();
+        const windowPrint = window.open('', '_blank');
+        windowPrint.document.write(`
+        <html>
+            <head>
+                <link rel="stylesheet" href="http://localhost/Servimeters/vendor/almasaeed2010/adminlte/dist/css/adminlte.min.css">
+                <link rel="stylesheet" href="http://localhost/Servimeters/vendor/almasaeed2010/adminlte/plugins/fontawesome-free/css/all.min.css">
+                <style>
+                    body {
+                        position: relative;
+                    }
+                    .watermark {
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        opacity: 0.1; /* Ajusta la opacidad según sea necesario */
+                        z-index: -1;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="watermark">
+                    <img src="http://localhost/Servimeters/img/SM CIRCULAR.png" alt="Logo" style="width: 100%; max-width: 200px; height: auto;">
+                </div>
+                ${content}
+                <script>
+                document.addEventListener("DOMContentLoaded", event => window.print());
+                document.addEventListener("click", event => window.print());
+                </script>
+            </body>
+        </html>
+        `);
+        windowPrint.document.close();
+    }
+
+
+    const Config = CONFIG()
+    const URL_BACKEND = `${Config.BASE_SERVER}/app/Views/AdminMode/horasExtras/backend.php`
+
     const srcSplit = location.href.split("?")[0].split("/")
 
-    if (true || inArray("reportarHoras", srcSplit) || inArray("editarReporte", srcSplit)) {
+    if (inArray("reportarHoras", srcSplit) || inArray("editarReporte", srcSplit)) {
 
         const sumarColumnas = (i) => $(`tbody tr`).toArray().reduce((sum, $tr) => sum + Number($($tr).find(`td:nth-child(${i})`).text()), 0)
         const sumarValores = (array) => {
@@ -77,8 +137,7 @@ $(document).ready(async () => {
             }
         }, habilitarAprobador = (e) => {
             const estado = e?.target.value || 1
-            const $jefes = $(`#Jefes`)
-            const $gerentes = $(`#Gerentes`)
+
             const $id_aprobador = $(`[name="data[id_aprobador]"]`)
             const $id_estado = $(`[name="data[id_estado]"]`)
 
@@ -114,34 +173,9 @@ $(document).ready(async () => {
             const $id_aprobador = $(`[name="data[id_aprobador]"]`)
 
             $id_aprobador.val(id_aprobador)
-        }, showTimeline = (e) => {
-            const $modal = $(e.target)
-            const $btn = $(e.relatedTarget)
-            const id = $btn.data("id")
-            $.ajax(`${URL_BACKEND}?action=showTimeline`, {
-                type: "POST",
-                dataType: "HTML",
-                data: { id: id },
-                success: (response) => $modal.find(".modal-body").html(response)
-            })
-        }, showReport = (e) => {
-            const $modal = $(e.target)
-            const $btn = $(e.relatedTarget)
-            const id = $btn.data("id")
-            $.ajax(`${URL_BACKEND}?action=showReport`, {
-                type: "POST",
-                dataType: "HTML",
-                data: { id: id },
-                success: (response) => $modal.find(".modal-body").html(response)
-            })
         }
 
         ContentEditableInput.selectorAll("[contenteditable][type]")
-
-        const alerts = new Alerts()
-
-        const Config = CONFIG()
-        const URL_BACKEND = `${Config.BASE_SERVER}/app/Views/AdminMode/horasExtras/backend.php`
 
         const $table = $(`#tableDatail`)
         const $btnAdd = $(`button[data-action="agregar"]`)
@@ -203,14 +237,16 @@ $(document).ready(async () => {
         const $checkAdjuntos = $(`#checkAdjuntos`)
         $checkAdjuntos.on(`change`, habilitarAdjuntos)
 
-        // modal
-        const $modalTimeline = $(`#modal-timeline`)
-        const $modalReport = $(`#modal-report`)
-
-        $modalTimeline.on("show.bs.modal", showTimeline)
-        $modalReport.on("show.bs.modal", showReport)
     }
 
+    // modal
+    const $modalTimeline = $(`#modal-timeline`)
+    const $modalReport = $(`#modal-report`)
+    const $btnPrintModal = $(`[data-action="print-modal"]`)
+
+    $modalTimeline.on("show.bs.modal", showTimeline)
+    $modalReport.on("show.bs.modal", showReport)
+    $btnPrintModal.on("click", printModal)
 
     $(`[data-toggle="popover"]`).popover({
         container: "body",

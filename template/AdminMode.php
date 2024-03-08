@@ -76,14 +76,16 @@ $script = [
     AppConfig::BASE_SERVER . "/assets/ldapAutoComplete/ldapAutoComplete.js",
     AppConfig::BASE_SERVER . "/assets/forDatatable/forDatatable.js",
     AppConfig::BASE_SERVER . "/assets/menu/menu.js",
-    AppConfig::BASE_SERVER . "/assets/main.js",
+    AppConfig::BASE_SERVER . "/assets/main.js"
 ];
 
 if (AppConfig::USE_WEBSOCKET)
     $script[] = AppConfig::BASE_SERVER . "/assets/WebSocket/WebSocket.js";
 
 $configForJs = json_encode([
-    "BASE_SERVER" => AppConfig::BASE_SERVER
+    "BASE_SERVER" => AppConfig::BASE_SERVER,
+    "CURRENCY" => AppConfig::CURRENCY,
+    "LOCALE" => AppConfig::LOCALE
 ], JSON_UNESCAPED_UNICODE);
 
 ?>
@@ -96,7 +98,7 @@ $configForJs = json_encode([
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Lorem ipsum dolor sit.">
     <meta name="keywords" content="Lorem, ipsum dolor, Veritatis, debitis quas, Ipsa, tenetur suscipit!">
-    <meta name="author" content="Esteban serna palacios">
+    <meta name="author" content="Esteban serna palacios Dev Jr">
     <title>
         <?= AppConfig::COMPANY["NAME"] ?>
     </title>

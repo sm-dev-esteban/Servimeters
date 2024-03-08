@@ -145,7 +145,7 @@ class ProcessData
         $data["values"] = [];
 
         if (!empty(count($this->data))) foreach ($this->data as $name => $value) if ($this->checkEmptyValues === true ? !empty($value) : true) {
-            $data["keys"][] = $name;
+            $data["keys"][] = $this->conn->getGestor() === "SQLSRV" ? "[{$name}]" : $name;
             $data["values"][] = ":{$name}";
 
             $value = is_array($value) ? self::jsonUnescapedUnicode($value) : $value;
@@ -189,7 +189,7 @@ class ProcessData
                 if ($this->OPTIMIZE_IMAGES === TRUE) $this->imageProcessor::optimizeImages($value, $this->DEFAULT_QUALITY);
             }
 
-            $data["keys"][] = $name;
+            $data["keys"][] = $this->conn->getGestor() === "SQLSRV" ? "[{$name}]" : $name;
             $data["values"][] = ":{$name}";
 
             $value = is_array($value) ? self::jsonUnescapedUnicode(array_map(function ($v) {
@@ -244,7 +244,7 @@ class ProcessData
     {
         $this->tableManager->createTable($table);
 
-        foreach ($columns as $column) $this->tableManager->createColumn($table, $column);
+        foreach ($columns as $column) $this->tableManager->createColumn($table, str_replace(["[", "]"], "", $column));
     }
 
     # Destructor to close the database connection

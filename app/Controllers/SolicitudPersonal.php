@@ -12,4 +12,12 @@ class SolicitudPersonal extends SolicitudPersonalModel
             data: $data
         );
     }
+
+    static function sspSolicitud(array $columns, array $config = [])
+    {
+        return self::serverSideSolicitud(
+            columns: $columns,
+            config: $config
+        );
+    }
 }

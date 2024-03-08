@@ -139,8 +139,10 @@ class Route extends RouteTemplateView
      */
     public function view($createView = false): void
     {
-        $ext = explode(".", $this->page);
-        $this->view = $this->config::BASE_FOLDER_VIEW . explode("?", $ext[0])[0] . "." . ($ext[1] ?? "view") . "." . ($ext[2] ?? "php");
+        $ext = explode(".", explode("?", $this->page)[0]);
+        [$filename, $extension1, $extension2] = $ext;
+
+        $this->view = $this->config::BASE_FOLDER_VIEW . "{$filename}." . ($extension1 ?? "view") . "." . ($extension2 ?? "php");
 
         if (!$this->config::PRODUCTION && $createView === true)
             self::createFilesAndFolders();

@@ -12,8 +12,8 @@
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-    <li class="breadcrumb-item active">Calendar</li>
-</ol>
+                    <li class="breadcrumb-item active">Calendar</li>
+                </ol>
             </div>
         </div>
     </div>
@@ -23,14 +23,24 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class=card-title>Titulo</h3>
-                    </div>
-                    <div class="card-body">Contenido</div>
-                    <div class="card-footer">Pie de pagina</div>
+                <div class="card card-primary">
+                    <div class="card-body p-0" id="calendar"></div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+<div class="modal fade" id="modal-calendar">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">...</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" data-mode data-id>...</div>
+        </div>
+    </div>
+</div>

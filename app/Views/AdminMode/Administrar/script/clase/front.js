@@ -1,8 +1,4 @@
 $(document).ready(async () => {
-    const alerts = new Alerts()
-    const Config = CONFIG()
-    const URL_BACKEND = `${Config.BASE_SERVER}/app/Views/AdminMode/Administrar/script/clase/back.php`
-
     const handleSuccess = (response) => {
         if (response.status || false) {
             const status = response.status.toLowerCase()
@@ -14,6 +10,10 @@ $(document).ready(async () => {
             if (status === "success") updateDatatable()
         }
     }
+
+    const alerts = new Alerts()
+    const Config = CONFIG()
+    const URL_BACKEND = `${Config.BASE_SERVER}/app/Views/AdminMode/Administrar/script/clase/back.php`
 
     const $table = $(`table[data-action]`)
     const tableAction = $table.data("action")

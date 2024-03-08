@@ -5,7 +5,7 @@ use Controller\Aprobador;
 
 include_once explode("\\app\\", __DIR__)[0] . "/vendor/autoload.php";
 
-$aprovador = new Aprobador;
+$aprobador = new Aprobador;
 $useful = new USEFUL;
 
 $action = $_GET["action"] ?? false;
@@ -32,23 +32,23 @@ $style = fn (int $status) => str_replace("\n", "", "
     user-select: none;
 ");
 
-$tipo = $aprovador->getApproverType();
+$tipo = $aprobador->getApproverType();
 $opcionesTipo = fn ($d = null): string => ($useful->options)($tipo, "id", "nombre", $d);
 
-$gestion = $aprovador->getApproverManages();
+$gestion = $aprobador->getApproverManages();
 $opcionesGestion = fn ($d = null): string => ($useful->options)($gestion, "id", "nombre", $d);
 
 
 try {
     switch ($action) {
-        case 'I_Aprovador':
-            $result = $aprovador->addApprover($data);
+        case 'I_Aprobador':
+            $result = $aprobador->addApprover($data);
 
             $response["status"] = $result["lastInsertId"] ? "success" : "error";
             $response["message"] = $response["status"] === "success" ? "Se agrego la clase con exito" : "ocurrio un error al agregar la clase";
             break;
-        case 'ssp_Aprovador':
-            $response = $aprovador->sspApprover([
+        case 'ssp_Aprobador':
+            $response = $aprobador->sspApprover([
                 [
                     "db" => "APPROVER.nombre",
                     "formatter" => fn ($d, $row): string => <<<HTML
@@ -93,7 +93,7 @@ try {
                     </div>
                     <div data-edit="{$row['id']}" class="hide">
                         <div class="icheck-primary">
-                            <input type="checkbox" value="" id="check{$row['id']}{$i}" {$checked($d)}>
+                            <input type="checkbox" name="data[admin]" value="1" id="check{$row['id']}{$i}" {$checked($d)}>
                             <label for="check{$row['id']}{$i}"></label>
                         </div>
                     </div>
@@ -107,7 +107,7 @@ try {
                     </div>
                     <div data-edit="{$row['id']}" class="hide">
                         <div class="icheck-primary">
-                            <input type="checkbox" value="" id="check{$row['id']}{$i}" {$checked($d)}>
+                            <input type="checkbox" name="data[apruebaSolicitudPersonal]" value="1" id="check{$row['id']}{$i}" {$checked($d)}>
                             <label for="check{$row['id']}{$i}"></label>
                         </div>
                     </div>
@@ -121,7 +121,7 @@ try {
                     </div>
                     <div data-edit="{$row['id']}" class="hide">
                         <div class="icheck-primary">
-                            <input type="checkbox" value="" id="check{$row['id']}{$i}" {$checked($d)}>
+                            <input type="checkbox" name="data[apruebaSolicitudPermisos]" value="1" id="check{$row['id']}{$i}" {$checked($d)}>
                             <label for="check{$row['id']}{$i}"></label>
                         </div>
                     </div>
@@ -136,7 +136,7 @@ try {
                         </button>
                     </div>
                     <div data-edit={$d} class="hide btn-group">
-                        <button class="btn btn-sm text-success" onclick="ConfirmUpdate({$d}, 'U_Ceco')">
+                        <button class="btn btn-sm text-success" onclick="ConfirmUpdate({$d}, 'U_Aprobador')">
                             <i class="fa fa-check"></i>
                         </button>
                         <button class="btn btn-sm text-danger" onclick="ChangeMode({$d}); disableContentEditable({$d})">

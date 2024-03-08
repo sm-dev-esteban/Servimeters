@@ -26,18 +26,30 @@ body {
     --box-shadow: 0 2rem 3rem var(--light);
 }
 
-/* Glassmorphism */
 .card,
 .modal,
 .popover,
 .main-header,
-.main-sidebar {
+.main-sidebar,
+.main-footer {
     background: rgba(255, 255, 255, 0.25);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
-    /* border-radius: 10px; */
     border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.card,
+.modal-content,
+.popover,
+.main-footer {
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+.main-header,
+.main-sidebar {
+    border-radius: 0 0 10px 0;
 }
 
 .CodeMirror-line-Exception {

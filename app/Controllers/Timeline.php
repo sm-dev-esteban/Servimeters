@@ -45,7 +45,7 @@ class Timeline extends TimelineModel
                     HTML;
                 }
 
-                $timeLabelHour = date("H:i", strtotime($hour));
+                $timeLabelHour = date("H:i A", strtotime($hour));
                 $res .= <<<HTML
                     <div>
                         <i class="{$icon_class}"></i>
