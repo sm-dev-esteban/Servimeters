@@ -177,7 +177,7 @@ class ProcessData
         if (!empty(count($this->file))) foreach ($this->file["name"] as $name => $value) {
             # Load the files
             if (is_array($value)) for ($i = 0; $i < count($value); $i++) if (!empty($this->file["tmp_name"][$name][$i])) {
-                $value[$i] = $this->filePath . "/" . uniqid() . "_{$value[$i]}";
+                $value[$i] = "{$this->filePath}/{$value[$i]}";
 
                 # Pending Files
                 $this->pendingFiles[] = [
@@ -185,7 +185,7 @@ class ProcessData
                     "to" => $value[$i]
                 ];
             } else {
-                $value = $this->filePath . "/" . uniqid() . "_{$value}";
+                $value = "{$this->filePath}/{$value}";
 
                 # Pending Files 
                 $this->pendingFiles[] = [
