@@ -12,22 +12,33 @@ class ProcessData
 {
     # Properties
     private $table, $query, $prepareData;
-    private $data, $file;
+    private array $data, $file;
 
-    private $filePath = "@TABLE/@ID";
+    /**
+     * @param string $filePath
+     * Carpeta donde se guarda los archivos
+     * 
+     * Palabras especiales
+     * * @ID        -> id
+     * * @TABLE     -> tabla
+     * * @DATE      -> fecha: Y-m-d
+     * * @HOUR      -> hora: H:i:s
+     * * @FULLDATE  -> fechaCompleta: Y-m-d H:i:s
+     */
+    public string $filePath = "@TABLE/@ID";
 
-    private $pendingFiles = [];
+    private array $pendingFiles = [];
 
-    public $autoCreation = true;
-    public $checkEmptyValues = false;
+    public bool $autoCreation = true;
+    public bool $checkEmptyValues = false;
 
-    protected $isPrepared = false;
+    protected bool $isPrepared = false;
     public $conn, $tableManager, $imageProcessor;
 
     # Image processing options
-    public $OPTIMIZE_IMAGES = false;
-    public $DEFAULT_QUALITY = 90;
-    public $USE_RELATIVE_PATH = true;
+    public bool $OPTIMIZE_IMAGES = false;
+    public int $DEFAULT_QUALITY = 80;
+    public bool $USE_RELATIVE_PATH = true;
 
     # Constructor
     public function __construct(PDO $conn = null)
@@ -166,16 +177,13 @@ class ProcessData
         if (!empty(count($this->file))) foreach ($this->file["name"] as $name => $value) {
             # Load the files
             if (is_array($value)) for ($i = 0; $i < count($value); $i++) if (!empty($this->file["tmp_name"][$name][$i])) {
-                $value[$i] = $this->filePath . "/" . uniqid() . "_{$this->file["name"][$name][$i]}";
+                $value[$i] = $this->filePath . "/" . uniqid() . "_{$value[$i]}";
 
                 # Pending Files
                 $this->pendingFiles[] = [
                     "from" => $this->file["tmp_name"][$name][$i],
                     "to" => $value[$i]
                 ];
-
-                # Image optimization
-                if ($this->OPTIMIZE_IMAGES === TRUE) $this->imageProcessor::optimizeImages($value[$i], $this->DEFAULT_QUALITY);
             } else {
                 $value = $this->filePath . "/" . uniqid() . "_{$value}";
 
@@ -184,9 +192,6 @@ class ProcessData
                     "from" => $this->file["tmp_name"][$name],
                     "to" => $value
                 ];
-
-                # Image optimization
-                if ($this->OPTIMIZE_IMAGES === TRUE) $this->imageProcessor::optimizeImages($value, $this->DEFAULT_QUALITY);
             }
 
             $data["keys"][] = $this->conn->getGestor() === "SQLSRV" ? "[{$name}]" : $name;
@@ -236,6 +241,12 @@ class ProcessData
 
             # Move pending files
             if ($from !== null && $to !== null) @move_uploaded_file($from, $to);
+
+            # Image optimization
+            if ($this->OPTIMIZE_IMAGES === TRUE) $this->imageProcessor::optimizeImages(
+                format: $to,
+                quality: $this->DEFAULT_QUALITY
+            );
         }
     }
 
