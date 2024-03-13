@@ -1,8 +1,8 @@
 <?php
 
-# Includes your controller
+use Config\USEFUL;
 
-$saltoDeLinea = fn (string $str): string => htmlspecialchars(implode("<br>", explode("\n", $str)));
+$USEFUL = new USEFUL;
 
 ?>
 
@@ -51,11 +51,11 @@ $saltoDeLinea = fn (string $str): string => htmlspecialchars(implode("<br>", exp
                             <div class="col-12">
                                 <hr>
                             </div>
-                            <div class="col-12 col-xl-1 mb-3">
+                            <div class="col-12 col-xl-2 mb-3">
                                 <label for="codigo"><sup class="text-danger mr-1">*</sup>Código</label>
                                 <input type="text" name="data[codigo]" id="codigo" class="form-control" required>
                             </div>
-                            <div class="col-12 col-xl-3 mb-3">
+                            <div class="col-12 col-xl-2 mb-3">
                                 <label for="id_tipo_contrato"><sup class="text-danger mr-1">*</sup>Tipo de contrato</label>
                                 <select name="data[id_tipo_contrato]" id="id_tipo_contrato" class="form-control" style="width: 100%;" required></select>
                             </div>
@@ -101,7 +101,7 @@ $saltoDeLinea = fn (string $str): string => htmlspecialchars(implode("<br>", exp
                             </div>
                             <div class="col-12 mb-3" style="display: none">
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control" id="resources" placeholder="Recursos necesarios para el cargo" data-toggle="popover" data-trigger="hover" data-content="<?= $saltoDeLinea(<<<HTML
+                                    <input type="text" class="form-control" id="resources" placeholder="Recursos necesarios para el cargo" data-toggle="popover" data-trigger="hover" data-content="<?= ($USEFUL->lineBreak)(<<<HTML
                                     <b>Nota</b>
                                     * Hacer clic sobre el icono de "+" para agregar los recursos que requieran.
                                     * Para borrarlo, haga clic sobre el ítem que quiera borrar.

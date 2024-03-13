@@ -6,6 +6,8 @@ use Config\Route;
 
 $session = fn (string $name): mixed => $_SESSION[$name] ?? null;
 
+$session_end = date("Y-d-m H:i A", strtotime($session("session") . " + 1 days"));
+
 ?>
 
 <aside class="main-sidebar main-sidebar-custom sidebar-light-primary">
@@ -18,7 +20,7 @@ $session = fn (string $name): mixed => $_SESSION[$name] ?? null;
     <div class="sidebar">
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="info">
-                <a href="<?= Route::href("profile") ?>" class="d-block">.
+                <a href="<?= Route::href("profile") ?>" class="d-block">
                     <?= $session("usuario") ?>
                 </a>
             </div>
@@ -205,6 +207,12 @@ $session = fn (string $name): mixed => $_SESSION[$name] ?? null;
                         <i class="nav-icon fas fa-door-open"></i>
                         <p class="text">Salir</p>
                     </a>
+                    <!-- <a href="#" class="nav-link text-danger" id="btnDisconnect">
+                        <i class="nav-icon fas fa-door-open"></i>
+                        <p class="text" data-toggle="popover" data-trigger="hover" data-content="<?= <<<HTML
+                        Cierre de sesión: {$session_end}
+                        HTML ?>">Salir</p>
+                    </a> -->
                 </li>
             </ul>
         </nav>
