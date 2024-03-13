@@ -14,6 +14,7 @@ class USEFUL
     public Closure $thead;
     public Closure $convertBytes;
     public Closure $viewIconForExtension;
+    public Closure $lineBreak;
 
     const MEDIDAS = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
     const FACTOR = 1024;
@@ -63,6 +64,15 @@ class USEFUL
         }, $columns));
 
         /**
+         * Agrega la etiqueta de <br> separando el texto por saltos de linea.
+         * "La cree para escribir texto en las alertas, pero siver para cualquier parte del html"
+         * 
+         * @param string $str
+         * @return string texto codificado para html
+         */
+        $this->lineBreak = fn (string $str): string => htmlspecialchars(implode("<br>", explode(PHP_EOL, $str)));
+
+        /**
          * Conversión de bytes
          * 
          * @param int $bytes
@@ -77,7 +87,13 @@ class USEFUL
             return round($bytes, 2) . " " . end(self::MEDIDAS);
         };
 
-        $this->viewIconForExtension = function (?string $extension = null) {
+        /**
+         * Muestra un icono segun la extensión
+         * 
+         * @param ?string $extension
+         * @return string <i />
+         */
+        $this->viewIconForExtension = function (?string $extension = null): string {
             $icons = [
                 # pdf
                 'pdf' => 'far fa-file-pdf',
