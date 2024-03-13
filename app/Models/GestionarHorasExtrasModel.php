@@ -118,7 +118,7 @@ class GestionarHorasExtrasModel extends HorasExtras
         ], self::implodeIDS(separator: " OR ", array: $ids));
     }
 
-    protected function implodeIDS(array|string $separator = "", ?array $array): string
+    protected function implodeIDS(array|string $separator = "", array $array): string
     {
         return implode(
             $separator,

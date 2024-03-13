@@ -42,6 +42,7 @@ class AppConfig
 
     # Files
     const BASE_FOLDER_FILE = self::BASE_FOLDER . "/file";
+    const BASE_SERVER_FILE = self::BASE_SERVER . "/file";
 
     # Database connection
     const DATABASE = DATABASE;
@@ -64,16 +65,18 @@ class AppConfig
     const WEBSOCKET = WEBSOCKET;
 }
 
+$dayToSecond = fn (int $day): int => $day * 86400;
+
 # Session control
 session_start([
-    "cookie_lifetime" => 86400, # Session cookie lifetime in seconds
+    "cookie_lifetime" => $dayToSecond(1), # Session cookie lifetime in seconds
     "use_strict_mode" => true, # Strict mode to mitigate session fixation attacks
     "cookie_secure" => AppConfig::PRODUCTION, # Only send cookies over secure connections in production
     "cookie_httponly" => true # Make session cookies accessible only through the HTTP protocol
 ]);
 
 # Load of environment variables
-$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv = Dotenv::createImmutable(paths: __DIR__);
 $dotenv->load();
 
 # Since I can't define constants at compile time, I thought it'd be better to declare it outside and assign the value inside the class.

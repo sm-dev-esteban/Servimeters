@@ -150,7 +150,7 @@ class Route extends RouteTemplateView
         self::show_content($this->view);
     }
 
-    static function href(string $url = "", array $get = []): string
+    static function href(?string $url = null, array $get = []): string
     {
         $url = trim(str_replace([
             AppConfig::BASE_FOLDER,

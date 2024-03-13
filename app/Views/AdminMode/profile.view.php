@@ -12,8 +12,8 @@
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-    <li class="breadcrumb-item active">profile</li>
-</ol>
+                    <li class="breadcrumb-item active">profile</li>
+                </ol>
             </div>
         </div>
     </div>

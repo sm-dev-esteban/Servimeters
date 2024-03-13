@@ -8,9 +8,9 @@ $session = fn (string $name): mixed => $_SESSION[$name] ?? null;
 
 ?>
 
-<aside class="main-sidebar main-sidebar-custom sidebar-light-primary elevation-4">
+<aside class="main-sidebar main-sidebar-custom sidebar-light-primary">
     <a href="<?= Route::href() ?>" class="brand-link">
-        <img src="<?= ImageProcessor::correctImageURL(AppConfig::COMPANY["LOGO"]) ?>" alt="<?= AppConfig::COMPANY["NAME"] ?> Logo" class="brand-image img-circle" style="opacity: .8">
+        <img src="<?= ImageProcessor::correctImageURL(AppConfig::COMPANY["LOGO"]) ?>" alt="<?= AppConfig::COMPANY["NAME"] ?> Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">
             <?= AppConfig::COMPANY["NAME"] ?>
         </span>
@@ -18,7 +18,7 @@ $session = fn (string $name): mixed => $_SESSION[$name] ?? null;
     <div class="sidebar">
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="info">
-                <a href="<?= Route::href("profile") ?>" class="d-block">
+                <a href="<?= Route::href("profile") ?>" class="d-block">.
                     <?= $session("usuario") ?>
                 </a>
             </div>

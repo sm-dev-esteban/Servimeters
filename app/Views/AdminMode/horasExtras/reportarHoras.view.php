@@ -1,6 +1,9 @@
 <?php
 
+use Config\USEFUL;
 use Controller\HorasExtras;
+
+$USEFUL = new USEFUL;
 
 $horasExtras = new HorasExtras;
 
@@ -106,7 +109,7 @@ $rand = rand();
                             <div class="col-12 mb-3 table-responsive">
                                 <table class="table" id="tableDatail">
                                     <thead>
-                                        <?= $showTH($thead) ?>
+                                        <?= ($USEFUL->thead)($thead) ?>
                                     </thead>
                                     <tbody>
                                         <tr>

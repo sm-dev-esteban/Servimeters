@@ -44,7 +44,7 @@ $(document).ready(() => {
 
     $(`[data-widget="toggle-dark"]`).on("click", handleToggleDark)
     $(document).on(`click`, `#btnDisconnect`, handleDisconnect)
-    $(document).on(`click`, `[href*="${Config.BASE_SERVER}"]`, handleInternalRoute)
+    $(document).on(`click`, `[href!="#"][href*="${Config.BASE_SERVER}"]:not([target="_blank"])`, handleInternalRoute)
 
     window.addEventListener('popstate', async function (e) {
         const currentState = e.state

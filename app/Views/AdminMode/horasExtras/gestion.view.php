@@ -1,9 +1,11 @@
 <?php
 
 use Config\Bs4;
+use Config\USEFUL;
 use Controller\GestionarHorasExtras;
 
 $gestion = new GestionarHorasExtras;
+$USEFUL = new USEFUL;
 
 $thead = [
     "Ver Detalle",
@@ -105,7 +107,7 @@ $encode = fn ($value) => json_encode($value, JSON_UNESCAPED_UNICODE);
                             <table class="table" data-action="sspGestion">
                                 <thead>
                                     <tr>
-                                        <?= $showTH($thead) ?>
+                                        <?= ($USEFUL->thead)($thead) ?>
                                     </tr>
                                 </thead>
                             </table>

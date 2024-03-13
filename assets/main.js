@@ -5,6 +5,11 @@ const updateDatatable = (el = "table.dataTable") => $(el).DataTable().ajax.reloa
 
 const swalFire = async (main = {}, remove = []) => {
     main = $.extend({
+        customClass: {
+            confirmButton: "btn btn-success mx-1",
+            cancelButton: "btn btn-danger mx-1"
+        },
+        buttonsStyling: false,
         title: `Cuerpo`,
         input: `textarea`,
         showCancelButton: true,

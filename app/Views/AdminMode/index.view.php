@@ -1,8 +1,10 @@
 <?php
 
 use Config\CRUD;
+use Config\USEFUL;
 
 $crud = new CRUD;
+$USEFUL = new USEFUL;
 
 function orderedMonths(bool $onlyMonths = false): array
 {
@@ -98,8 +100,7 @@ $dataMonths = orderedMonths(false);
                         <table class="table" id="table-users">
                             <thead>
                                 <tr>
-                                    <th>Nombre</th>
-                                    <th>Correo</th>
+                                    <?= ($USEFUL->thead)(["Nombre", "Correo"]) ?>
                                 </tr>
                             </thead>
                         </table>

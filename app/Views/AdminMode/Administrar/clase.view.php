@@ -1,15 +1,13 @@
 <?php
 
+use Config\USEFUL;
+
+$USEFUL = new USEFUL;
+
 $thead = [
     "Clase",
     "",
 ];
-
-$showTH = fn (array $array): string => implode("\n", array_map(function ($str) use ($array) {
-    $countThead = count($array);
-    $width = 100 / $countThead;
-    return "<th style=\"width: {$width}%\">{$str}</th>";
-}, $array));
 
 ?>
 
@@ -58,7 +56,7 @@ $showTH = fn (array $array): string => implode("\n", array_map(function ($str) u
                             <table class="table" data-action="ssp_Clase">
                                 <thead>
                                     <tr>
-                                        <?= $showTH($thead) ?>
+                                        <?= ($USEFUL->thead)($thead) ?>
                                     </tr>
                                 </thead>
                             </table>

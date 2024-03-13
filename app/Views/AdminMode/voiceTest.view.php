@@ -12,8 +12,7 @@
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item">dev</li>
-                    <li class="breadcrumb-item active">project-detail</li>
+                    <li class="breadcrumb-item active">voiceTest</li>
                 </ol>
             </div>
         </div>
@@ -28,8 +27,19 @@
                     <div class="card-header">
                         <h3 class=card-title>Titulo</h3>
                     </div>
-                    <div class="card-body">Contenido</div>
-                    <div class="card-footer">Pie de pagina</div>
+                    <div class="card-body">
+                        <form id="formVoice">
+                            <div class="mb-3">
+                                <textarea id="inputVoice" cols="30" rows="10" class="form-control"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <select id="selectVoice" class="form-control"></select>
+                            </div>
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-success">Enviar</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

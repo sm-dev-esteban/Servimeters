@@ -1,5 +1,9 @@
 <?php
 
+use Config\USEFUL;
+
+$USEFUL = new USEFUL;
+
 $thead = [
     "N° Requisición",
     "Proceso",
@@ -7,12 +11,6 @@ $thead = [
     "Estado",
     "",
 ];
-
-$showTH = fn (array $array): string => implode("\n", array_map(function ($str) use ($array) {
-    $countThead = count($array);
-    $width = 100 / $countThead;
-    return "<th style=\"width: {$width}%\">{$str}</th>";
-}, $array));
 
 ?>
 
@@ -38,7 +36,7 @@ $showTH = fn (array $array): string => implode("\n", array_map(function ($str) u
             <div class="col-md-12">
                 <div class="card mt-1">
                     <div class="card-header">
-                        <h3 class="card-title">mis Solicitudes</h3>
+                        <h3 class="card-title">Mis Solicitudes</h3>
                         <div class="card-tools">
                             <div class="input-group input-group-sm">
                                 <input type="search" class="form-control" placeholder="Buscar">
@@ -50,7 +48,7 @@ $showTH = fn (array $array): string => implode("\n", array_map(function ($str) u
                             <table class="table" data-action="ssp_solicitud">
                                 <thead>
                                     <tr>
-                                        <?= $showTH($thead) ?>
+                                        <?= ($USEFUL->thead)($thead) ?>
                                     </tr>
                                 </thead>
                             </table>

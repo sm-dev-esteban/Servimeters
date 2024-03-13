@@ -7,12 +7,13 @@ use Model\CalendarModel;
 
 class Calendar extends CalendarModel
 {
-
     public function getEvents(String $start, String $end, bool $render = false): array
     {
-        $data = self::readEvent("[start] >= :START and [end] <= :END", [
+        $data = self::readEvent("(([start] >= :START AND [end] <= :END) OR ([start] BETWEEN :BETWEEN_START AND :BETWEEN_END AND [end] IS NULL AND [allDay] = 1))", [
             ":START" => self::fullDate($start),
-            ":END" => self::fullDate($end)
+            ":END" => self::fullDate($end),
+            ":BETWEEN_START" => self::fullDate($start),
+            ":BETWEEN_END" => self::fullDate($end)
         ]);
 
         return $render === true ? self::renderEvents(
@@ -116,11 +117,11 @@ class Calendar extends CalendarModel
             </div>
             <div class="form-group">
                 <label>Descripción</label>
-                <textarea name="data[description]" placeholder="Descripción" class="form-control">{$description}</textarea>
+                <textarea name="data[description]" placeholder="Descripción" class="form-control" required>{$description}</textarea>
             </div>
             <div class="form-group">
                 <label>Fecha de inicio</label>
-                <input value="{$start}" name="data[start]" type="datetime-local" class="form-control">
+                <input value="{$start}" name="data[start]" type="datetime-local" class="form-control" required>
             </div>
             <div class="form-group">
                 <label>Fecha de fin</label>

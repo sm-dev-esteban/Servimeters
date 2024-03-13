@@ -154,7 +154,7 @@ class DB
             else return $exec->fetchAll(PDO::FETCH_ASSOC); # "SELECT" and the rest :n
         } catch (PDOException $th) {
             # Handle PDO exceptions
-            throw new Exception("Failed execute query: {$query} -> {$th->getMessage()}");
+            throw new Exception("Failed execute query: [{$query}] -> {$th->getMessage()}");
         }
     }
 

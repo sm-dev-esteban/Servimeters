@@ -4,19 +4,13 @@ use Config\USEFUL;
 use Controller\CentroCosto;
 
 $centroCosto = new CentroCosto;
-$useful = new USEFUL;
+$USEFUL = new USEFUL;
 
 $thead = [
     "Centro de costo",
     "Clase",
     "",
 ];
-
-$showTH = fn (array $array): string => implode("\n", array_map(function ($str) use ($array) {
-    $countThead = count($array);
-    $width = 100 / $countThead;
-    return "<th style=\"width: {$width}%\">{$str}</th>";
-}, $array));
 
 ?>
 
@@ -65,7 +59,7 @@ $showTH = fn (array $array): string => implode("\n", array_map(function ($str) u
                             <table class="table" data-action="ssp_Ceco">
                                 <thead>
                                     <tr>
-                                        <?= $showTH($thead) ?>
+                                        <?= ($USEFUL->thead)($thead) ?>
                                     </tr>
                                 </thead>
                             </table>
@@ -99,7 +93,7 @@ $showTH = fn (array $array): string => implode("\n", array_map(function ($str) u
                     <label for="id_clase">Clase</label>
                     <select name="data[id_clase]" id="id_clase" class="form-control" required>
                         <option value="">Seleccione</option>
-                        <?= ($useful->options)($centroCosto->getClass(), "id", "nombre") ?>
+                        <?= ($USEFUL->options)($centroCosto->getClass(), "id", "nombre") ?>
                     </select>
                 </div>
             </div>

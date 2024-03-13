@@ -51,6 +51,9 @@ class LoginModel extends Aprobador
 
             $_SESSION["user"] = $user;
             $_SESSION["pass"] = $pass;
+
+            $_SESSION["session_start"] = time();
+            // $_SESSION["session_end"] = null;
         } catch (Exception $th) {
             return [
                 "status" => false,

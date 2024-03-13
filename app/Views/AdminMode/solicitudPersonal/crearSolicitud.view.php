@@ -101,7 +101,7 @@ $saltoDeLinea = fn (string $str): string => htmlspecialchars(implode("<br>", exp
                             </div>
                             <div class="col-12 mb-3" style="display: none">
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control" id="resources" placeholder="Recursos necesarios para el cargo" data-toggle="popover" data-trigger="hover" title="Por si acaso" data-content="<?= $saltoDeLinea(<<<HTML
+                                    <input type="text" class="form-control" id="resources" placeholder="Recursos necesarios para el cargo" data-toggle="popover" data-trigger="hover" data-content="<?= $saltoDeLinea(<<<HTML
                                     <b>Nota</b>
                                     * Hacer clic sobre el icono de "+" para agregar los recursos que requieran.
                                     * Para borrarlo, haga clic sobre el ítem que quiera borrar.

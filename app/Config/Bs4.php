@@ -12,9 +12,21 @@ namespace Config;
 
 class Bs4 extends Html
 {
-    // static function Button()
-    // {
-    // }
+    static function Button(string $text, array $customAttrs = []): string
+    {
+        $attrs = [
+            "class" => "btn btn-primary",
+            "type" => "button"
+        ];
+
+        $attrs = [...$attrs, ...$customAttrs];
+
+        return self::createTag(
+            tagName: "button",
+            attrs: $attrs,
+            innerHtml: $text
+        );
+    }
 
     static function Card($header = null, $body = null, $footer = null): string
     {
@@ -52,13 +64,79 @@ class Bs4 extends Html
         );
     }
 
+    static function Accordion(string $dataParent, array $info, array $customAttrs = []): string
+    {
+        $attrs = [
+            "card" => [
+                ...[
+                    "class" => "card card-primary card-outline"
+                ], ...$customAttrs["card"] ?: []
+            ],
+            "card-header" => [...[
+                "class" => "card-header"
+            ], ...$customAttrs["card-header"] ?: []],
+            "card-title" => [
+                ...[
+                    "class" => "card-title w-100"
+                ], ...$customAttrs["card-title"] ?: []
+            ],
+            "card-body" => [
+                ...[
+                    "class" => "card-body",
+                ], ...$customAttrs["card-body"] ?: []
+            ]
+        ];
+
+        $response = [];
+
+        foreach ($info as $i => $data) {
+            [
+                "title" => $title,
+                "content" => $content,
+                "collapse" => $collapse,
+            ] = $data;
+
+            $uid = "{$i}_" . uniqid();
+
+            $response[] = self::createTag(
+                attrs: $attrs["card"],
+                innerHtml: [
+                    self::createTag(
+                        tagName: "a",
+                        attrs: [
+                            "class" => "d-block w-100",
+                            "data-toggle" => "collapse",
+                            "href" => "#collapse_{$uid}",
+                        ],
+                        innerHtml: self::createTag(
+                            attrs: $attrs["card-header"],
+                            innerHtml: self::createTag(
+                                tagName: "h4",
+                                attrs: $attrs["card-title"],
+                                innerHtml: $title
+                            )
+                        )
+                    ),
+                    self::createTag(
+                        attrs: [
+                            "id" => "collapse_{$uid}",
+                            "class" => "collapse" . (!empty($collapse) ? " show" : ""),
+                            "data-parent" => $dataParent
+                        ],
+                        innerHtml: self::createTag(
+                            attrs: $attrs["card-body"],
+                            innerHtml: $content
+                        )
+                    )
+                ]
+            );
+        }
+
+        return implode(PHP_EOL, $response);
+    }
+
     private static function removeEmptyValues(array $array)
     {
         return array_filter($array, fn ($val) => !empty($val));
-    }
-
-    private static function render($html)
-    {
-        return htmlspecialchars($html);
     }
 }

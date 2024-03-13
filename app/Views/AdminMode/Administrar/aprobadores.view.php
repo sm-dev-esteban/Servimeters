@@ -3,7 +3,7 @@
 use Config\USEFUL;
 use Controller\Aprobador;
 
-$useful = new USEFUL;
+$USEFUL = new USEFUL;
 $aprobador = new Aprobador;
 
 $thead = [
@@ -12,17 +12,10 @@ $thead = [
     "Tipo",
     "Gestiona",
     "Admin",
-    "solicitud de personal",
-    "solicitud de permiso",
+    "Solicitud de personal",
+    "Solicitud de permiso",
     ""
 ];
-
-$showTH = fn (array $array): string => implode("\n", array_map(function ($str) use ($array) {
-    $countThead = count($array);
-    $width = 100 / $countThead;
-    return "<th style=\"width: {$width}%\">{$str}</th>";
-}, $array));
-
 
 // html
 $saltoDeLinea = fn (string $str): string => htmlspecialchars(implode("<br>", explode("\n", $str)));
@@ -74,7 +67,7 @@ $saltoDeLinea = fn (string $str): string => htmlspecialchars(implode("<br>", exp
                             <table class="table" data-action="ssp_Aprobador">
                                 <thead>
                                     <tr>
-                                        <?= $showTH($thead) ?>
+                                        <?= ($USEFUL->thead)($thead) ?>
                                     </tr>
                                 </thead>
                             </table>
@@ -145,13 +138,13 @@ $saltoDeLinea = fn (string $str): string => htmlspecialchars(implode("<br>", exp
                     <div class="col-6 mb-3">
                         <label for="id_tipo">Tipo</label>
                         <select name="data[id_tipo]" id="id_tipo" class="form-control" required>
-                            <?= ($useful->options)($aprobador->getApproverType(), "id", "nombre") ?>
+                            <?= ($USEFUL->options)($aprobador->getApproverType(), "id", "nombre") ?>
                         </select>
                     </div>
                     <div class="col-6 mb-3">
                         <label for="id_gestiona">Gestiona</label>
                         <select name="data[id_gestiona]" id="id_gestiona" class="form-control" required>
-                            <?= ($useful->options)($aprobador->getApproverManages(), "id", "nombre") ?>
+                            <?= ($USEFUL->options)($aprobador->getApproverManages(), "id", "nombre") ?>
                         </select>
                     </div>
                 </div>

@@ -31,14 +31,14 @@ $(_ => {
             $modal.find("[data-mode]").data("mode", "formAddEvent")
             $modal.modal("show")
         }, handleEventDidMount = (info) => {
-            const title = info.event.title || ""
+            // const title = info.event.title || ""
             const content = info.event.extendedProps.description || ""
 
             $(info.el).popover({
-                title: title,
+                // title: title,
                 content: content,
                 placement: "top",
-                trigger: "hover focus",
+                trigger: "hover",
                 container: "body"
             })
         }, handleModalShown = function () {

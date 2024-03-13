@@ -4,6 +4,7 @@ namespace Model;
 
 use Config\CRUD;
 use Config\Datatable;
+use Config\TableManager;
 use Exception;
 
 class SolicitudPersonalModel extends CRUD
@@ -14,6 +15,16 @@ class SolicitudPersonalModel extends CRUD
     const TABLE_SOLICITUD_HORARIO = self::TABLE_SOLICITUD . "Horario";
     const TABLE_SOLICITUD_MOTIVO_REQUISICION = self::TABLE_SOLICITUD . "MotivoRequisicion";
     const TABLE_SOLICITUD_ESTADO = self::TABLE_SOLICITUD . "Estados";
+    const TABLE_SOLICITUD_HOJAS_DE_VIDA = self::TABLE_SOLICITUD . "HojasDeVida";
+
+    const SOLICITUD_ESTADO = [
+        "PENDIENTE"                 => 1,
+        "APROBADO JEFE"             => 2,
+        "RECHAZO JEFE"              => 3,
+        "RECHAZADO"                 => 4,
+        "GESTION TALENTO HUMANO"    => 5,
+        "CANCELADO"                 => 6
+    ];
 
     public function __construct()
     {
@@ -114,14 +125,17 @@ class SolicitudPersonalModel extends CRUD
             ["id_estado"            => "id"]
         );
 
-        self::insertInitialData(self::TABLE_SOLICITUD_ESTADO, [
-            ["nombre" => 'Pendiente'],
-            ["nombre" => 'Aprobado jefe'],
-            ["nombre" => 'Rechazo jefe'],
-            ["nombre" => 'Rechazado'],
-            ["nombre" => 'Gestion Talento Humano'],
-            ["nombre" => 'Cancelado']
-        ]);
+
+        foreach (self::SOLICITUD_ESTADO as $name => $id) $initialData[] = ["nombre" => $name];
+
+        self::insertInitialData(self::TABLE_SOLICITUD_ESTADO, $initialData);
+
+        $this->tableManager->createTable(self::TABLE_SOLICITUD_HOJAS_DE_VIDA);
+        $this->tableManager->createColumn(self::TABLE_SOLICITUD_HOJAS_DE_VIDA, "[id_solicitud]", "INT DEFAULT NULL");
+        $this->tableManager->addForeignKey(
+            tables: [self::TABLE_SOLICITUD_HOJAS_DE_VIDA => self::TABLE_SOLICITUD],
+            columns: ["id_solicitud" => "id"]
+        );
     }
 
     static function serverSideSolicitud(array $columns, array $config = []): array
