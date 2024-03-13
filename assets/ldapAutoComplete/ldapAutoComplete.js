@@ -1,10 +1,12 @@
 (($) => {
     $.fn.autoComplete = function (config) {
+        const $el = $(this)
+
         if (this.length && $.isPlainObject(config)) {
             const array = [{
                 element: this,
-                event: config.event,
-                column: config.column
+                event: config.event || "input",
+                column: config.column || $el.attr("name").replace(/data\[(.*?)\]/, "$1")
             }]
 
             if (config.mode) config.dataForLDAP = config.mode.toUpperCase().trim() === "SQL" ? false : true
@@ -69,7 +71,15 @@ const ldapAutoComplete = (array, config = {}) => {
                             top: 0,
                             left: 0,
                             outline: "none"
-                        }).removeAttr("name").removeAttr("required").removeAttr("id").removeAttr("placeholder")
+                        }).removeAttr("id")
+
+                        const validAttr = ["class", "type", "style", "data-ldapautocomplete"];
+
+                        $inputMask.each((i, el) => el.attributes.forEach(attr => {
+                            const { name: name } = attr
+
+                            if (!validAttr.includes(name)) $(el).removeAttr(name)
+                        }))
 
                         $el.replaceWith($container)
 
@@ -104,10 +114,11 @@ const ldapAutoComplete = (array, config = {}) => {
                             const val1 = $input.val()
                             const val2 = $inputMask.val()
 
-                            // Evento de la tecla "Tab ↹"
-                            if (e.which === 9) if (val2 != '' && val1 != val2) {
+                            // Evento de la tecla "Tab ↹" o "➡"
+                            if (e.which === 9 || e.which === 39) if (val2 != '' && val1 != val2) {
                                 e.preventDefault()
                                 $input.val(val2)
+                                $inputMask.val("")
                             }
                         }
 
@@ -117,7 +128,6 @@ const ldapAutoComplete = (array, config = {}) => {
                         $inputMask.on("focus", (e) => e.target.blur())
                     }
                 })
-
             }
         })
     }
